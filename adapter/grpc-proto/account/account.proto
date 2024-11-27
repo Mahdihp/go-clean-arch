@@ -1,0 +1,13 @@
+syntax = "proto3";
+package account;
+
+option go_package = "adapter/grpc-proto/account";
+
+
+message Account{
+  //  int32  statusCode = 1;
+  //  string  message = 2;
+  //  string  operation = 3;
+  //  string  data = 4;
+  //  repeated  string  errors = 5;
+}

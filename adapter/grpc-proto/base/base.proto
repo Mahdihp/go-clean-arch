@@ -1,0 +1,12 @@
+syntax = "proto3";
+package base;
+
+option go_package = "adapter/grpc-proto/base";
+
+message BaseMessage{
+  int32  statusCode = 1;
+  string  message = 2;
+  string  operation = 3;
+  string  data = 4;
+  repeated  string  errors = 5;
+}

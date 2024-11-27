@@ -47,12 +47,11 @@ func (s Server) Serve() {
 
 	//s.Router.Use(middleware.Logger())
 
-	s.Router.Use(middleware.Recover())
-
 	// Routes
 	s.Router.GET("/health-check", s.healthCheck)
 
 	s.userService.SetRoutes(s.Router)
+	s.Router.Use(middleware.Recover())
 	//s.backofficeUserHandler.SetRoutes(s.Router)
 	//s.matchingHandler.SetRoutes(s.Router)
 
