@@ -6,7 +6,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// Account is the predicate function for account builders.
+// Account is the predicate function for bybit_ws builders.
 type Account func(*sql.Selector)
 
 // Wallet is the predicate function for wallet builders.

@@ -245,7 +245,7 @@ func UpdatedAtLTE(v time.Time) predicate.Wallet {
 	return predicate.Wallet(sql.FieldLTE(FieldUpdatedAt, v))
 }
 
-// HasAccount applies the HasEdge predicate on the "account" edge.
+// HasAccount applies the HasEdge predicate on the "bybit_ws" edge.
 func HasAccount() predicate.Wallet {
 	return predicate.Wallet(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
@@ -256,7 +256,7 @@ func HasAccount() predicate.Wallet {
 	})
 }
 
-// HasAccountWith applies the HasEdge predicate on the "account" edge with a given conditions (other predicates).
+// HasAccountWith applies the HasEdge predicate on the "bybit_ws" edge with a given conditions (other predicates).
 func HasAccountWith(preds ...predicate.Account) predicate.Wallet {
 	return predicate.Wallet(func(s *sql.Selector) {
 		step := newAccountStep()

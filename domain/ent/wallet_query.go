@@ -61,7 +61,7 @@ func (wq *WalletQuery) Order(o ...wallet.OrderOption) *WalletQuery {
 	return wq
 }
 
-// QueryAccount chains the current query on the "account" edge.
+// QueryAccount chains the current query on the "bybit_ws" edge.
 func (wq *WalletQuery) QueryAccount() *AccountQuery {
 	query := (&AccountClient{config: wq.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
@@ -283,7 +283,7 @@ func (wq *WalletQuery) Clone() *WalletQuery {
 }
 
 // WithAccount tells the query-builder to eager-load the nodes that are connected to
-// the "account" edge. The optional arguments are used to configure the query builder of the edge.
+// the "bybit_ws" edge. The optional arguments are used to configure the query builder of the edge.
 func (wq *WalletQuery) WithAccount(opts ...func(*AccountQuery)) *WalletQuery {
 	query := (&AccountClient{config: wq.config}).Query()
 	for _, opt := range opts {

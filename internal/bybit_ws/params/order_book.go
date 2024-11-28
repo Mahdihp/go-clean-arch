@@ -1,5 +1,9 @@
 package params
 
+import (
+	"sort"
+)
+
 type SpotOrderBook struct {
 	Ts    int64  `json:"ts"`    // The timestamp (ms) that the system generates the data
 	Cts   int64  `json:"cts"`   //The timestamp from the match engine when this orderbook data is produced.
@@ -15,23 +19,56 @@ type BidAsk struct {
 	A   [][]string `json:"a"`   //Asks. For snapshot stream, the element is sorted by price in ascending order
 }
 
-func (ba *SpotOrderBook) UpdateSnapShot(data BidAsk) {
+func (ba *SpotOrderBook) UpdateSnapShot(data BidAsk, limitOrderBook int) {
 	ba.updateBids(data)
 	ba.updateAsks(data)
+	ba.removeDuplicatesBids()
+	ba.removeDuplicatesAsks()
+	if len(ba.Data.A) > limitOrderBook {
+		ba.Data.A = ba.Data.A[:limitOrderBook]
+	}
+	if len(ba.Data.B) > limitOrderBook {
+		ba.Data.B = ba.Data.B[:limitOrderBook]
+	}
 }
 
+func (ba *SpotOrderBook) removeDuplicatesAsks() {
+	sort.Slice(ba.Data.A, func(i, j int) bool {
+		if i >= len(ba.Data.A) || j >= len(ba.Data.A) {
+			return false
+		}
+		return ba.Data.A[i][1] > ba.Data.A[j][1]
+	})
+	for i, _ := range ba.Data.A {
+		if ba.Data.A[i][1] == "0" {
+			ba.Data.A = ba.Data.A[:i]
+			//fmt.Println(i, "  ", ba.Data.B)
+			return
+		}
+	}
+}
+func (ba *SpotOrderBook) removeDuplicatesBids() {
+
+	sort.Slice(ba.Data.B, func(i, j int) bool {
+		if i >= len(ba.Data.B) || j >= len(ba.Data.B) {
+			return false
+		}
+		return ba.Data.B[i][1] > ba.Data.B[j][1]
+	})
+
+	for i, _ := range ba.Data.B {
+		if ba.Data.B[i][1] == "0" {
+			ba.Data.B = ba.Data.B[:i]
+			//fmt.Println(i, "  ", ba.Data.B)
+			return
+		}
+	}
+}
 func (ba *SpotOrderBook) updateAsks(data BidAsk) {
 	for i := 0; i < len(data.A); i++ {
 		if item := ba.findItemToAsks(data.A[i][0]); item == false {
 			if data.A[i][1] != "0" {
 				ba.Data.A = append(ba.Data.A, [][]string{{data.A[i][0], data.A[i][1]}}...)
-			}
-		} else {
-			if data.A[i][1] == "0" {
-				//i, j := 1, 0
-				//s[i] = append(s[i][:j], s[i][j+1:]...)
-				//ba.Data.A[i] = append(ba.Data.A[i][:0], ba.Data.A[i][0+1:]...)
-				//ba.Data.A[i] = append(ba.Data.A[i][:0], ba.Data.A[i][0+1:]...)
 			}
 		}
 	}
@@ -64,18 +101,6 @@ func (ba *SpotOrderBook) updateBids(data BidAsk) {
 		if item := ba.findItemToBids(data.B[i][0]); item == false {
 			if data.B[i][1] != "0" {
 				ba.Data.B = append(ba.Data.B, [][]string{{data.B[i][0], data.B[i][1]}}...)
-			}
-		} else {
-			// delete zero value element
-			if data.B[i][1] == "0" {
-				//fmt.Println("Element at", data.B[i][0], data.B[i][1])
-
-				//---i, j := 1, 0
-				//---s[i] = append(s[i][:j], s[i][j+1:]...)
-				//if len(ba.Data.B[i]) > 0 {
-				//	ba.Data.B[i] = append(ba.Data.B[i][:0], ba.Data.B[i][0+1:]...)
-				//	ba.Data.B[i] = append(ba.Data.B[i][:0], ba.Data.B[i][0+1:]...)
-				//}
 			}
 		}
 	}

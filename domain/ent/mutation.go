@@ -1157,22 +1157,22 @@ func (m *WalletMutation) ResetUpdatedAt() {
 	m.updated_at = nil
 }
 
-// SetAccountID sets the "account" edge to the Account entity by id.
+// SetAccountID sets the "bybit_ws" edge to the Account entity by id.
 func (m *WalletMutation) SetAccountID(id int64) {
 	m.account = &id
 }
 
-// ClearAccount clears the "account" edge to the Account entity.
+// ClearAccount clears the "bybit_ws" edge to the Account entity.
 func (m *WalletMutation) ClearAccount() {
 	m.clearedaccount = true
 }
 
-// AccountCleared reports if the "account" edge to the Account entity was cleared.
+// AccountCleared reports if the "bybit_ws" edge to the Account entity was cleared.
 func (m *WalletMutation) AccountCleared() bool {
 	return m.clearedaccount
 }
 
-// AccountID returns the "account" edge ID in the mutation.
+// AccountID returns the "bybit_ws" edge ID in the mutation.
 func (m *WalletMutation) AccountID() (id int64, exists bool) {
 	if m.account != nil {
 		return *m.account, true
@@ -1180,7 +1180,7 @@ func (m *WalletMutation) AccountID() (id int64, exists bool) {
 	return
 }
 
-// AccountIDs returns the "account" edge IDs in the mutation.
+// AccountIDs returns the "bybit_ws" edge IDs in the mutation.
 // Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
 // AccountID instead. It exists only for internal usage by the builders.
 func (m *WalletMutation) AccountIDs() (ids []int64) {
@@ -1190,7 +1190,7 @@ func (m *WalletMutation) AccountIDs() (ids []int64) {
 	return
 }
 
-// ResetAccount resets all changes to the "account" edge.
+// ResetAccount resets all changes to the "bybit_ws" edge.
 func (m *WalletMutation) ResetAccount() {
 	m.account = nil
 	m.clearedaccount = false

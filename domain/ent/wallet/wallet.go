@@ -24,16 +24,16 @@ const (
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
-	// EdgeAccount holds the string denoting the account edge name in mutations.
-	EdgeAccount = "account"
+	// EdgeAccount holds the string denoting the bybit_ws edge name in mutations.
+	EdgeAccount = "bybit_ws"
 	// Table holds the table name of the wallet in the database.
 	Table = "wallets"
-	// AccountTable is the table that holds the account relation/edge.
+	// AccountTable is the table that holds the bybit_ws relation/edge.
 	AccountTable = "wallets"
 	// AccountInverseTable is the table name for the Account entity.
-	// It exists in this package in order to avoid circular dependency with the "account" package.
+	// It exists in this package in order to avoid circular dependency with the "bybit_ws" package.
 	AccountInverseTable = "accounts"
-	// AccountColumn is the table column denoting the account relation/edge.
+	// AccountColumn is the table column denoting the bybit_ws relation/edge.
 	AccountColumn = "account_wallets"
 )
 
@@ -114,7 +114,7 @@ func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
 
-// ByAccountField orders the results by account field.
+// ByAccountField orders the results by bybit_ws field.
 func ByAccountField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newAccountStep(), sql.OrderByField(field, opts...))

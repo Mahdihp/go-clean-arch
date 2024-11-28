@@ -12,8 +12,10 @@ type Config struct {
 	ByBit    ByBit        `mapstructure:"postgres"`
 }
 type ByBit struct {
-	ApiKey    string `mapstructure:"APIKEY"`
-	ApiSecret string `mapstructure:"APISECRET"`
+	ApiKey         string `mapstructure:"APIKEY"`
+	ApiSecret      string `mapstructure:"APISECRET"`
+	WsSocketSpot   string `mapstructure:"WS_SOCKET_SPOT"`
+	WsSocketLinear string `mapstructure:"WS_SOCKET_LINEAR"`
 }
 type Postgres struct {
 	PostgresHost     string `mapstructure:"POSTGRES_HOST"`
@@ -50,6 +52,8 @@ func LoadConfig() Config {
 
 	c.ByBit.ApiKey = os.Getenv("APIKEY")
 	c.ByBit.ApiSecret = os.Getenv("APISECRET")
+	c.ByBit.WsSocketSpot = os.Getenv("WS_SOCKET_SPOT")
+	c.ByBit.WsSocketLinear = os.Getenv("WS_SOCKET_LINEAR")
 
 	return c
 

@@ -218,13 +218,13 @@ func NewAccountClient(c config) *AccountClient {
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `account.Hooks(f(g(h())))`.
+// A call to `Use(f, g, h)` equals to `bybit_ws.Hooks(f(g(h())))`.
 func (c *AccountClient) Use(hooks ...Hook) {
 	c.hooks.Account = append(c.hooks.Account, hooks...)
 }
 
 // Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `account.Intercept(f(g(h())))`.
+// A call to `Intercept(f, g, h)` equals to `bybit_ws.Intercept(f(g(h())))`.
 func (c *AccountClient) Intercept(interceptors ...Interceptor) {
 	c.inters.Account = append(c.inters.Account, interceptors...)
 }
@@ -464,7 +464,7 @@ func (c *WalletClient) GetX(ctx context.Context, id int8) *Wallet {
 	return obj
 }
 
-// QueryAccount queries the account edge of a Wallet.
+// QueryAccount queries the bybit_ws edge of a Wallet.
 func (c *WalletClient) QueryAccount(w *Wallet) *AccountQuery {
 	query := (&AccountClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {

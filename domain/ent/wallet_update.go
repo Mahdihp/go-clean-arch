@@ -85,13 +85,13 @@ func (wu *WalletUpdate) SetNillableUpdatedAt(t *time.Time) *WalletUpdate {
 	return wu
 }
 
-// SetAccountID sets the "account" edge to the Account entity by ID.
+// SetAccountID sets the "bybit_ws" edge to the Account entity by ID.
 func (wu *WalletUpdate) SetAccountID(id int64) *WalletUpdate {
 	wu.mutation.SetAccountID(id)
 	return wu
 }
 
-// SetNillableAccountID sets the "account" edge to the Account entity by ID if the given value is not nil.
+// SetNillableAccountID sets the "bybit_ws" edge to the Account entity by ID if the given value is not nil.
 func (wu *WalletUpdate) SetNillableAccountID(id *int64) *WalletUpdate {
 	if id != nil {
 		wu = wu.SetAccountID(*id)
@@ -99,7 +99,7 @@ func (wu *WalletUpdate) SetNillableAccountID(id *int64) *WalletUpdate {
 	return wu
 }
 
-// SetAccount sets the "account" edge to the Account entity.
+// SetAccount sets the "bybit_ws" edge to the Account entity.
 func (wu *WalletUpdate) SetAccount(a *Account) *WalletUpdate {
 	return wu.SetAccountID(a.ID)
 }
@@ -109,7 +109,7 @@ func (wu *WalletUpdate) Mutation() *WalletMutation {
 	return wu.mutation
 }
 
-// ClearAccount clears the "account" edge to the Account entity.
+// ClearAccount clears the "bybit_ws" edge to the Account entity.
 func (wu *WalletUpdate) ClearAccount() *WalletUpdate {
 	wu.mutation.ClearAccount()
 	return wu
@@ -281,13 +281,13 @@ func (wuo *WalletUpdateOne) SetNillableUpdatedAt(t *time.Time) *WalletUpdateOne 
 	return wuo
 }
 
-// SetAccountID sets the "account" edge to the Account entity by ID.
+// SetAccountID sets the "bybit_ws" edge to the Account entity by ID.
 func (wuo *WalletUpdateOne) SetAccountID(id int64) *WalletUpdateOne {
 	wuo.mutation.SetAccountID(id)
 	return wuo
 }
 
-// SetNillableAccountID sets the "account" edge to the Account entity by ID if the given value is not nil.
+// SetNillableAccountID sets the "bybit_ws" edge to the Account entity by ID if the given value is not nil.
 func (wuo *WalletUpdateOne) SetNillableAccountID(id *int64) *WalletUpdateOne {
 	if id != nil {
 		wuo = wuo.SetAccountID(*id)
@@ -295,7 +295,7 @@ func (wuo *WalletUpdateOne) SetNillableAccountID(id *int64) *WalletUpdateOne {
 	return wuo
 }
 
-// SetAccount sets the "account" edge to the Account entity.
+// SetAccount sets the "bybit_ws" edge to the Account entity.
 func (wuo *WalletUpdateOne) SetAccount(a *Account) *WalletUpdateOne {
 	return wuo.SetAccountID(a.ID)
 }
@@ -305,7 +305,7 @@ func (wuo *WalletUpdateOne) Mutation() *WalletMutation {
 	return wuo.mutation
 }
 
-// ClearAccount clears the "account" edge to the Account entity.
+// ClearAccount clears the "bybit_ws" edge to the Account entity.
 func (wuo *WalletUpdateOne) ClearAccount() *WalletUpdateOne {
 	wuo.mutation.ClearAccount()
 	return wuo

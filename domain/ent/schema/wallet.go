@@ -43,6 +43,6 @@ func (Wallet) Indexes() []ent.Index {
 // Edges of the Wallet.
 func (Wallet) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("account", Account.Type).Ref("wallets").Unique(),
+		edge.From("bybit_ws", Account.Type).Ref("wallets").Unique(),
 	}
 }

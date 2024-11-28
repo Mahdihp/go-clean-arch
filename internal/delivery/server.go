@@ -2,34 +2,29 @@ package delivery
 
 import (
 	"fmt"
-	user_service "github.com/bxcodec/go-clean-arch/account"
 	"github.com/bxcodec/go-clean-arch/config"
-	user_validator "github.com/bxcodec/go-clean-arch/internal/validator"
+	"github.com/bxcodec/go-clean-arch/internal/bybit_ws"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
 )
 
 type Server struct {
-	config        config.Config
-	userValidator user_validator.UserValidator
-	userService   user_service.UserService
-	Router        *echo.Echo
+	config         config.Config
+	bybitWsService user_service.ByBitWSService
+	Router         *echo.Echo
 }
 
-func NewServer(cfg config.Config, userValidator user_validator.UserValidator, userService user_service.UserService) Server {
+func NewServer(cfg config.Config, userService user_service.ByBitWSService) Server {
 	return Server{
-		config:        cfg,
-		Router:        echo.New(),
-		userValidator: userValidator,
-		userService:   userService,
+		config:         cfg,
+		Router:         echo.New(),
+		bybitWsService: userService,
 	}
 }
 
 func (s Server) Serve() {
 	// Middleware
-
-	s.Router.Use(middleware.RequestID())
 
 	logger, _ := zap.NewProduction()
 	s.Router.Use(middleware.RequestLoggerWithConfig(middleware.RequestLoggerConfig{
@@ -45,15 +40,12 @@ func (s Server) Serve() {
 		},
 	}))
 
-	//s.Router.Use(middleware.Logger())
-
 	// Routes
 	s.Router.GET("/health-check", s.healthCheck)
+	s.bybitWsService.SetRoutes(s.Router)
 
-	s.userService.SetRoutes(s.Router)
+	s.Router.Use(middleware.RequestID())
 	s.Router.Use(middleware.Recover())
-	//s.backofficeUserHandler.SetRoutes(s.Router)
-	//s.matchingHandler.SetRoutes(s.Router)
 
 	// Start server
 	address := fmt.Sprintf(":%d", s.config.Server.HttpPort)

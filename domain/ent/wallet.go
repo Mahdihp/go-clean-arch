@@ -37,8 +37,8 @@ type Wallet struct {
 
 // WalletEdges holds the relations/edges for other nodes in the graph.
 type WalletEdges struct {
-	// Account holds the value of the account edge.
-	Account *Account `json:"account,omitempty"`
+	// Account holds the value of the bybit_ws edge.
+	Account *Account `json:"bybit_ws,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
@@ -52,7 +52,7 @@ func (e WalletEdges) AccountOrErr() (*Account, error) {
 	} else if e.loadedTypes[0] {
 		return nil, &NotFoundError{label: account.Label}
 	}
-	return nil, &NotLoadedError{edge: "account"}
+	return nil, &NotLoadedError{edge: "bybit_ws"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -141,7 +141,7 @@ func (w *Wallet) Value(name string) (ent.Value, error) {
 	return w.selectValues.Get(name)
 }
 
-// QueryAccount queries the "account" edge of the Wallet entity.
+// QueryAccount queries the "bybit_ws" edge of the Wallet entity.
 func (w *Wallet) QueryAccount() *AccountQuery {
 	return NewWalletClient(w.config).QueryAccount(w)
 }

@@ -18,35 +18,35 @@ func init() {
 	_ = accountFields
 	// accountDescUsername is the schema descriptor for username field.
 	accountDescUsername := accountFields[1].Descriptor()
-	// account.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
+	// bybit_ws.UsernameValidator is a validator for the "username" field. It is called by the builders before save.
 	account.UsernameValidator = accountDescUsername.Validators[0].(func(string) error)
 	// accountDescPassword is the schema descriptor for password field.
 	accountDescPassword := accountFields[2].Descriptor()
-	// account.PasswordValidator is a validator for the "password" field. It is called by the builders before save.
+	// bybit_ws.PasswordValidator is a validator for the "password" field. It is called by the builders before save.
 	account.PasswordValidator = accountDescPassword.Validators[0].(func(string) error)
 	// accountDescSalt is the schema descriptor for salt field.
 	accountDescSalt := accountFields[3].Descriptor()
-	// account.SaltValidator is a validator for the "salt" field. It is called by the builders before save.
+	// bybit_ws.SaltValidator is a validator for the "salt" field. It is called by the builders before save.
 	account.SaltValidator = accountDescSalt.Validators[0].(func(string) error)
 	// accountDescDisplayName is the schema descriptor for display_name field.
 	accountDescDisplayName := accountFields[4].Descriptor()
-	// account.DisplayNameValidator is a validator for the "display_name" field. It is called by the builders before save.
+	// bybit_ws.DisplayNameValidator is a validator for the "display_name" field. It is called by the builders before save.
 	account.DisplayNameValidator = accountDescDisplayName.Validators[0].(func(string) error)
 	// accountDescIsActive is the schema descriptor for is_active field.
 	accountDescIsActive := accountFields[5].Descriptor()
-	// account.DefaultIsActive holds the default value on creation for the is_active field.
+	// bybit_ws.DefaultIsActive holds the default value on creation for the is_active field.
 	account.DefaultIsActive = accountDescIsActive.Default.(bool)
 	// accountDescDeleted is the schema descriptor for deleted field.
 	accountDescDeleted := accountFields[6].Descriptor()
-	// account.DefaultDeleted holds the default value on creation for the deleted field.
+	// bybit_ws.DefaultDeleted holds the default value on creation for the deleted field.
 	account.DefaultDeleted = accountDescDeleted.Default.(bool)
 	// accountDescCreatedAt is the schema descriptor for created_at field.
 	accountDescCreatedAt := accountFields[7].Descriptor()
-	// account.DefaultCreatedAt holds the default value on creation for the created_at field.
+	// bybit_ws.DefaultCreatedAt holds the default value on creation for the created_at field.
 	account.DefaultCreatedAt = accountDescCreatedAt.Default.(func() time.Time)
 	// accountDescUpdatedAt is the schema descriptor for updated_at field.
 	accountDescUpdatedAt := accountFields[8].Descriptor()
-	// account.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	// bybit_ws.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	account.DefaultUpdatedAt = accountDescUpdatedAt.Default.(time.Time)
 	walletFields := schema.Wallet{}.Fields()
 	_ = walletFields

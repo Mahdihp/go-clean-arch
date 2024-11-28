@@ -7,6 +7,6 @@ const (
 	ErrorMsgPhoneNumberIsNotUnique = "phone number is not unique"
 	ErrorMsgInvalidInput           = "invalid input"
 	ErrorMsgPhoneNumberIsNotValid  = "phone number is not valid"
-	ErrorMsgUserNotAllowed         = "account not allowed"
+	ErrorMsgUserNotAllowed         = "bybit_ws not allowed"
 	ErrorMsgCategoryIsNotValid     = "category is not valid"
 )

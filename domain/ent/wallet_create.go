@@ -89,13 +89,13 @@ func (wc *WalletCreate) SetID(i int8) *WalletCreate {
 	return wc
 }
 
-// SetAccountID sets the "account" edge to the Account entity by ID.
+// SetAccountID sets the "bybit_ws" edge to the Account entity by ID.
 func (wc *WalletCreate) SetAccountID(id int64) *WalletCreate {
 	wc.mutation.SetAccountID(id)
 	return wc
 }
 
-// SetNillableAccountID sets the "account" edge to the Account entity by ID if the given value is not nil.
+// SetNillableAccountID sets the "bybit_ws" edge to the Account entity by ID if the given value is not nil.
 func (wc *WalletCreate) SetNillableAccountID(id *int64) *WalletCreate {
 	if id != nil {
 		wc = wc.SetAccountID(*id)
@@ -103,7 +103,7 @@ func (wc *WalletCreate) SetNillableAccountID(id *int64) *WalletCreate {
 	return wc
 }
 
-// SetAccount sets the "account" edge to the Account entity.
+// SetAccount sets the "bybit_ws" edge to the Account entity.
 func (wc *WalletCreate) SetAccount(a *Account) *WalletCreate {
 	return wc.SetAccountID(a.ID)
 }
