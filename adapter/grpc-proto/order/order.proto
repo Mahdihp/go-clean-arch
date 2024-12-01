@@ -1,0 +1,48 @@
+syntax = "proto3";
+package order;
+
+option go_package = "adapter/grpc-proto/order";
+
+
+message PlaceOrderRequest{
+  string  category = 1;
+  string  symbol = 2;
+  int32  isLeverage = 3;
+  string  side = 4;
+  string  orderType = 5;
+  string  qty = 6;
+  string  marketUnit = 7;
+  string  price = 8;
+  int32  triggerDirection = 9;
+}
+message PlaceOrderResponse{
+  string  orderId = 1;
+  string  orderLinkId = 2;
+}
+message AmendOrderRequest{
+  string  category = 1;
+  string  symbol = 2;
+  string  orderId = 3;
+  string  orderLinkId = 4;
+  string  orderIv = 5;
+  string  triggerPrice = 6;
+  string  qty = 7;
+  string  price = 8;
+  string  tpslMode = 9;
+  string  takeProfit = 10;
+  string  stopLoss = 11;
+}
+message CancelOrderRequest{
+  string  category = 1;
+  string  symbol = 2;
+  string  orderId = 3;
+  string  orderLinkId = 4;
+  string  orderFilter = 5;
+}
+
+
+service OrderService {
+  rpc Create(PlaceOrderRequest) returns (PlaceOrderResponse) {}
+  rpc Amend(AmendOrderRequest) returns (PlaceOrderResponse) {}
+  rpc Cancel (CancelOrderRequest) returns (PlaceOrderResponse) {}
+}

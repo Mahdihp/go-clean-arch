@@ -7,11 +7,12 @@ import (
 )
 
 type Config struct {
-	Server   ServerConfig `mapstructure:"server"`
-	Postgres Postgres     `mapstructure:"postgres"`
-	ByBit    ByBit        `mapstructure:"postgres"`
+	WsServer   BybitWSServerConfig   `mapstructure:"server"`
+	HttpServer BybitHttpServerConfig `mapstructure:"server"`
+	Postgres   Postgres              `mapstructure:"postgres"`
+	ByBit      ByBitWS
 }
-type ByBit struct {
+type ByBitWS struct {
 	ApiKey         string `mapstructure:"APIKEY"`
 	ApiSecret      string `mapstructure:"APISECRET"`
 	WsSocketSpot   string `mapstructure:"WS_SOCKET_SPOT"`
@@ -32,17 +33,28 @@ type ScyllaDBConfig struct {
 	Keyspace string `mapstructure:"keyspace"`
 }
 
-type ServerConfig struct {
-	Host                    string        `mapstructure:"HOST"`
-	HttpPort                int           `mapstructure:"HTTP_PORT"`
-	GracefulShutdownTimeout time.Duration `mapstructure:"GRACEFUL_SHUTDOWN_TIMEOUT"`
+type BybitWSServerConfig struct {
+	Host                    string        `mapstructure:"BYBIT_WS_HOST"`
+	HttpPort                int           `mapstructure:"BYBIT_WS_HOST"`
+	GracefulShutdownTimeout time.Duration `mapstructure:"BYBIT_WS_GRACEFUL_SHUTDOWN_TIMEOUT"`
+}
+
+type BybitHttpServerConfig struct {
+	Host                    string        `mapstructure:"BYBIT_HTTP_HOST"`
+	HttpPort                int           `mapstructure:"BYBIT_HTTP_PORT"`
+	GracefulShutdownTimeout time.Duration `mapstructure:"BYBIT_HTTP_GRACEFUL_SHUTDOWN_TIMEOUT"`
 }
 
 func LoadConfig() Config {
 
 	var c Config
-	c.Server.Host = os.Getenv("HOST")
-	c.Server.HttpPort, _ = strconv.Atoi(os.Getenv("HTTP_PORT"))
+	c.WsServer.Host = os.Getenv("BYBIT_WS_HOST")
+	c.WsServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_WS_HTTP_PORT"))
+	c.WsServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_WS_GRACEFUL_SHUTDOWN_TIMEOUT"))
+
+	c.HttpServer.Host = os.Getenv("BYBIT_HTTP_HOST")
+	c.HttpServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_HTTP_PORT"))
+	c.HttpServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_HTTP_GRACEFUL_SHUTDOWN_TIMEOUT"))
 
 	c.Postgres.PostgresHost = os.Getenv("POSTGRES_HOST")
 	c.Postgres.PostgresDB = os.Getenv("POSTGRES_DB")

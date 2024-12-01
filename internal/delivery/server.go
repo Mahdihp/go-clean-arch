@@ -48,7 +48,8 @@ func (s Server) Serve() {
 	s.Router.Use(middleware.Recover())
 
 	// Start server
-	address := fmt.Sprintf(":%d", s.config.Server.HttpPort)
+	fmt.Println(s.config.WsServer.HttpPort)
+	address := fmt.Sprintf(":%d", s.config.WsServer.HttpPort)
 	fmt.Printf("start echo server on %s\n", address)
 	if err := s.Router.Start(address); err != nil {
 		fmt.Println("router start error", err)

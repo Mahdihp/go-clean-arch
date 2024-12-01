@@ -37,7 +37,7 @@ func main() {
 	<-quit
 
 	ctx := context.Background()
-	ctxWithTimeout, cancel := context.WithTimeout(ctx, cfg.Server.GracefulShutdownTimeout)
+	ctxWithTimeout, cancel := context.WithTimeout(ctx, cfg.WsServer.GracefulShutdownTimeout)
 	defer cancel()
 
 	if err := server.Router.Shutdown(ctxWithTimeout); err != nil {

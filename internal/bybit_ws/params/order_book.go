@@ -1,9 +1,5 @@
 package params
 
-import (
-	"sort"
-)
-
 type SpotOrderBook struct {
 	Ts    int64  `json:"ts"`    // The timestamp (ms) that the system generates the data
 	Cts   int64  `json:"cts"`   //The timestamp from the match engine when this orderbook data is produced.
@@ -19,19 +15,22 @@ type BidAsk struct {
 	A   [][]string `json:"a"`   //Asks. For snapshot stream, the element is sorted by price in ascending order
 }
 
-func (ba *SpotOrderBook) UpdateSnapShot(data BidAsk, limitOrderBook int) {
-	ba.updateBids(data)
-	ba.updateAsks(data)
-	ba.removeDuplicatesBids()
-	ba.removeDuplicatesAsks()
-	if len(ba.Data.A) > limitOrderBook {
-		ba.Data.A = ba.Data.A[:limitOrderBook]
-	}
-	if len(ba.Data.B) > limitOrderBook {
-		ba.Data.B = ba.Data.B[:limitOrderBook]
-	}
-}
+//func (ba *SpotOrderBook) UpdateSnapShot(data BidAsk, limitOrderBook int) {
+//	//ba.updateBids(data)
+//	//ba.updateAsks(data)
+//	//ba.removeDuplicatesBids()
+//	//ba.removeDuplicatesAsks()
+//
+//	//if len(snapShot.Data.A) > limitOrderBook {
+//	//	snapShot.Data.A = snapShot.Data.A[:limitOrderBook]
+//	//}
+//	//if len(snapShot.Data.B) > limitOrderBook {
+//	//	snapShot.Data.B = snapShot.Data.B[:limitOrderBook]
+//	//}
+//
+//}
 
+/*
 func (ba *SpotOrderBook) removeDuplicatesAsks() {
 	sort.Slice(ba.Data.A, func(i, j int) bool {
 		if i >= len(ba.Data.A) || j >= len(ba.Data.A) {
@@ -159,3 +158,4 @@ func (ba *SpotOrderBook) findItemToAsks(A string) bool {
 	}
 	return false
 }
+*/

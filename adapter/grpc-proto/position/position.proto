@@ -1,0 +1,59 @@
+syntax = "proto3";
+package position;
+
+option go_package = "adapter/grpc-proto/position";
+
+
+
+message PositionInfoRequest{
+  string category = 1;
+  string symbol = 2;
+  string baseCoin = 3;
+  string settleCoin = 4;
+  string limit = 5;
+  string cursor = 6;
+}
+
+message PositionInfoResponse{
+  string  category = 1;
+  string  nextPageCursor = 2;
+  repeated DataList  list = 3;
+
+
+  message DataList{
+    int32  positionIdx = 1;
+    int32  riskId = 2;
+    string  riskLimitValue = 3;
+    string  symbol = 4;
+    string  side = 5;
+    string  size = 6;
+    string  avgPrice = 7;
+    string  positionValue = 8;
+    int32  tradeMode = 9;
+    int32  autoAddMargin = 10;
+    string  positionStatus = 11;
+    string  leverage = 12;
+    string  markPrice = 13;
+  }
+}
+message SetLeverageRequest{
+  string  category = 1;
+  string  symbol = 2;
+  string  buyLeverage = 3;
+  string  sellLeverage = 4;
+
+}
+
+message SetLeverageResponse{
+  int32 retCode = 1;
+  string retMsg = 2;
+  string result = 3;
+  string retExtInfo = 4;
+  int64 time = 5;
+}
+
+
+service PositionService {
+  rpc GetPositionInfo(PositionInfoRequest) returns (PositionInfoResponse) {}
+  rpc SetLeverage(SetLeverageRequest) returns (SetLeverageResponse) {}
+}
