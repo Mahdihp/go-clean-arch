@@ -24,7 +24,6 @@ func init() {
 
 func main() {
 	cfg := config.LoadConfig()
-	fmt.Println(cfg)
 	bybitWsService := setupServices(cfg)
 
 	server := delivery.NewServer(cfg, bybitWsService)

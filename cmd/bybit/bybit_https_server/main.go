@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/order"
+	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/position"
 	"github.com/bxcodec/go-clean-arch/config"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_http"
+	"github.com/bxcodec/go-clean-arch/internal/bybit_http_service"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"log"
@@ -23,7 +23,6 @@ func init() {
 
 func main() {
 	cfg := config.LoadConfig()
-	fmt.Println(cfg)
 
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.HttpServer.HttpPort))
 	if err != nil {
@@ -31,8 +30,11 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	httpServer := bybit_http.NewByBitHttpService(cfg)
-	order.RegisterOrderServiceServer(s, &httpServer)
+	grpcServer_Order := bybit_http_service.NewByBitHttpServerOrder(cfg)
+	grpcServer_Position := bybit_http_service.NewByBitHttpServerPosition(cfg)
+
+	position.RegisterPositionServiceServer(s, &grpcServer_Position)
+	order.RegisterOrderServiceServer(s, &grpcServer_Order)
 	log.Printf("gRPC server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

@@ -1,4 +1,4 @@
-package user_validator
+package validator
 
 import (
 	user_repository "github.com/bxcodec/go-clean-arch/internal/repository/account"

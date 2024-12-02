@@ -6,35 +6,38 @@ option go_package = "adapter/grpc-proto/position";
 
 
 message PositionInfoRequest{
-  string category = 1;
+  CategoryArgs category = 1;
   string symbol = 2;
   string baseCoin = 3;
   string settleCoin = 4;
   string limit = 5;
   string cursor = 6;
 }
-
+message CategoryArgs{
+  string  category = 1;
+  string  settleCoin = 2;
+}
 message PositionInfoResponse{
   string  category = 1;
   string  nextPageCursor = 2;
-  repeated DataList  list = 3;
+  repeated PositionList  list = 3;
+  string retMsg = 4;
+}
 
-
-  message DataList{
-    int32  positionIdx = 1;
-    int32  riskId = 2;
-    string  riskLimitValue = 3;
-    string  symbol = 4;
-    string  side = 5;
-    string  size = 6;
-    string  avgPrice = 7;
-    string  positionValue = 8;
-    int32  tradeMode = 9;
-    int32  autoAddMargin = 10;
-    string  positionStatus = 11;
-    string  leverage = 12;
-    string  markPrice = 13;
-  }
+message PositionList{
+  int32  positionIdx = 1;
+  int32  riskId = 2;
+  string  riskLimitValue = 3;
+  string  symbol = 4;
+  string  side = 5;
+  string  size = 6;
+  string  avgPrice = 7;
+  string  positionValue = 8;
+  int32  tradeMode = 9;
+  int32  autoAddMargin = 10;
+  string  positionStatus = 11;
+  string  leverage = 12;
+  string  markPrice = 13;
 }
 message SetLeverageRequest{
   string  category = 1;
@@ -44,7 +47,7 @@ message SetLeverageRequest{
 
 }
 
-message SetLeverageResponse{
+message BaseResponse{
   int32 retCode = 1;
   string retMsg = 2;
   string result = 3;
@@ -52,8 +55,42 @@ message SetLeverageResponse{
   int64 time = 5;
 }
 
+message SwitchIsolatedRequest{
+  string  category = 1;
+  string  symbol = 2;
+  int32  tradeMode = 3;
+  string  buyLeverage = 4;
+  string  sellLeverage = 5;
+}
 
+message SwitchModeRequest{
+  string  category = 1;
+  string  symbol = 2;
+  string  coin = 3;
+  int32  mode = 4;
+}
+message TradingStopRequest{
+  string  category = 1;
+  string  symbol = 2;
+  string  takeProfit = 3;
+  string  stopLoss = 4;
+  string  trailingStop = 5;
+  string  tpTriggerBy = 6;
+  string  slTriggerBy = 7;
+  string  activePrice = 8;
+  string  tpslMode = 9;
+  string  tpSize = 10;
+  string  slSize = 11;
+  string  tpLimitPrice = 12;
+  string  slLimitPrice = 13;
+  string  tpOrderType = 14;
+  string  slOrderType = 15;
+  int32  positionIdx = 16;
+}
 service PositionService {
   rpc GetPositionInfo(PositionInfoRequest) returns (PositionInfoResponse) {}
-  rpc SetLeverage(SetLeverageRequest) returns (SetLeverageResponse) {}
+  rpc SetLeverage(SetLeverageRequest) returns (BaseResponse) {}
+  rpc SwitchIsolated(SwitchIsolatedRequest) returns (BaseResponse) {}
+  rpc SwitchMode(SwitchModeRequest) returns (BaseResponse) {}
+  rpc TradingStop(TradingStopRequest) returns (BaseResponse) {}
 }

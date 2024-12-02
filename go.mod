@@ -7,6 +7,7 @@ toolchain go1.23.2
 require (
 	entgo.io/ent v0.14.1
 	github.com/go-faker/faker/v4 v4.3.0
+	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/gorilla/websocket v1.5.3
 	github.com/joho/godotenv v1.5.1
