@@ -42,7 +42,6 @@ func (s *ByBitHttpServerPosition) GetPositionInfo(ctx context.Context, in *posit
 	}
 	//params := map[string]interface{}{"category": "linear"}
 	params := map[string]interface{}{"category": in.Category.Category, "settleCoin": in.Category.SettleCoin}
-
 	res, err := s.byBitClient.NewClassicalBybitServiceWithParams(params).GetPositionList(ctx)
 
 	if err != nil {

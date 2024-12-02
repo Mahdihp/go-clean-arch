@@ -14,10 +14,35 @@ message PlaceOrderRequest{
   string  marketUnit = 7;
   string  price = 8;
   int32  triggerDirection = 9;
+  string  orderFilter = 10;
+  string  triggerPrice = 11;
+  string  triggerBy = 12;
+  string  orderIv = 13;
+  string  timeInForce = 14;
+  int32  positionIdx = 15;
+  string  orderLinkId = 16;
+  string  takeProfit = 17;
+  string  stopLoss = 18;
+  string  tpTriggerBy = 19;
+  string  slTriggerBy = 20;
+  bool  reduceOnly = 21;
+  bool  closeOnTrigger = 22;
+  string  smpType = 23;
+  bool  string = 24;
+  string  tpslMode = 25;
+  string  tpLimitPrice = 26;
+  string  slLimitPrice = 27;
+  string  tpOrderType = 28;
+  string  slOrderType = 29;
+  bool  mmp = 30;
 }
 message PlaceOrderResponse{
   string  orderId = 1;
   string  orderLinkId = 2;
+  string  retCode = 3;
+  string  retMsg = 4;
+  string  retExtInfo = 5;
+  int64  time = 6;
 }
 message AmendOrderRequest{
   string  category = 1;
@@ -31,6 +56,11 @@ message AmendOrderRequest{
   string  tpslMode = 9;
   string  takeProfit = 10;
   string  stopLoss = 11;
+  string  tpTriggerBy = 12;
+  string  slTriggerBy = 13;
+  string  triggerBy = 14;
+  string  tpLimitPrice = 15;
+  string  slLimitPrice = 16;
 }
 message CancelOrderRequest{
   string  category = 1;

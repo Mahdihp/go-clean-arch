@@ -2,8 +2,11 @@ package params_bybit_http
 
 import (
 	"encoding/json"
+	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/order"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/position"
+	"github.com/bxcodec/go-clean-arch/util"
 	bybit "github.com/wuhewuhe/bybit.go.api"
+	"strconv"
 )
 
 type PositionList struct {
@@ -38,6 +41,40 @@ type PositionDto struct {
 	markPrice      string `json:"markPrice"`
 }
 
+type OrderDto struct {
+	RetCode int    `json:"retCode"`
+	RetMsg  string `json:"retMsg"`
+	Result  struct {
+		OrderID     string `json:"orderId"`
+		OrderLinkID string `json:"orderLinkId"`
+	} `json:"result"`
+	RetExtInfo struct {
+	} `json:"retExtInfo"`
+	Time int64 `json:"time"`
+}
+
+func OrderToOrderDto(data *bybit.ServerResponse) OrderDto {
+	marshal, err := json.Marshal(data)
+	var pl OrderDto
+	if err != nil {
+		return pl
+	}
+	err = json.Unmarshal(marshal, &pl)
+	if err != nil {
+		return pl
+	}
+	return pl
+}
+func OrderDtoToPlaceOrderResponse(data OrderDto) order.PlaceOrderResponse {
+	response := order.PlaceOrderResponse{}
+	response.OrderId = data.Result.OrderID
+	response.OrderLinkId = data.Result.OrderLinkID
+	response.RetCode = strconv.Itoa(data.RetCode)
+	response.RetMsg = data.RetMsg
+	response.RetExtInfo = util.InterfaceToString(data.RetExtInfo)
+	response.Time = data.Time
+	return response
+}
 func StringToPositionList(string *bybit.ServerResponse) PositionList {
 	marshal, err := json.Marshal(string)
 	var pl PositionList
