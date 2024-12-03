@@ -1,10 +1,10 @@
-package bybit_http_service
+package bybit_grpc_service
 
 import (
 	"context"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/order"
 	"github.com/bxcodec/go-clean-arch/config"
-	params_bybit_http "github.com/bxcodec/go-clean-arch/internal/bybit_http_service/params"
+	params_bybit_http "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/params"
 	"github.com/bxcodec/go-clean-arch/internal/validator"
 	"github.com/bxcodec/go-clean-arch/util"
 	bybit "github.com/wuhewuhe/bybit.go.api"
@@ -24,14 +24,6 @@ func NewByBitHttpServerOrder(cfg config.Config) ByBitHttpServerOrder {
 		byBitClient: bybit.NewBybitHttpClient(cfg.ByBit.ApiKey, cfg.ByBit.ApiSecret, bybit.WithBaseURL(bybit.MAINNET)),
 	}
 }
-
-//func (s *ByBitHttpServerOrder) SetRoutes(e *echo.Echo) {
-
-//userGroup := e.Group(string(params.Order))
-//userGroup.GET(string(params.Order+"create"), create)
-//userGroup.GET(string(params.Order+"amend"), amend)
-//userGroup.GET(string(params.Order+"cancel"), cancel)
-//}
 
 func (s *ByBitHttpServerOrder) Create(ctx context.Context, in *order.PlaceOrderRequest) (*order.PlaceOrderResponse, error) {
 	errorList, err := s.validator.ValidateCreate(*in)
@@ -96,3 +88,11 @@ func (s *ByBitHttpServerOrder) Cancel(ctx context.Context, in *order.CancelOrder
 	orderPor := params_bybit_http.OrderDtoToPlaceOrderResponse(orderDto)
 	return &orderPor, nil
 }
+
+//func (s *ByBitHttpServerOrder) SetRoutes(e *echo.Echo) {
+
+//userGroup := e.Group(string(params.Order))
+//userGroup.GET(string(params.Order+"create"), create)
+//userGroup.GET(string(params.Order+"amend"), amend)
+//userGroup.GET(string(params.Order+"cancel"), cancel)
+//}

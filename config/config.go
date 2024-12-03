@@ -7,10 +7,11 @@ import (
 )
 
 type Config struct {
-	WsServer   BybitWSServerConfig   `mapstructure:"server"`
-	HttpServer BybitHttpServerConfig `mapstructure:"server"`
-	Postgres   Postgres              `mapstructure:"postgres"`
-	ByBit      ByBitWS
+	WsServer             BybitWSServer             `mapstructure:"server"`
+	TradeGrpcServer      BybitTradGrpcServer       `mapstructure:"server"`
+	HistoricalGrpcServer BybitHistoricalGrpcServer `mapstructure:"server"`
+	Postgres             Postgres                  `mapstructure:"postgres"`
+	ByBit                ByBitWS
 }
 type ByBitWS struct {
 	ApiKey         string `mapstructure:"APIKEY"`
@@ -18,6 +19,7 @@ type ByBitWS struct {
 	WsSocketSpot   string `mapstructure:"WS_SOCKET_SPOT"`
 	WsSocketLinear string `mapstructure:"WS_SOCKET_LINEAR"`
 }
+
 type Postgres struct {
 	PostgresHost     string `mapstructure:"POSTGRES_HOST"`
 	PostgresDB       string `mapstructure:"POSTGRES_DB"`
@@ -33,13 +35,18 @@ type ScyllaDBConfig struct {
 	Keyspace string `mapstructure:"keyspace"`
 }
 
-type BybitWSServerConfig struct {
+type BybitWSServer struct {
 	Host                    string        `mapstructure:"BYBIT_WS_HOST"`
 	HttpPort                int           `mapstructure:"BYBIT_WS_HOST"`
 	GracefulShutdownTimeout time.Duration `mapstructure:"BYBIT_WS_GRACEFUL_SHUTDOWN_TIMEOUT"`
 }
 
-type BybitHttpServerConfig struct {
+type BybitHistoricalGrpcServer struct {
+	Host                    string        `mapstructure:"BYBIT_GRPC_HOST"`
+	HttpPort                int           `mapstructure:"BYBIT_GRPC_PORT"`
+	GracefulShutdownTimeout time.Duration `mapstructure:"BYBIT_GRPC_GRACEFUL_SHUTDOWN_TIMEOUT"`
+}
+type BybitTradGrpcServer struct {
 	Host                    string        `mapstructure:"BYBIT_HTTP_HOST"`
 	HttpPort                int           `mapstructure:"BYBIT_HTTP_PORT"`
 	GracefulShutdownTimeout time.Duration `mapstructure:"BYBIT_HTTP_GRACEFUL_SHUTDOWN_TIMEOUT"`
@@ -52,9 +59,13 @@ func LoadConfig() Config {
 	c.WsServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_WS_HTTP_PORT"))
 	c.WsServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_WS_GRACEFUL_SHUTDOWN_TIMEOUT"))
 
-	c.HttpServer.Host = os.Getenv("BYBIT_HTTP_HOST")
-	c.HttpServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_HTTP_PORT"))
-	c.HttpServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_HTTP_GRACEFUL_SHUTDOWN_TIMEOUT"))
+	c.TradeGrpcServer.Host = os.Getenv("BYBIT_TRADE_GRPC_HOST")
+	c.TradeGrpcServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_TRADE_GRPC_PORT"))
+	c.TradeGrpcServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_TRADE_GRPC_GRACEFUL_SHUTDOWN_TIMEOUT"))
+
+	c.HistoricalGrpcServer.Host = os.Getenv("BYBIT_HIS_GRPC_HOST")
+	c.HistoricalGrpcServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_HIS_GRPC_PORT"))
+	c.HistoricalGrpcServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_HIS_GRPC_GRACEFUL_SHUTDOWN_TIMEOUT"))
 
 	c.Postgres.PostgresHost = os.Getenv("POSTGRES_HOST")
 	c.Postgres.PostgresDB = os.Getenv("POSTGRES_DB")

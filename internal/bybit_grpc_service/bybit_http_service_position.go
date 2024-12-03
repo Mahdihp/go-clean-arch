@@ -1,10 +1,10 @@
-package bybit_http_service
+package bybit_grpc_service
 
 import (
 	"context"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/position"
 	"github.com/bxcodec/go-clean-arch/config"
-	params_bybit_http "github.com/bxcodec/go-clean-arch/internal/bybit_http_service/params"
+	params_bybit_http "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/params"
 	"github.com/bxcodec/go-clean-arch/internal/validator"
 	"github.com/bxcodec/go-clean-arch/util"
 	bybit "github.com/wuhewuhe/bybit.go.api"
@@ -25,13 +25,6 @@ func NewByBitHttpServerPosition(cfg config.Config) ByBitHttpServerPosition {
 	}
 }
 
-//func (s *ByBitHttpServerOrder) SetRoutes(e *echo.Echo) {
-//userGroup := e.Group(string(params.Order))
-//userGroup.GET(string(params.Order+"create"), create)
-//userGroup.GET(string(params.Order+"amend"), amend)
-//userGroup.GET(string(params.Order+"cancel"), cancel)
-//}
-
 func (s *ByBitHttpServerPosition) GetPositionInfo(ctx context.Context, in *position.PositionInfoRequest) (*position.PositionInfoResponse, error) {
 
 	errorList, err := s.validator.ValidateGetPositionInfo(*in)
@@ -51,7 +44,6 @@ func (s *ByBitHttpServerPosition) GetPositionInfo(ctx context.Context, in *posit
 	positionList := params_bybit_http.PositionListToDataList(dataPosition)
 	return &positionList, nil
 }
-
 func (s *ByBitHttpServerPosition) SetLeverage(ctx context.Context, in *position.SetLeverageRequest) (*position.BaseResponse, error) {
 	errorList, err := s.validator.ValidateSetLeverage(*in)
 	var strErrorList = ""
@@ -73,7 +65,6 @@ func (s *ByBitHttpServerPosition) SetLeverage(ctx context.Context, in *position.
 		RetExtInfo: util.InterfaceToString(res.RetExtInfo),
 	}, nil
 }
-
 func (s *ByBitHttpServerPosition) SwitchIsolated(ctx context.Context, in *position.SwitchIsolatedRequest) (*position.BaseResponse, error) {
 	errorList, err := s.validator.ValidateSwitchIsolated(*in)
 	var strErrorList = ""
@@ -95,7 +86,6 @@ func (s *ByBitHttpServerPosition) SwitchIsolated(ctx context.Context, in *positi
 		RetExtInfo: util.InterfaceToString(res.RetExtInfo),
 	}, nil
 }
-
 func (s *ByBitHttpServerPosition) SwitchMode(ctx context.Context, in *position.SwitchModeRequest) (*position.BaseResponse, error) {
 	errorList, err := s.validator.ValidateSwitchMode(*in)
 	var strErrorList = ""
@@ -118,7 +108,6 @@ func (s *ByBitHttpServerPosition) SwitchMode(ctx context.Context, in *position.S
 		RetExtInfo: util.InterfaceToString(res.RetExtInfo),
 	}, nil
 }
-
 func (s *ByBitHttpServerPosition) TradingStop(ctx context.Context, in *position.TradingStopRequest) (*position.BaseResponse, error) {
 	errorList, err := s.validator.ValidateTradingStop(*in)
 	var strErrorList = ""
@@ -144,3 +133,10 @@ func (s *ByBitHttpServerPosition) TradingStop(ctx context.Context, in *position.
 		RetExtInfo: util.InterfaceToString(res.RetExtInfo),
 	}, nil
 }
+
+//func (s *ByBitHttpServerOrder) SetRoutes(e *echo.Echo) {
+//userGroup := e.Group(string(params.Order))
+//userGroup.GET(string(params.Order+"create"), create)
+//userGroup.GET(string(params.Order+"amend"), amend)
+//userGroup.GET(string(params.Order+"cancel"), cancel)
+//}
