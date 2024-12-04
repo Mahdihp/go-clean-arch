@@ -14,14 +14,14 @@ type ByBitHttpServerOrder struct {
 	order.UnimplementedOrderServiceServer
 	Config      config.Config
 	byBitClient *bybit.Client
-	validator   validator.ByBitValidator
+	validator   validator.ByBitTradeValidator
 }
 
 func NewByBitHttpServerOrder(cfg config.Config) ByBitHttpServerOrder {
 	return ByBitHttpServerOrder{
 		Config:      cfg,
-		validator:   validator.NewByBitValidator(),
-		byBitClient: bybit.NewBybitHttpClient(cfg.ByBit.ApiKey, cfg.ByBit.ApiSecret, bybit.WithBaseURL(bybit.MAINNET)),
+		validator:   validator.NewByBitTradeValidator(),
+		byBitClient: bybit.NewBybitHttpClient(cfg.ByBitWs.ApiKey, cfg.ByBitWs.ApiSecret, bybit.WithBaseURL(bybit.MAINNET)),
 	}
 }
 

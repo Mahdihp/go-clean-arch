@@ -14,14 +14,14 @@ type ByBitHttpServerPosition struct {
 	position.UnimplementedPositionServiceServer
 	Config      config.Config
 	byBitClient *bybit.Client
-	validator   validator.ByBitValidator
+	validator   validator.ByBitTradeValidator
 }
 
 func NewByBitHttpServerPosition(cfg config.Config) ByBitHttpServerPosition {
 	return ByBitHttpServerPosition{
 		Config:      cfg,
-		validator:   validator.NewByBitValidator(),
-		byBitClient: bybit.NewBybitHttpClient(cfg.ByBit.ApiKey, cfg.ByBit.ApiSecret, bybit.WithBaseURL(bybit.MAINNET)),
+		validator:   validator.NewByBitTradeValidator(),
+		byBitClient: bybit.NewBybitHttpClient(cfg.ByBitWs.ApiKey, cfg.ByBitWs.ApiSecret, bybit.WithBaseURL(bybit.MAINNET)),
 	}
 }
 

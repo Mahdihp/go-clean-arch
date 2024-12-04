@@ -7,11 +7,11 @@ import (
 )
 
 type Config struct {
-	WsServer             BybitWSServer             `mapstructure:"server"`
-	TradeGrpcServer      BybitTradGrpcServer       `mapstructure:"server"`
-	HistoricalGrpcServer BybitHistoricalGrpcServer `mapstructure:"server"`
-	Postgres             Postgres                  `mapstructure:"postgres"`
-	ByBit                ByBitWS
+	WsOrderBookServer BybitWSServer
+	TradeGrpcServer   BybitTradGrpcServer
+	HistoricalServer  BybitHistoricalServer
+	Postgres          Postgres
+	ByBitWs           ByBitWS
 }
 type ByBitWS struct {
 	ApiKey         string `mapstructure:"APIKEY"`
@@ -27,13 +27,6 @@ type Postgres struct {
 	PostgresPassword string `mapstructure:"POSTGRES_PASSWORD"`
 	PostgresPort     int    `mapstructure:"POSTGRES_PORT"`
 }
-type ScyllaDBConfig struct {
-	User     string `mapstructure:"user"`
-	Pass     string `mapstructure:"pass"`
-	Host     string `mapstructure:"host"`
-	Port     int    `mapstructure:"port"`
-	Keyspace string `mapstructure:"keyspace"`
-}
 
 type BybitWSServer struct {
 	Host                    string        `mapstructure:"BYBIT_WS_HOST"`
@@ -41,7 +34,7 @@ type BybitWSServer struct {
 	GracefulShutdownTimeout time.Duration `mapstructure:"BYBIT_WS_GRACEFUL_SHUTDOWN_TIMEOUT"`
 }
 
-type BybitHistoricalGrpcServer struct {
+type BybitHistoricalServer struct {
 	Host                    string        `mapstructure:"BYBIT_GRPC_HOST"`
 	HttpPort                int           `mapstructure:"BYBIT_GRPC_PORT"`
 	GracefulShutdownTimeout time.Duration `mapstructure:"BYBIT_GRPC_GRACEFUL_SHUTDOWN_TIMEOUT"`
@@ -55,17 +48,17 @@ type BybitTradGrpcServer struct {
 func LoadConfig() Config {
 
 	var c Config
-	c.WsServer.Host = os.Getenv("BYBIT_WS_HOST")
-	c.WsServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_WS_HTTP_PORT"))
-	c.WsServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_WS_GRACEFUL_SHUTDOWN_TIMEOUT"))
+	c.WsOrderBookServer.Host = os.Getenv("BYBIT_WS_HOST")
+	c.WsOrderBookServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_WS_HTTP_PORT"))
+	c.WsOrderBookServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_WS_GRACEFUL_SHUTDOWN_TIMEOUT"))
 
 	c.TradeGrpcServer.Host = os.Getenv("BYBIT_TRADE_GRPC_HOST")
 	c.TradeGrpcServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_TRADE_GRPC_PORT"))
 	c.TradeGrpcServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_TRADE_GRPC_GRACEFUL_SHUTDOWN_TIMEOUT"))
 
-	c.HistoricalGrpcServer.Host = os.Getenv("BYBIT_HIS_GRPC_HOST")
-	c.HistoricalGrpcServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_HIS_GRPC_PORT"))
-	c.HistoricalGrpcServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_HIS_GRPC_GRACEFUL_SHUTDOWN_TIMEOUT"))
+	c.HistoricalServer.Host = os.Getenv("BYBIT_HIS_HOST")
+	c.HistoricalServer.HttpPort, _ = strconv.Atoi(os.Getenv("BYBIT_HIS_PORT"))
+	c.HistoricalServer.GracefulShutdownTimeout, _ = time.ParseDuration(os.Getenv("BYBIT_HIS_GRACEFUL_SHUTDOWN_TIMEOUT"))
 
 	c.Postgres.PostgresHost = os.Getenv("POSTGRES_HOST")
 	c.Postgres.PostgresDB = os.Getenv("POSTGRES_DB")
@@ -73,10 +66,10 @@ func LoadConfig() Config {
 	c.Postgres.PostgresPassword = os.Getenv("POSTGRES_PASSWORD")
 	c.Postgres.PostgresPort, _ = strconv.Atoi(os.Getenv("POSTGRES_PORT"))
 
-	c.ByBit.ApiKey = os.Getenv("APIKEY")
-	c.ByBit.ApiSecret = os.Getenv("APISECRET")
-	c.ByBit.WsSocketSpot = os.Getenv("WS_SOCKET_SPOT")
-	c.ByBit.WsSocketLinear = os.Getenv("WS_SOCKET_LINEAR")
+	c.ByBitWs.ApiKey = os.Getenv("APIKEY")
+	c.ByBitWs.ApiSecret = os.Getenv("APISECRET")
+	c.ByBitWs.WsSocketSpot = os.Getenv("WS_SOCKET_SPOT")
+	c.ByBitWs.WsSocketLinear = os.Getenv("WS_SOCKET_LINEAR")
 
 	return c
 

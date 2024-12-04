@@ -2,41 +2,25 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
 func main() {
-	isErrorChan := make(chan bool, 1)
-	stoperChan := make(chan bool, 1)
+	go forever()
 
-	go worker(isErrorChan)
-	go stoper(stoperChan)
+	quitChannel := make(chan os.Signal, 1)
+	signal.Notify(quitChannel, syscall.SIGINT, syscall.SIGTERM)
+	<-quitChannel
+	//time for cleanup before exit
+	fmt.Println("Adios!")
+}
+
+func forever() {
 	for {
-		select {
-		case <-isErrorChan:
-			fmt.Println("new worker Running..." + time.Now().Format("05"))
-			go worker(isErrorChan)
-		case <-stoperChan:
-			fmt.Println("Stop worker Running..." + time.Now().String())
-			return
-			//default:
-			//
-			//	time.Sleep(1 * time.Second)
-		}
+		fmt.Printf("%v+\n", time.Now())
+		time.Sleep(time.Second)
 	}
-}
-func stoper(stoperChan chan bool) {
-	time.Sleep(10 * time.Second)
-	stoperChan <- true
-}
-func worker(isErrorChan chan bool) {
-	//for {
-	fmt.Println("worker Running..." + time.Now().String())
-	//select {
-	//case <-isErrorChan:
-	//	return
-	//}
-	time.Sleep(2 * time.Second)
-	isErrorChan <- true
-	//}
 }

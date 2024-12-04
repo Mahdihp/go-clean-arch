@@ -25,7 +25,7 @@ type ByBitWSService struct {
 func NewByBitWSService(cfg config.Config) ByBitWSService {
 	return ByBitWSService{
 		config:      cfg,
-		ByBitClient: bybit.NewBybitHttpClient(cfg.ByBit.ApiKey, cfg.ByBit.ApiSecret, bybit.WithBaseURL(bybit.MAINNET)),
+		ByBitClient: bybit.NewBybitHttpClient(cfg.ByBitWs.ApiKey, cfg.ByBitWs.ApiSecret, bybit.WithBaseURL(bybit.MAINNET)),
 	}
 }
 
@@ -71,7 +71,7 @@ func (s *ByBitWSService) startSpotSubscribe(ctx echo.Context) error {
 }
 
 func (s *ByBitWSService) sendRequest(iob params.InputOrderBook) {
-	wsConn, _, err := websocket.DefaultDialer.Dial(s.config.ByBit.WsSocketSpot, nil)
+	wsConn, _, err := websocket.DefaultDialer.Dial(s.config.ByBitWs.WsSocketSpot, nil)
 	if err != nil {
 		log.Println("WebSocket Upgrade Error: ", err)
 		s.isErrorChan <- true

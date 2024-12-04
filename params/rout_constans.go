@@ -8,4 +8,5 @@ const (
 
 	OrderBook Route = VerRoute + "/orderbook"
 	Order     Route = VerRoute + "/order"
+	History   Route = VerRoute + "/history"
 )
