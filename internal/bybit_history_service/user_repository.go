@@ -1,17 +1,15 @@
 package bybit_history_service
 
 import (
-	"context"
 	"github.com/bxcodec/go-clean-arch/db/postgres"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/models/ent"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/models/ent/bybituser"
+	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/models"
 )
 
 type UserRepository interface {
-	FindByApiKey(ctx context.Context, apiKey string) (ent.ByBitUser, error)
-	FindByUsername(ctx context.Context, username string) (ent.ByBitUser, error)
-	FindByEmail(ctx context.Context, email string) (ent.ByBitUser, error)
-	FindByPhoneNumber(ctx context.Context, phoneNumber string) (ent.ByBitUser, error)
+	FindByApiKey(apiKey string) (models.ByBitUser, error)
+	FindByUsername(username string) (models.ByBitUser, error)
+	FindByEmail(email string) (models.ByBitUser, error)
+	FindByPhoneNumber(phoneNumber string) (models.ByBitUser, error)
 }
 type UserRepositoryImpl struct {
 	db *db.PostgresDB
@@ -22,50 +20,39 @@ func NewUser(db *db.PostgresDB) *UserRepositoryImpl {
 		db: db,
 	}
 }
-func (s *UserRepositoryImpl) FindByApiKey(ctx context.Context, apiKey string) (ent.ByBitUser, error) {
-	found, err := s.db.Conn().ByBitUser.
-		//Query().Where(sql.FieldEQ(bybituser.FieldAPIKey, apiKey)).First(ctx)
-		Query().Where(bybituser.APIKey(apiKey)).First(ctx)
-	if err != nil {
-		if ent.IsNotFound(err) {
-			return ent.ByBitUser{}, err
-		}
+
+func (s *UserRepositoryImpl) FindByApiKey(apiKey string) (models.ByBitUser, error) {
+	var user models.ByBitUser
+	tx := s.db.Conn().Where("api_key = ?", apiKey).First(&user)
+	if tx.Error != nil {
+		return models.ByBitUser{}, tx.Error
 	}
-	return *found, nil
+	return user, nil
 }
 
-func (s *UserRepositoryImpl) FindByUsername(ctx context.Context, username string) (ent.ByBitUser, error) {
-	found, err := s.db.Conn().ByBitUser.
-		//Query().Where(sql.FieldEQ(bybituser.FieldAPIKey, apiKey)).First(ctx)
-		Query().Where(bybituser.Username(username)).First(ctx)
-	if err != nil {
-		if ent.IsNotFound(err) {
-			return ent.ByBitUser{}, err
-		}
+func (s *UserRepositoryImpl) FindByUsername(username string) (models.ByBitUser, error) {
+	var user models.ByBitUser
+	tx := s.db.Conn().Where("username = ?", username).First(&user)
+	if tx.Error != nil {
+		return models.ByBitUser{}, tx.Error
 	}
-	return *found, nil
+	return user, nil
 }
 
-func (s *UserRepositoryImpl) FindByEmail(ctx context.Context, email string) (ent.ByBitUser, error) {
-	found, err := s.db.Conn().ByBitUser.
-		//Query().Where(sql.FieldEQ(bybituser.FieldAPIKey, apiKey)).First(ctx)
-		Query().Where(bybituser.Email(email)).First(ctx)
-	if err != nil {
-		if ent.IsNotFound(err) {
-			return ent.ByBitUser{}, err
-		}
+func (s *UserRepositoryImpl) FindByEmail(email string) (models.ByBitUser, error) {
+	var user models.ByBitUser
+	tx := s.db.Conn().Where("email = ?", email).First(&user)
+	if tx.Error != nil {
+		return models.ByBitUser{}, tx.Error
 	}
-	return *found, nil
+	return user, nil
 }
 
-func (s *UserRepositoryImpl) FindByPhoneNumber(ctx context.Context, phoneNumber string) (ent.ByBitUser, error) {
-	found, err := s.db.Conn().ByBitUser.
-		//Query().Where(sql.FieldEQ(bybituser.FieldAPIKey, apiKey)).First(ctx)
-		Query().Where(bybituser.PhoneNumber(phoneNumber)).First(ctx)
-	if err != nil {
-		if ent.IsNotFound(err) {
-			return ent.ByBitUser{}, err
-		}
+func (s *UserRepositoryImpl) FindByPhoneNumber(phoneNumber string) (models.ByBitUser, error) {
+	var user models.ByBitUser
+	tx := s.db.Conn().Where("phoneNumber = ?", phoneNumber).First(&user)
+	if tx.Error != nil {
+		return models.ByBitUser{}, tx.Error
 	}
-	return *found, nil
+	return user, nil
 }

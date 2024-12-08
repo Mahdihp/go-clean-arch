@@ -10,8 +10,10 @@ type HistoryDto struct {
 	OrderLinkId string `json:"order_link_id"`
 	OrderFilter string `json:"order_filter"`
 	OrderStatus string `json:"order_status"`
-	StartTime   int64  `json:"start_time"`
-	EndTime     int64  `json:"end_time"`
+	StartTime   string `json:"start_time"`
+	EndTime     string `json:"end_time"`
 	Limit       int8   `json:"limit"`
 	Cursor      string `json:"cursor"`
+	PageIndex   int    `json:"page_index"`
+	PageSize    int    `json:"page_size"`
 }
