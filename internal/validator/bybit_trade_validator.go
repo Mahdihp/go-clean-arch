@@ -64,7 +64,7 @@ func (v ByBitTradeValidator) ValidateAmend(req *order.AmendOrderRequest) (map[st
 	return nil, nil
 }
 func (v ByBitTradeValidator) ValidateCancelAll(req *order.CancelAllRequest) (map[string]string, error) {
-	const op = "Validator.ValidateCreate"
+	const op = "Validator.ValidateCancelAll"
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.Category, validation.Required),
 	); err != nil {
@@ -216,7 +216,7 @@ func (v ByBitTradeValidator) ValidateSetLeverage(req *position.SetLeverageReques
 	return nil, nil
 }
 func (v ByBitTradeValidator) ValidateGetPositionInfo(req *position.PositionInfoRequest) (map[string]string, error) {
-	const op = "Validator.ValidateCreateRequest"
+	const op = "Validator.ValidateGetPositionInfo"
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.Category, validation.Required),
 	); err != nil {

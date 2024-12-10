@@ -3,13 +3,13 @@ package bybit_history_service
 import (
 	"context"
 	"errors"
-	db "github.com/bxcodec/go-clean-arch/db/postgres"
+	"github.com/bxcodec/go-clean-arch/db/mongodb"
 	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/models"
 	"github.com/bxcodec/go-clean-arch/util"
-	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"log"
 )
 
 type HistoryRepository interface {
@@ -19,10 +19,10 @@ type HistoryRepository interface {
 	FindByBetweenCreatedTimeAndSymbol(ctx context.Context, collectionName string, userId string, symbol string, startTime string, endTime string, pageIndex int, pageSize int) ([]models.BybitFutureOrderHistory, error)
 }
 type HistoryRepositoryImpl struct {
-	db *db.PostgresDB
+	db *mongodb.MongoDb
 }
 
-func NewHistory(db *db.PostgresDB) *HistoryRepositoryImpl {
+func NewHistory(db *mongodb.MongoDb) *HistoryRepositoryImpl {
 	return &HistoryRepositoryImpl{
 		db: db,
 	}
@@ -32,8 +32,16 @@ func (s *HistoryRepositoryImpl) FindBySymbol(ctx context.Context, collectionName
 	var historys []models.BybitFutureOrderHistory
 	collection := s.db.MongoConn().Collection(collectionName)
 
-	filter := bson.D{{"user_id", userId},
-		{"symbol", symbol}}
+	//filter := bson.D{{"user_id", bson.D{{"$eq", userId}}},
+	//	{"symbol", bson.D{{"$eq", symbol}}}}
+	filter := bson.D{
+		{"$and",
+			bson.A{
+				bson.D{{"user_id", bson.D{{"$eq", userId}}}},
+				bson.D{{"symbol", bson.D{{"$eq", symbol}}}},
+			},
+		},
+	}
 
 	findOptions := options.Find().SetLimit(int64(pageSize)).SetSkip(int64(pageIndex))
 
@@ -44,8 +52,8 @@ func (s *HistoryRepositoryImpl) FindBySymbol(ctx context.Context, collectionName
 	for cursor.Next(ctx) {
 		var user models.BybitFutureOrderHistory
 		if err := cursor.Decode(user); err != nil {
-			logrus.Fatal(err)
-			return nil, err
+			log.Fatal(err)
+			return []models.BybitFutureOrderHistory{}, err
 		}
 		historys = append(historys, user)
 	}
@@ -72,19 +80,26 @@ func (s *HistoryRepositoryImpl) FindByBetweenCreatedTime(ctx context.Context, co
 	var historys []models.BybitFutureOrderHistory
 
 	collection := s.db.MongoConn().Collection(collectionName)
-	filter := bson.D{{"created_at", bson.D{{"$gt", start}, {"$lt", end}}}}
+	filter := bson.D{
+		{"$and",
+			bson.A{
+				bson.D{{"user_id", bson.D{{"$eq", userId}}}},
+				bson.D{{"created_at", bson.D{{"$gt", start}, {"$lt", end}}}},
+			},
+		},
+	}
 
 	findOptions := options.Find().SetLimit(int64(pageSize)).SetSkip(int64(pageIndex))
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
-		return nil, err
+		return []models.BybitFutureOrderHistory{}, err
 	}
 
 	for cursor.Next(ctx) {
 		var user models.BybitFutureOrderHistory
 		if err := cursor.Decode(user); err != nil {
-			logrus.Fatal(err)
-			return nil, err
+			log.Fatal(err)
+			return []models.BybitFutureOrderHistory{}, err
 		}
 		historys = append(historys, user)
 	}
@@ -97,21 +112,32 @@ func (s *HistoryRepositoryImpl) FindByBetweenCreatedTimeAndSymbol(ctx context.Co
 	var historys []models.BybitFutureOrderHistory
 
 	collection := s.db.MongoConn().Collection(collectionName)
-	filter := bson.D{{"created_at", bson.D{{"$gt", start}, {"$lt", end}}},
-		{"user_id", bson.D{{"$eq", userId}}},
-		{"symbol", bson.D{{"$eq", symbol}}}}
+
+	//filter := bson.D{{"created_at", bson.D{{"$gt", start}, {"$lt", end}}},
+	//	{"user_id", bson.D{{"$eq", userId}}},
+	//	{"symbol", bson.D{{"$eq", symbol}}}}
+
+	filter := bson.D{
+		{"$and",
+			bson.A{
+				bson.D{{"user_id", bson.D{{"$eq", userId}}}},
+				bson.D{{"symbol", bson.D{{"$eq", symbol}}}},
+				bson.D{{"created_at", bson.D{{"$gt", start}, {"$lt", end}}}},
+			},
+		},
+	}
 
 	findOptions := options.Find().SetLimit(int64(pageSize)).SetSkip(int64(pageIndex))
 	cursor, err := collection.Find(ctx, filter, findOptions)
 	if err != nil {
-		return nil, err
+		return []models.BybitFutureOrderHistory{}, err
 	}
 
 	for cursor.Next(ctx) {
 		var user models.BybitFutureOrderHistory
 		if err := cursor.Decode(user); err != nil {
-			logrus.Fatal(err)
-			return nil, err
+			log.Fatal(err)
+			return []models.BybitFutureOrderHistory{}, err
 		}
 		historys = append(historys, user)
 	}

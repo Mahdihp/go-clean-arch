@@ -13,6 +13,7 @@ type Config struct {
 	Postgres          Postgres
 	ByBitWs           ByBitWS
 	MongoDb           MongoDb
+	CronJob           CronJob
 }
 type ByBitWS struct {
 	ApiKey         string `mapstructure:"APIKEY"`
@@ -52,6 +53,9 @@ type MongoDb struct {
 	Username string `mapstructure:"MONGODB_USER"`
 	Password string `mapstructure:"MONGODB_PASS"`
 }
+type CronJob struct {
+	DurationBySecond int `mapstructure:"GOCRON_DURATION_JOB_SECOND"`
+}
 
 func LoadConfig() Config {
 
@@ -84,6 +88,8 @@ func LoadConfig() Config {
 	c.MongoDb.DBName = os.Getenv("MONGODB_DB")
 	c.MongoDb.Username = os.Getenv("MONGODB_USER")
 	c.MongoDb.Password = os.Getenv("MONGODB_PASS")
+
+	c.CronJob.DurationBySecond, _ = strconv.Atoi(os.Getenv("GOCRON_DURATION_JOB_SECOND"))
 
 	return c
 

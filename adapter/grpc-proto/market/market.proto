@@ -1,0 +1,212 @@
+syntax = "proto3";
+package market;
+
+option go_package = "adapter/grpc-proto/market";
+import "google/protobuf/any.proto";
+
+message GetKlineRequest{
+  string  category = 1;
+  string  symbol = 2;
+  string  interval = 3;
+  int64  start = 4;
+  int64  end = 5;
+  int32  limit = 6;
+}
+message GetKlineResponse{
+  int32 retCode = 1;
+  string retMsg = 2;
+  uint64  time = 4;
+  Result result = 5;
+  RetExtInfo retExtInfo = 6;
+
+  message Result {
+    string symbol = 1;
+    string category = 2;
+    google.protobuf.Any list = 3;
+  }
+  message RetExtInfo {
+  }
+}
+message GetInstrumentsInfoRequest{
+  string  category = 1;
+  string  symbol = 2;
+  string  status = 3;
+  string  baseCoin = 4;
+  int32  limit = 5;
+  string  cursor = 6;
+}
+message GetInstrumentsInfoLinearResponse{
+  uint32 retCode = 1;
+  string retMsg = 2;
+  Result result = 3;
+  RetExtInfo retExtInfo = 4;
+  uint64 time = 5;
+
+  message LeverageFilter {
+    string minLeverage = 1;
+    string maxLeverage = 2;
+    string leverageStep = 3;
+  }
+
+  message PriceFilter {
+    string minPrice = 1;
+    string maxPrice = 2;
+    string tickSize = 3;
+  }
+
+  message LotSizeFilter {
+    string maxOrderQty = 1;
+    string maxMktOrderQty = 2;
+    string minOrderQty = 3;
+    string qtyStep = 4;
+    string postOnlyMaxOrderQty = 5;
+    string minNotionalValue = 6;
+  }
+
+  message Phases {
+    string phase = 1;
+    string startTime = 2;
+    string endTime = 3;
+  }
+
+  message AuctionFeeInfo {
+    string auctionFeeRate = 1;
+    string takerFeeRate = 2;
+    string makerFeeRate = 3;
+  }
+
+  message PreListingInfo {
+    string curAuctionPhase = 1;
+    repeated Phases phases = 2;
+    AuctionFeeInfo auctionFeeInfo = 3;
+  }
+
+
+  message List {
+    string symbol = 1;
+    string contractType = 2;
+    string status = 3;
+    string baseCoin = 4;
+    string quoteCoin = 5;
+    string launchTime = 6;
+    string deliveryTime = 7;
+    string deliveryFeeRate = 8;
+    string price_scale = 9;
+    LeverageFilter leverageFilter = 10;
+    PriceFilter priceFilter = 11;
+    LotSizeFilter lotSizeFilter = 12;
+    bool unifiedMarginTrade = 13;
+    uint32 fundingInterval = 14;
+    string settleCoin = 15;
+    string copyTrading = 16;
+    string upperFundingRate = 17;
+    string lowerFundingRate = 18;
+    bool isPreListing = 19;
+    PreListingInfo preListingInfo = 20;
+  }
+
+  message Result {
+    string category = 1;
+    repeated List list = 2;
+    string nextPageCursor = 3;
+  }
+
+  message RetExtInfo {
+  }
+}
+
+message GetInstrumentsInfoOptionResponse {
+  uint32 retCode = 1;
+  string retMsg = 2;
+  Result result = 3;
+  RetExtInfo retExtInfo = 4;
+  uint64 time = 5;
+
+  message PriceFilter {
+    string minPrice = 1;
+    string maxPrice = 2;
+    string tickSize = 3;
+  }
+
+  message LotSizeFilter {
+    string maxOrderQty = 1;
+    string minOrderQty = 2;
+    string qtyStep = 3;
+  }
+
+  message List {
+    string symbol = 1;
+    string status = 2;
+    string base_coin = 3;
+    string quote_coin = 4;
+    string settle_coin = 5;
+    string options_type = 6;
+    string launch_time = 7;
+    string delivery_time = 8;
+    string delivery_fee_rate = 9;
+    PriceFilter priceFilter = 10;
+    LotSizeFilter lotSizeFilter = 11;
+  }
+
+  message Result {
+    string category = 1;
+    string next_page_cursor = 2;
+    repeated List list = 3;
+  }
+  message RetExtInfo {
+  }
+}
+
+message GetInstrumentsInfoSpotResponse {
+  uint32 retCode = 1;
+  string retMsg = 2;
+  Result result = 3;
+  RetExtInfo retExtInfo = 4;
+  uint64 time = 5;
+
+  message LotSizeFilter {
+    string basePrecision = 1;
+    string quotePrecision = 2;
+    string minOrderQty = 3;
+    string maxOrderQty = 4;
+    string minOrderAmt = 5;
+    string maxOrderAmt = 6;
+  }
+
+  message PriceFilter {
+    string tickSize = 1;
+  }
+
+  message RiskParameters {
+    string limitParameter = 1;
+    string marketParameter = 2;
+  }
+
+  message List {
+    string symbol = 1;
+    string baseCoin = 2;
+    string quoteCoin = 3;
+    string innovation = 4;
+    string status = 5;
+    string marginTrading = 6;
+    string stTag = 7;
+    LotSizeFilter lotSizeFilter = 8;
+    PriceFilter priceFilter = 9;
+    RiskParameters riskParameters = 10;
+  }
+
+  message Result {
+    string category = 1;
+    repeated List list = 2;
+  }
+
+  message RetExtInfo {
+  }
+}
+
+service MarketService {
+  rpc GetKline(GetKlineRequest) returns (GetKlineResponse) {}
+  rpc GetInstrumentsInfoLinear(GetInstrumentsInfoRequest) returns (GetInstrumentsInfoLinearResponse) {}
+  rpc GetInstrumentsInfoOption(GetInstrumentsInfoRequest) returns (GetInstrumentsInfoOptionResponse) {}
+  rpc GetInstrumentsInfoSpot(GetInstrumentsInfoRequest) returns (GetInstrumentsInfoSpotResponse) {}
+}

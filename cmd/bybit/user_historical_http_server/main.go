@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/bxcodec/go-clean-arch/config"
-	db "github.com/bxcodec/go-clean-arch/db/postgres"
+	"github.com/bxcodec/go-clean-arch/db/mongodb"
 	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service"
 	"github.com/bxcodec/go-clean-arch/internal/delivery"
 	"github.com/joho/godotenv"
@@ -15,7 +15,7 @@ import (
 
 func init() {
 
-	err := godotenv.Load("./config/.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %v", err)
 	}
@@ -46,7 +46,7 @@ func main() {
 
 func setupServices(cfg config.Config) bybit_history_service.ByBitHistoricalServic {
 	//postgresDB := db.NewPostgres(cfg.Postgres)
-	mongoDb := db.NewMongoDb(cfg.MongoDb)
+	mongoDb := mongodb.NewMongoDb(cfg.MongoDb)
 
 	userRepo := bybit_history_service.NewUser(mongoDb)
 	historyRepo := bybit_history_service.NewHistory(mongoDb)

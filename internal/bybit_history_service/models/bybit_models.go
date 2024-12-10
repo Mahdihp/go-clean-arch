@@ -25,12 +25,6 @@ type ByBitUser struct {
 	LastUpdate  time.Time          `bson:"last_update"`
 	CreatedAt   time.Time          `bson:"created_at"`
 	UpdatedAt   time.Time          `bson:"updated_at"`
-
-	//BybitFutureOrderHistory []BybitFutureOrderHistory `bson:"foreignKey:UserID"`
-	//BybitFutureTradeHistory []BybitFutureTradeHistory `bson:"foreignKey:UserID"`
-	//BybitFuturePnlHistory   []BybitFuturePnlHistory   `bson:"foreignKey:UserID"`
-	//BybitSpotOrderHistory   []BybitSpotOrderHistory   `bson:"foreignKey:UserID"`
-	//BybitSpotTradelHistory  []BybitSpotTradelHistory  `bson:"foreignKey:UserID"`
 }
 
 type BybitFutureOrderHistory struct {

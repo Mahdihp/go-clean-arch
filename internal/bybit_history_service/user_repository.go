@@ -3,7 +3,7 @@ package bybit_history_service
 import (
 	"context"
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/db/postgres"
+	"github.com/bxcodec/go-clean-arch/db/mongodb"
 	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/models"
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -15,10 +15,10 @@ type UserRepository interface {
 	//FindByPhoneNumber(phoneNumber string) (models.ByBitUser, error)
 }
 type UserRepositoryImpl struct {
-	db *db.PostgresDB
+	db *mongodb.MongoDb
 }
 
-func NewUser(db *db.PostgresDB) *UserRepositoryImpl {
+func NewUser(db *mongodb.MongoDb) *UserRepositoryImpl {
 	return &UserRepositoryImpl{
 		db: db,
 	}
@@ -37,32 +37,5 @@ func (s *UserRepositoryImpl) FindByApiKey(ctx context.Context, apiKey string) (m
 	//if tx.Error != nil {
 	//	return models.ByBitUser{}, tx.Error
 	//}
-	return user, nil
-}
-
-func (s *UserRepositoryImpl) FindByUsername(username string) (models.ByBitUser, error) {
-	var user models.ByBitUser
-	tx := s.db.Conn().Where("username = ?", username).First(&user)
-	if tx.Error != nil {
-		return models.ByBitUser{}, tx.Error
-	}
-	return user, nil
-}
-
-func (s *UserRepositoryImpl) FindByEmail(email string) (models.ByBitUser, error) {
-	var user models.ByBitUser
-	tx := s.db.Conn().Where("email = ?", email).First(&user)
-	if tx.Error != nil {
-		return models.ByBitUser{}, tx.Error
-	}
-	return user, nil
-}
-
-func (s *UserRepositoryImpl) FindByPhoneNumber(phoneNumber string) (models.ByBitUser, error) {
-	var user models.ByBitUser
-	tx := s.db.Conn().Where("phoneNumber = ?", phoneNumber).First(&user)
-	if tx.Error != nil {
-		return models.ByBitUser{}, tx.Error
-	}
 	return user, nil
 }
