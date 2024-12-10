@@ -5,9 +5,10 @@ import "time"
 type Message string
 
 const (
-	UserNotFound    Message = "User Not Found"
-	HistoryNotFound Message = "History Not Found"
-	BadRequesy      Message = "Bad Requesy"
+	UserNotFound    Message = "User Not Found."
+	HistoryNotFound Message = "History Not Found."
+	BadRequesy      Message = "Bad Requesy."
+	SectionNotFound Message = "Section Not Found."
 )
 
 type BaseMessage struct {

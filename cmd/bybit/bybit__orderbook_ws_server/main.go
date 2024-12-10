@@ -6,7 +6,6 @@ import (
 	"github.com/bxcodec/go-clean-arch/config"
 	"github.com/bxcodec/go-clean-arch/internal/bybit_ws"
 	"github.com/bxcodec/go-clean-arch/internal/delivery"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"log"
 	"os"

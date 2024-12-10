@@ -43,6 +43,7 @@ message PlaceOrderResponse{
   string  retMsg = 4;
   string  retExtInfo = 5;
   int64  time = 6;
+  OrderId result = 7;
 }
 message AmendOrderRequest{
   string  category = 1;
@@ -69,10 +70,36 @@ message CancelOrderRequest{
   string  orderLinkId = 4;
   string  orderFilter = 5;
 }
+message CancelAllRequest{
+  string  category = 1;
+  string  symbol = 2;
+  string  baseCoin = 3;
+  string  settleCoin = 4;
+  string  orderFilter = 5;
+  string  stopOrderType = 6;
+}
+message CancelAllResponse{
 
+  message Result {
+    repeated OrderId list = 1;
+    string success = 2;
+  }
+  message RetExtInfo {
+  }
+  int32 retCode = 1;
+  string retMsg = 2;
+  Result result = 3;
+  RetExtInfo retExtInfo = 4;
+  int64 time = 5;
+}
+message OrderId{
+  string  orderId = 1;
+  string  orderLinkId = 2;
+}
 
 service OrderService {
   rpc Create(PlaceOrderRequest) returns (PlaceOrderResponse) {}
   rpc Amend(AmendOrderRequest) returns (PlaceOrderResponse) {}
   rpc Cancel (CancelOrderRequest) returns (PlaceOrderResponse) {}
+  rpc CancelAll(CancelAllRequest) returns (CancelAllResponse) {}
 }

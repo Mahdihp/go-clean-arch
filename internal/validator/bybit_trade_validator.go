@@ -15,7 +15,7 @@ func NewByBitTradeValidator() ByBitTradeValidator {
 	return ByBitTradeValidator{}
 }
 
-func (v ByBitTradeValidator) ValidateCancel(req order.CancelOrderRequest) (map[string]string, error) {
+func (v ByBitTradeValidator) ValidateCancel(req *order.CancelOrderRequest) (map[string]string, error) {
 	const op = "Validator.ValidateCancel"
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.Category, validation.Required),
@@ -39,7 +39,7 @@ func (v ByBitTradeValidator) ValidateCancel(req order.CancelOrderRequest) (map[s
 	}
 	return nil, nil
 }
-func (v ByBitTradeValidator) ValidateAmend(req order.AmendOrderRequest) (map[string]string, error) {
+func (v ByBitTradeValidator) ValidateAmend(req *order.AmendOrderRequest) (map[string]string, error) {
 	const op = "Validator.ValidateAmend"
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.Category, validation.Required),
@@ -63,7 +63,30 @@ func (v ByBitTradeValidator) ValidateAmend(req order.AmendOrderRequest) (map[str
 	}
 	return nil, nil
 }
-func (v ByBitTradeValidator) ValidateCreate(req order.PlaceOrderRequest) (map[string]string, error) {
+func (v ByBitTradeValidator) ValidateCancelAll(req *order.CancelAllRequest) (map[string]string, error) {
+	const op = "Validator.ValidateCreate"
+	if err := validation.ValidateStruct(&req,
+		validation.Field(&req.Category, validation.Required),
+	); err != nil {
+
+		fieldErrors := make(map[string]string)
+		errV, ok := err.(validation.Errors)
+		if ok {
+			for key, value := range errV {
+				if value != nil {
+					fieldErrors[key] = value.Error()
+				}
+			}
+		}
+		return fieldErrors, richerror.New(op).
+			WithMessage(errmsg.ErrorMsgInvalidInput).
+			WithKind(richerror.KindInvalid).
+			WithMeta(map[string]interface{}{"req": req}).
+			WithErr(err)
+	}
+	return nil, nil
+}
+func (v ByBitTradeValidator) ValidateCreate(req *order.PlaceOrderRequest) (map[string]string, error) {
 	const op = "Validator.ValidateCreate"
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.Category, validation.Required),
@@ -89,7 +112,7 @@ func (v ByBitTradeValidator) ValidateCreate(req order.PlaceOrderRequest) (map[st
 	}
 	return nil, nil
 }
-func (v ByBitTradeValidator) ValidateTradingStop(req position.TradingStopRequest) (map[string]string, error) {
+func (v ByBitTradeValidator) ValidateTradingStop(req *position.TradingStopRequest) (map[string]string, error) {
 	const op = "Validator.ValidateTradingStop"
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.Category, validation.Required),
@@ -115,7 +138,7 @@ func (v ByBitTradeValidator) ValidateTradingStop(req position.TradingStopRequest
 	}
 	return nil, nil
 }
-func (v ByBitTradeValidator) ValidateSwitchMode(req position.SwitchModeRequest) (map[string]string, error) {
+func (v ByBitTradeValidator) ValidateSwitchMode(req *position.SwitchModeRequest) (map[string]string, error) {
 	const op = "Validator.ValidateSwitchMode"
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.Category, validation.Required),
@@ -139,7 +162,7 @@ func (v ByBitTradeValidator) ValidateSwitchMode(req position.SwitchModeRequest) 
 	}
 	return nil, nil
 }
-func (v ByBitTradeValidator) ValidateSwitchIsolated(req position.SwitchIsolatedRequest) (map[string]string, error) {
+func (v ByBitTradeValidator) ValidateSwitchIsolated(req *position.SwitchIsolatedRequest) (map[string]string, error) {
 	const op = "Validator.ValidateSwitchIsolated"
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.Category, validation.Required),
@@ -166,7 +189,7 @@ func (v ByBitTradeValidator) ValidateSwitchIsolated(req position.SwitchIsolatedR
 	}
 	return nil, nil
 }
-func (v ByBitTradeValidator) ValidateSetLeverage(req position.SetLeverageRequest) (map[string]string, error) {
+func (v ByBitTradeValidator) ValidateSetLeverage(req *position.SetLeverageRequest) (map[string]string, error) {
 	const op = "Validator.ValidateSetLeverage"
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.Category, validation.Required),
@@ -192,7 +215,7 @@ func (v ByBitTradeValidator) ValidateSetLeverage(req position.SetLeverageRequest
 	}
 	return nil, nil
 }
-func (v ByBitTradeValidator) ValidateGetPositionInfo(req position.PositionInfoRequest) (map[string]string, error) {
+func (v ByBitTradeValidator) ValidateGetPositionInfo(req *position.PositionInfoRequest) (map[string]string, error) {
 	const op = "Validator.ValidateCreateRequest"
 	if err := validation.ValidateStruct(&req,
 		validation.Field(&req.Category, validation.Required),

@@ -53,6 +53,33 @@ type OrderDto struct {
 	Time int64 `json:"time"`
 }
 
+type CancelAllDto struct {
+	RetCode int    `json:"retCode"`
+	RetMsg  string `json:"retMsg"`
+	Result  struct {
+		List []struct {
+			OrderID     string `json:"orderId"`
+			OrderLinkID string `json:"orderLinkId"`
+		} `json:"list"`
+		Success string `json:"success"`
+	} `json:"result"`
+	RetExtInfo struct {
+	} `json:"retExtInfo"`
+	Time int64 `json:"time"`
+}
+
+func OrderToCancelAllOrderDto(data *bybit.ServerResponse) CancelAllDto {
+	marshal, err := json.Marshal(data)
+	var pl CancelAllDto
+	if err != nil {
+		return pl
+	}
+	err = json.Unmarshal(marshal, &pl)
+	if err != nil {
+		return pl
+	}
+	return pl
+}
 func OrderToOrderDto(data *bybit.ServerResponse) OrderDto {
 	marshal, err := json.Marshal(data)
 	var pl OrderDto
@@ -64,6 +91,18 @@ func OrderToOrderDto(data *bybit.ServerResponse) OrderDto {
 		return pl
 	}
 	return pl
+}
+func OrderDtoToCancelAllResponse(data CancelAllDto) order.CancelAllResponse {
+	response := order.CancelAllResponse{}
+	response.RetMsg = data.RetMsg
+	response.RetCode = int32(data.RetCode)
+	response.RetExtInfo = &order.CancelAllResponse_RetExtInfo{}
+	orderidList := make([]*order.OrderId, len(data.Result.List))
+	response.Result = &order.CancelAllResponse_Result{
+		List: orderidList,
+	}
+	response.Time = data.Time
+	return response
 }
 func OrderDtoToPlaceOrderResponse(data OrderDto) order.PlaceOrderResponse {
 	response := order.PlaceOrderResponse{}

@@ -27,7 +27,7 @@ func NewByBitHttpServerPosition(cfg config.Config) ByBitHttpServerPosition {
 
 func (s *ByBitHttpServerPosition) GetPositionInfo(ctx context.Context, in *position.PositionInfoRequest) (*position.PositionInfoResponse, error) {
 
-	errorList, err := s.validator.ValidateGetPositionInfo(*in)
+	errorList, err := s.validator.ValidateGetPositionInfo(in)
 	var strErrorList = ""
 	if err != nil {
 		strErrorList += util.MapToString(errorList)
@@ -45,7 +45,7 @@ func (s *ByBitHttpServerPosition) GetPositionInfo(ctx context.Context, in *posit
 	return &positionList, nil
 }
 func (s *ByBitHttpServerPosition) SetLeverage(ctx context.Context, in *position.SetLeverageRequest) (*position.BaseResponse, error) {
-	errorList, err := s.validator.ValidateSetLeverage(*in)
+	errorList, err := s.validator.ValidateSetLeverage(in)
 	var strErrorList = ""
 	if err != nil {
 		strErrorList += util.MapToString(errorList)
@@ -66,7 +66,7 @@ func (s *ByBitHttpServerPosition) SetLeverage(ctx context.Context, in *position.
 	}, nil
 }
 func (s *ByBitHttpServerPosition) SwitchIsolated(ctx context.Context, in *position.SwitchIsolatedRequest) (*position.BaseResponse, error) {
-	errorList, err := s.validator.ValidateSwitchIsolated(*in)
+	errorList, err := s.validator.ValidateSwitchIsolated(in)
 	var strErrorList = ""
 	if err != nil {
 		strErrorList += util.MapToString(errorList)
@@ -87,7 +87,7 @@ func (s *ByBitHttpServerPosition) SwitchIsolated(ctx context.Context, in *positi
 	}, nil
 }
 func (s *ByBitHttpServerPosition) SwitchMode(ctx context.Context, in *position.SwitchModeRequest) (*position.BaseResponse, error) {
-	errorList, err := s.validator.ValidateSwitchMode(*in)
+	errorList, err := s.validator.ValidateSwitchMode(in)
 	var strErrorList = ""
 	if err != nil {
 		strErrorList += util.MapToString(errorList)
@@ -109,7 +109,7 @@ func (s *ByBitHttpServerPosition) SwitchMode(ctx context.Context, in *position.S
 	}, nil
 }
 func (s *ByBitHttpServerPosition) TradingStop(ctx context.Context, in *position.TradingStopRequest) (*position.BaseResponse, error) {
-	errorList, err := s.validator.ValidateTradingStop(*in)
+	errorList, err := s.validator.ValidateTradingStop(in)
 	var strErrorList = ""
 	if err != nil {
 		strErrorList += util.MapToString(errorList)
@@ -133,10 +133,3 @@ func (s *ByBitHttpServerPosition) TradingStop(ctx context.Context, in *position.
 		RetExtInfo: util.InterfaceToString(res.RetExtInfo),
 	}, nil
 }
-
-//func (s *ByBitHttpServerOrder) SetRoutes(e *echo.Echo) {
-//userGroup := e.Group(string(params.Order))
-//userGroup.GET(string(params.Order+"create"), create)
-//userGroup.GET(string(params.Order+"amend"), amend)
-//userGroup.GET(string(params.Order+"cancel"), cancel)
-//}

@@ -25,8 +25,26 @@ func NewByBitHttpServerOrder(cfg config.Config) ByBitHttpServerOrder {
 	}
 }
 
+func (s *ByBitHttpServerOrder) CancelAll(ctx context.Context, in *order.CancelAllRequest) (*order.CancelAllResponse, error) {
+	errorList, err := s.validator.ValidateCancelAll(in)
+	var strErrorList = ""
+	if err != nil {
+		strErrorList += util.MapToString(errorList)
+		return &order.CancelAllResponse{}, nil
+	}
+
+	params := map[string]interface{}{"category": in.Category, "symbol": &in.Symbol,
+		"baseCoin": in.BaseCoin, "settleCoin": in.SettleCoin, "orderFilter": in.OrderFilter, "stopOrderType": in.StopOrderType}
+	res, err := s.byBitClient.NewClassicalBybitServiceWithParams(params).CancelAllOrders(ctx)
+	if err != nil {
+		return &order.CancelAllResponse{}, nil
+	}
+	orderDto := params_bybit_http.OrderToCancelAllOrderDto(res)
+	orderPor := params_bybit_http.OrderDtoToCancelAllResponse(orderDto)
+	return &orderPor, nil
+}
 func (s *ByBitHttpServerOrder) Create(ctx context.Context, in *order.PlaceOrderRequest) (*order.PlaceOrderResponse, error) {
-	errorList, err := s.validator.ValidateCreate(*in)
+	errorList, err := s.validator.ValidateCreate(in)
 	var strErrorList = ""
 	if err != nil {
 		strErrorList += util.MapToString(errorList)
@@ -50,7 +68,7 @@ func (s *ByBitHttpServerOrder) Create(ctx context.Context, in *order.PlaceOrderR
 	return &orderPor, nil
 }
 func (s *ByBitHttpServerOrder) Amend(ctx context.Context, in *order.AmendOrderRequest) (*order.PlaceOrderResponse, error) {
-	errorList, err := s.validator.ValidateAmend(*in)
+	errorList, err := s.validator.ValidateAmend(in)
 	var strErrorList = ""
 	if err != nil {
 		strErrorList += util.MapToString(errorList)
@@ -71,7 +89,7 @@ func (s *ByBitHttpServerOrder) Amend(ctx context.Context, in *order.AmendOrderRe
 	return &orderPor, nil
 }
 func (s *ByBitHttpServerOrder) Cancel(ctx context.Context, in *order.CancelOrderRequest) (*order.PlaceOrderResponse, error) {
-	errorList, err := s.validator.ValidateCancel(*in)
+	errorList, err := s.validator.ValidateCancel(in)
 	var strErrorList = ""
 	if err != nil {
 		strErrorList += util.MapToString(errorList)
@@ -88,11 +106,3 @@ func (s *ByBitHttpServerOrder) Cancel(ctx context.Context, in *order.CancelOrder
 	orderPor := params_bybit_http.OrderDtoToPlaceOrderResponse(orderDto)
 	return &orderPor, nil
 }
-
-//func (s *ByBitHttpServerOrder) SetRoutes(e *echo.Echo) {
-
-//userGroup := e.Group(string(params.Order))
-//userGroup.GET(string(params.Order+"create"), create)
-//userGroup.GET(string(params.Order+"amend"), amend)
-//userGroup.GET(string(params.Order+"cancel"), cancel)
-//}

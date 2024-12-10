@@ -41,6 +41,10 @@ func (s ByBitHistoricalServic) search(ctx echo.Context) error {
 	if err := ctx.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}
+	section := ctx.QueryParam("section")
+	if len(section) <= 0 {
+		return ctx.JSON(http.StatusCreated, httpmsg.NewMassage(httpmsg.SectionNotFound))
+	}
 
 	errorList, err := s.validator.ValidateByBitHistoricalSearch(req)
 	var strErrorList = ""
@@ -48,25 +52,28 @@ func (s ByBitHistoricalServic) search(ctx echo.Context) error {
 		strErrorList += util.MapToString(errorList)
 		return ctx.JSON(http.StatusBadRequest, httpmsg.NewStrMassage(strErrorList))
 	}
-	user, err := s.userRepo.FindByApiKey(req.ApiKey)
+	collection := models.SelectCollection(section)
+
+	user, err := s.userRepo.FindByApiKey(ctx.Request().Context(), req.ApiKey)
 	if err != nil {
 		return ctx.JSON(http.StatusNotFound, httpmsg.NewMassage(httpmsg.UserNotFound))
 	}
 
 	if len(req.Symbol) > 0 && len(req.StartTime) <= 0 || len(req.EndTime) <= 0 {
-		history, err := s.historyRepo.FindBySymbol(user.ID, req.Symbol, req.PageIndex, req.PageSize)
+		history, err := s.historyRepo.FindBySymbol(ctx.Request().Context(), collection, user.ID.String(), req.Symbol, req.PageIndex, req.PageSize)
 		if err != nil || len(history) <= 0 {
 			return ctx.JSON(http.StatusNotFound, httpmsg.NewMassage(httpmsg.HistoryNotFound))
 		}
 		return ctx.JSON(http.StatusCreated, history)
 
 	} else if len(req.Symbol) > 0 && len(req.StartTime) > 0 && len(req.EndTime) > 0 {
-		history, err := s.historyRepo.FindByBetweenCreatedTimeAndSymbol(user.ID, req.Symbol,
-			req.StartTime, req.EndTime, req.PageIndex, req.PageSize)
+		history, err := s.historyRepo.FindByBetweenCreatedTimeAndSymbol(ctx.Request().Context(), collection,
+			user.ID.String(), req.Symbol, req.StartTime, req.EndTime, req.PageIndex, req.PageSize)
 		if err != nil || len(history) <= 0 {
 			return ctx.JSON(http.StatusNotFound, httpmsg.NewMassage(httpmsg.HistoryNotFound))
 		}
 		return ctx.JSON(http.StatusCreated, history)
 	}
+
 	return ctx.JSON(http.StatusCreated, httpmsg.NewMassage(httpmsg.BadRequesy))
 }

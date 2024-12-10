@@ -12,6 +12,7 @@ type Config struct {
 	HistoricalServer  BybitHistoricalServer
 	Postgres          Postgres
 	ByBitWs           ByBitWS
+	MongoDb           MongoDb
 }
 type ByBitWS struct {
 	ApiKey         string `mapstructure:"APIKEY"`
@@ -44,6 +45,13 @@ type BybitTradGrpcServer struct {
 	HttpPort                int           `mapstructure:"BYBIT_HTTP_PORT"`
 	GracefulShutdownTimeout time.Duration `mapstructure:"BYBIT_HTTP_GRACEFUL_SHUTDOWN_TIMEOUT"`
 }
+type MongoDb struct {
+	Host     string `mapstructure:"MONGODB_HOST"`
+	HttpPort int    `mapstructure:"MONGODB_PORT"`
+	DBName   string `mapstructure:"MONGODB_DB"`
+	Username string `mapstructure:"MONGODB_USER"`
+	Password string `mapstructure:"MONGODB_PASS"`
+}
 
 func LoadConfig() Config {
 
@@ -70,6 +78,12 @@ func LoadConfig() Config {
 	c.ByBitWs.ApiSecret = os.Getenv("APISECRET")
 	c.ByBitWs.WsSocketSpot = os.Getenv("WS_SOCKET_SPOT")
 	c.ByBitWs.WsSocketLinear = os.Getenv("WS_SOCKET_LINEAR")
+
+	c.MongoDb.Host = os.Getenv("MONGODB_HOST")
+	c.MongoDb.HttpPort, _ = strconv.Atoi(os.Getenv("MONGODB_PORT"))
+	c.MongoDb.DBName = os.Getenv("MONGODB_DB")
+	c.MongoDb.Username = os.Getenv("MONGODB_USER")
+	c.MongoDb.Password = os.Getenv("MONGODB_PASS")
 
 	return c
 
