@@ -1,7 +1,6 @@
 package models
 
 import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"time"
 )
 
@@ -15,66 +14,62 @@ const (
 )
 
 type ByBitUser struct {
-	ID          primitive.ObjectID `bson:"_id,omitempty"`
-	ApiKey      string             `bson:"api_key"`
-	ApiSecret   string             `bson:"api_secret"`
-	Username    string             `bson:"username"`
-	Email       string             `bson:"email"`
-	PhoneNumber string             `bson:"phone_number"`
-	IsTrading   bool               `bson:"is_trading"`
-	LastUpdate  time.Time          `bson:"last_update"`
-	CreatedAt   time.Time          `bson:"created_at"`
-	UpdatedAt   time.Time          `bson:"updated_at"`
+	ApiKey      string    `bson:"api_key"`
+	ApiSecret   string    `bson:"api_secret"`
+	Username    string    `bson:"username"`
+	Email       string    `bson:"email"`
+	PhoneNumber string    `bson:"phone_number"`
+	IsTrading   bool      `bson:"is_trading"`
+	LastUpdate  time.Time `bson:"last_update"`
+	CreatedAt   time.Time `bson:"created_at"`
+	UpdatedAt   time.Time `bson:"updated_at"`
 }
-
 type BybitFutureOrderHistory struct {
-	ID                 primitive.ObjectID `bson:"_id,omitempty"`
-	UserID             primitive.ObjectID `bson:"user_id"`
-	OrderId            string             `bson:"order_id"`
-	OrderLinkId        string             `bson:"order_link_id"`
-	BlockTradeId       string             `bson:"block_trade_id"`
-	Symbol             string             `bson:"symbol"`
-	Price              string             `bson:"price"`
-	Qty                string             `bson:"qty"`
-	Side               string             `bson:"side"`
-	IsLeverage         string             `bson:"is_leverage"`
-	PositionIdx        int16              `bson:"position_idx"`
-	OrderStatus        string             `bson:"order_status"`
-	CancelType         string             `bson:"cancel_type"`
-	RejectReason       string             `bson:"reject_reason"`
-	AvgPrice           string             `bson:"avg_price"`
-	LeavesQty          string             `bson:"leaves_qty"`
-	LeavesValue        string             `bson:"leaves_value"`
-	CumExecQty         string             `bson:"cum_exec_qty"`
-	CumExecValue       string             `bson:"cum_exec_value"`
-	CumExecFee         string             `bson:"cum_exec_fee"`
-	TimeInForce        string             `bson:"time_in_force"`
-	OrderType          string             `bson:"order_type"`
-	StopOrderType      string             `bson:"stop_order_type"`
-	OrderIv            string             `bson:"order_iv"`
-	TriggerPrice       string             `bson:"trigger_price"`
-	TakeProfit         string             `bson:"take_profit"`
-	StopLoss           string             `bson:"stop_loss"`
-	TpTriggerBy        string             `bson:"tp_trigger_by"`
-	SlTriggerBy        string             `bson:"sl_trigger_by"`
-	TriggerDirection   string             `bson:"trigger_direction"`
-	TriggerBy          string             `bson:"trigger_by"`
-	LastPriceOnCreated string             `bson:"last_price_on_created"`
-	ReduceOnly         bool               `bson:"reduce_only"`
-	CloseOnTrigger     bool               `bson:"close_on_trigger"`
-	SmpType            string             `bson:"smp_type"`
-	SmpGroup           string             `bson:"smp_group"`
-	SmpOrderId         string             `bson:"smp_order_id"`
-	TpslMode           string             `bson:"tpsl_mode"`
-	TpLimitPrice       string             `bson:"tp_limit_price"`
-	SlLimitPrice       string             `bson:"sl_limit_price"`
-	PlaceType          string             `bson:"place_type"`
-	CreatedAt          time.Time          `bson:"created_at"`
-	UpdatedAt          time.Time          `bson:"updated_at"`
+	UserID             string    `bson:"user_id"`
+	OrderId            string    `bson:"order_id"`
+	OrderLinkId        string    `bson:"order_link_id"`
+	BlockTradeId       string    `bson:"block_trade_id"`
+	Symbol             string    `bson:"symbol"`
+	Price              string    `bson:"price"`
+	Qty                string    `bson:"qty"`
+	Side               string    `bson:"side"`
+	IsLeverage         string    `bson:"is_leverage"`
+	PositionIdx        int16     `bson:"position_idx"`
+	OrderStatus        string    `bson:"order_status"`
+	CancelType         string    `bson:"cancel_type"`
+	RejectReason       string    `bson:"reject_reason"`
+	AvgPrice           string    `bson:"avg_price"`
+	LeavesQty          string    `bson:"leaves_qty"`
+	LeavesValue        string    `bson:"leaves_value"`
+	CumExecQty         string    `bson:"cum_exec_qty"`
+	CumExecValue       string    `bson:"cum_exec_value"`
+	CumExecFee         string    `bson:"cum_exec_fee"`
+	TimeInForce        string    `bson:"time_in_force"`
+	OrderType          string    `bson:"order_type"`
+	StopOrderType      string    `bson:"stop_order_type"`
+	OrderIv            string    `bson:"order_iv"`
+	TriggerPrice       string    `bson:"trigger_price"`
+	TakeProfit         string    `bson:"take_profit"`
+	StopLoss           string    `bson:"stop_loss"`
+	TpTriggerBy        string    `bson:"tp_trigger_by"`
+	SlTriggerBy        string    `bson:"sl_trigger_by"`
+	TriggerDirection   string    `bson:"trigger_direction"`
+	TriggerBy          string    `bson:"trigger_by"`
+	LastPriceOnCreated string    `bson:"last_price_on_created"`
+	ReduceOnly         bool      `bson:"reduce_only"`
+	CloseOnTrigger     bool      `bson:"close_on_trigger"`
+	SmpType            string    `bson:"smp_type"`
+	SmpGroup           string    `bson:"smp_group"`
+	SmpOrderId         string    `bson:"smp_order_id"`
+	TpslMode           string    `bson:"tpsl_mode"`
+	TpLimitPrice       string    `bson:"tp_limit_price"`
+	SlLimitPrice       string    `bson:"sl_limit_price"`
+	PlaceType          string    `bson:"place_type"`
+	CreatedAt          time.Time `bson:"created_at"`
+	UpdatedAt          time.Time `bson:"updated_at"`
 }
 type BybitFutureTradeHistory struct {
-	ID     primitive.ObjectID `bson:"_id,omitempty"`
-	UserID primitive.ObjectID `bson:"user_id"`
+	UserID string `bson:"user_id"`
 
 	Symbol          string    `bson:"symbol"`
 	OrderID         string    `bson:"orderId"`
@@ -107,8 +102,7 @@ type BybitFutureTradeHistory struct {
 	UpdatedAt       time.Time `bson:"updated_at"`
 }
 type BybitFuturePnlHistory struct {
-	ID     primitive.ObjectID `bson:"_id,omitempty"`
-	UserID primitive.ObjectID `bson:"user_id"`
+	UserID string `bson:"user_id"`
 
 	Symbol        string    `bson:"symbol"`
 	OrderID       string    `bson:"order_id"`
@@ -131,8 +125,7 @@ type BybitFuturePnlHistory struct {
 	UpdatedAt     time.Time `bson:"updated_at"`
 }
 type BybitSpotOrderHistory struct {
-	ID     primitive.ObjectID `bson:"_id,omitempty"`
-	UserID primitive.ObjectID `bson:"user_id"`
+	UserID string `bson:"user_id"`
 
 	Symbol             string    `bson:"symbol"`
 	OrderType          string    `bson:"order_type"`
@@ -177,8 +170,7 @@ type BybitSpotOrderHistory struct {
 	UpdatedAt          time.Time `bson:"updated_at"`
 }
 type BybitSpotTradelHistory struct {
-	ID     primitive.ObjectID `bson:"_id,omitempty"`
-	UserID primitive.ObjectID `bson:"user_id"`
+	UserID string `bson:"user_id"`
 
 	Symbol          string    `bson:"symbol"`
 	OrderType       string    `bson:"order_type"`

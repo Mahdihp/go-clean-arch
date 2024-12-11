@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"time"
 )
 
 type MongoDb struct {
@@ -35,12 +36,21 @@ func NewMongoDb(cfg config.MongoDb) *MongoDb {
 	}
 	var database = existDb(client, cfg)
 
-	filter := bson.D{}
-	names, err := database.ListCollectionNames(context.Background(), filter)
-	fmt.Println(err)
-	fmt.Println(names)
+	//seedData(database)
+
 	log.Info("mongoClient connected")
 	return &MongoDb{mongoDb: database}
+}
+
+func seedData(database *mongo.Database) {
+	database.Collection(models_grpc.Coll_ByBitMarketGetInstrumentsInfoLinear).
+		InsertOne(context.TODO(), models_grpc.ByBitMarketGetInstrumentsInfoLinear{
+
+			Symbol:    "BTC-2",
+			Status:    "Status-2",
+			CreatedAt: time.Now(),
+		})
+
 }
 func existDb(client *mongo.Client, cfg config.MongoDb) *mongo.Database {
 	var d *mongo.Database
@@ -53,18 +63,31 @@ func existDb(client *mongo.Client, cfg config.MongoDb) *mongo.Database {
 	}
 	if len(names) == 0 {
 		d = client.Database(cfg.DBName)
-		d.CreateCollection(context.Background(), models.Coll_ByBitUser)
-		d.CreateCollection(context.Background(), models.Coll_BybitFutureOrderHistory)
-		d.CreateCollection(context.Background(), models.Coll_BybitFutureTradeHistory)
-		d.CreateCollection(context.Background(), models.Coll_BybitFuturePnlHistory)
-		d.CreateCollection(context.Background(), models.Coll_BybitSpotOrderHistory)
-		d.CreateCollection(context.Background(), models.Coll_BybitSpotTradelHistory)
+		filter := bson.D{{}}
+		collections, err := d.ListCollections(context.Background(), filter)
+		if err != nil {
+			log.Info("ListCollections Error ", err)
+		}
+		var colls []string
+		if err = collections.All(context.TODO(), &colls); err != nil {
+			log.Info("ListCollections All Error ", err)
+		}
+		if len(colls) == 0 {
+			d.CreateCollection(context.Background(), models.Coll_ByBitUser)
+			d.CreateCollection(context.Background(), models.Coll_BybitFutureOrderHistory)
+			d.CreateCollection(context.Background(), models.Coll_BybitFutureTradeHistory)
+			d.CreateCollection(context.Background(), models.Coll_BybitFuturePnlHistory)
+			d.CreateCollection(context.Background(), models.Coll_BybitSpotOrderHistory)
+			d.CreateCollection(context.Background(), models.Coll_BybitSpotTradelHistory)
 
-		d.CreateCollection(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoLinear)
-		d.CreateCollection(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoOption)
-		d.CreateCollection(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoSpot)
+			d.CreateCollection(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoLinear)
+			d.CreateCollection(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoInverse)
+			d.CreateCollection(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoSpot)
+		}
 	}
-	d = client.Database(cfg.DBName)
+	if d == nil {
+		d = client.Database(cfg.DBName)
+	}
 	return d
 }
 func (m *MongoDb) MongoConn() *mongo.Database {

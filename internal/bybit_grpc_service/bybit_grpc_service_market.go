@@ -2,10 +2,9 @@ package bybit_grpc_service
 
 import (
 	"context"
-	"fmt"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/market"
 	"github.com/bxcodec/go-clean-arch/config"
-	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
+	"github.com/bxcodec/go-clean-arch/db/mongodb"
 	params_bybit_http "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/params"
 	"github.com/bxcodec/go-clean-arch/internal/validator"
 	"github.com/bxcodec/go-clean-arch/util"
@@ -20,19 +19,23 @@ type ByBitHttpServerMarket struct {
 	bybitMarketSvc ByBitMarketService
 }
 
-func NewByBitHttpServerMarket(cfg config.Config) ByBitHttpServerMarket {
+func NewByBitHttpServerMarket(cfg config.Config, db *mongodb.MongoDb) ByBitHttpServerMarket {
 	return ByBitHttpServerMarket{
 		Config:         cfg,
 		validator:      validator.NewByBitMarketValidator(),
 		byBitClient:    bybit.NewBybitHttpClient(cfg.ByBitWs.ApiKey, cfg.ByBitWs.ApiSecret, bybit.WithBaseURL(bybit.MAINNET)),
-		bybitMarketSvc: NewByBitMarketService(cfg.MongoDb),
+		bybitMarketSvc: NewByBitMarketService(db),
 	}
 }
 
 func (s *ByBitHttpServerMarket) GetInstrumentsInfoLinear(ctx context.Context, in *market.GetInstrumentsInfoRequest) (*market.GetInstrumentsInfoLinearResponse, error) {
 
-	category, _ := s.bybitMarketSvc.FindBySymbol(ctx, models_grpc.Coll_ByBitMarketGetInstrumentsInfoLinear, "BTC")
-	fmt.Println(category)
+	//category, _ := s.bybitMarketSvc.FindAll(ctx, models_grpc.Coll_ByBitMarketGetInstrumentsInfoLinear)
+
+	//s.bybitMarketSvc.FindOneAndUpdateLinear(ctx, models_grpc.Coll_ByBitMarketGetInstrumentsInfoLinear, category)
+	//for i, linear := range category {
+	//	fmt.Println(i, linear.Symbol, linear.CreatedAt)
+	//}
 	return &market.GetInstrumentsInfoLinearResponse{}, nil
 }
 
