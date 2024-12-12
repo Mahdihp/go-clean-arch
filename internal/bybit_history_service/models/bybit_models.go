@@ -5,12 +5,12 @@ import (
 )
 
 const (
-	Coll_ByBitUser               string = "ByBitUser"
-	Coll_BybitFutureOrderHistory string = "BybitFutureOrderHistory"
-	Coll_BybitFutureTradeHistory string = "BybitFutureTradeHistory"
-	Coll_BybitFuturePnlHistory   string = "BybitFuturePnlHistory"
-	Coll_BybitSpotOrderHistory   string = "BybitSpotOrderHistory"
-	Coll_BybitSpotTradelHistory  string = "BybitSpotTradelHistory"
+	Collection_ByBit_User               string = "ByBitUser"
+	Collection_Bybit_FutureOrderHistory string = "BybitFutureOrderHistory"
+	Collection_Bybit_FutureTradeHistory string = "BybitFutureTradeHistory"
+	Collection_Bybit_FuturePnlHistory   string = "BybitFuturePnlHistory"
+	Collection_Bybit_SpotOrderHistory   string = "BybitSpotOrderHistory"
+	Collection_Bybit_SpotTradelHistory  string = "BybitSpotTradelHistory"
 )
 
 type ByBitUser struct {
@@ -203,17 +203,17 @@ type BybitSpotTradelHistory struct {
 func SelectCollection(collName string) string {
 	switch collName {
 	case "ByBitUser":
-		return Coll_ByBitUser
+		return Collection_ByBit_User
 	case "BybitFutureOrder":
-		return Coll_BybitFutureOrderHistory
+		return Collection_Bybit_FutureOrderHistory
 	case "BybitFutureTrade":
-		return Coll_BybitFutureTradeHistory
+		return Collection_Bybit_FutureTradeHistory
 	case "BybitFuturePnl":
-		return Coll_BybitFuturePnlHistory
+		return Collection_Bybit_FuturePnlHistory
 	case "BybitSpotOrder":
-		return Coll_BybitSpotOrderHistory
+		return Collection_Bybit_SpotOrderHistory
 	case "BybitSpotTradel":
-		return Coll_BybitSpotTradelHistory
+		return Collection_Bybit_SpotTradelHistory
 	default:
 		return ""
 	}

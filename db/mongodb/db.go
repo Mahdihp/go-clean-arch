@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/bxcodec/go-clean-arch/config"
 	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/models"
 	"github.com/labstack/gommon/log"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
@@ -17,7 +16,7 @@ type MongoDb struct {
 	mongoDb *mongo.Database
 }
 
-func NewMongoDb(cfg config.MongoDb) *MongoDb {
+func NewMongoDb(cfg config.MongoDbMarket) *MongoDb {
 	//ConnetionString := "mongodb://username:password@host:port"
 	ConnetionString := fmt.Sprintf("mongodb://%s:%s@%s:%d", cfg.Username, cfg.Password, cfg.Host, cfg.HttpPort)
 	//ConnetionString := fmt.Sprintf("mongodb://%s:%d/?directConnection=false", cfg.Host, cfg.HttpPort)
@@ -43,7 +42,7 @@ func NewMongoDb(cfg config.MongoDb) *MongoDb {
 }
 
 func seedData(database *mongo.Database) {
-	database.Collection(models_grpc.Coll_ByBitMarketGetInstrumentsInfoLinear).
+	database.Collection(models_grpc.Collection_ByBit_MGIIL).
 		InsertOne(context.TODO(), models_grpc.ByBitMarketGetInstrumentsInfoLinear{
 
 			Symbol:    "BTC-2",
@@ -52,9 +51,8 @@ func seedData(database *mongo.Database) {
 		})
 
 }
-func existDb(client *mongo.Client, cfg config.MongoDb) *mongo.Database {
+func existDb(client *mongo.Client, cfg config.MongoDbMarket) *mongo.Database {
 	var d *mongo.Database
-
 	filter := bson.D{{"name", bson.D{{"$eq", cfg.DBName}}}}
 	names, err := client.ListDatabaseNames(context.Background(), filter)
 
@@ -69,20 +67,21 @@ func existDb(client *mongo.Client, cfg config.MongoDb) *mongo.Database {
 			log.Info("ListCollections Error ", err)
 		}
 		var colls []string
+
 		if err = collections.All(context.TODO(), &colls); err != nil {
 			log.Info("ListCollections All Error ", err)
 		}
 		if len(colls) == 0 {
-			d.CreateCollection(context.Background(), models.Coll_ByBitUser)
-			d.CreateCollection(context.Background(), models.Coll_BybitFutureOrderHistory)
-			d.CreateCollection(context.Background(), models.Coll_BybitFutureTradeHistory)
-			d.CreateCollection(context.Background(), models.Coll_BybitFuturePnlHistory)
-			d.CreateCollection(context.Background(), models.Coll_BybitSpotOrderHistory)
-			d.CreateCollection(context.Background(), models.Coll_BybitSpotTradelHistory)
+			/*d.CreateCollection(context.Background(), models.Collection_ByBit_User)
+			d.CreateCollection(context.Background(), models.Collection_Bybit_FutureOrderHistory)
+			d.CreateCollection(context.Background(), models.Collection_Bybit_FutureTradeHistory)
+			d.CreateCollection(context.Background(), models.Collection_Bybit_FuturePnlHistory)
+			d.CreateCollection(context.Background(), models.Collection_Bybit_SpotOrderHistory)
+			d.CreateCollection(context.Background(), models.Collection_Bybit_SpotTradelHistory)*/
 
-			d.CreateCollection(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoLinear)
-			d.CreateCollection(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoInverse)
-			d.CreateCollection(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoSpot)
+			d.CreateCollection(context.Background(), models_grpc.Collection_ByBit_MGIIL)
+			d.CreateCollection(context.Background(), models_grpc.Collection_ByBit_MGIII)
+			d.CreateCollection(context.Background(), models_grpc.Collection_ByBit_MGIIS)
 		}
 	}
 	if d == nil {

@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	Coll_ByBitMarketGetInstrumentsInfoLinear  string = "ByBitMarketGetInstrumentsInfoLinear"
-	Coll_ByBitMarketGetInstrumentsInfoInverse string = "ByBitMarketGetInstrumentsInfoInverse"
-	Coll_ByBitMarketGetInstrumentsInfoSpot    string = "ByBitMarketGetInstrumentsInfoSpot"
+	Collection_ByBit_MGIIL string = "ByBitMarketGetInstrumentsInfoLinear"
+	Collection_ByBit_MGIII string = "ByBitMarketGetInstrumentsInfoInverse"
+	Collection_ByBit_MGIIS string = "ByBitMarketGetInstrumentsInfoSpot"
 )
 
 type LeverageFilter struct {
@@ -47,6 +47,11 @@ type PreListingInfo struct {
 	Phases          []Phases       `bson:"phases"`
 	AuctionFeeInfo  AuctionFeeInfo `bson:"auctionFeeInfo"`
 }
+type RiskParameters struct {
+	LimitParameter  string `bson:"limitParameter"`
+	MarketParameter string `bson:"marketParameter"`
+}
+
 type ByBitMarketGetInstrumentsInfoLinear struct {
 	//ID              bson.ObjectID `bson:"_id"`
 	Symbol             string         `bson:"symbol"`
@@ -75,10 +80,6 @@ type ByBitMarketGetInstrumentsInfoLinear struct {
 	CreatedAt time.Time `bson:"created_at"`
 	UpdatedAt time.Time `bson:"updated_at"`
 }
-type RiskParameters struct {
-	LimitParameter  string `bson:"limitParameter"`
-	MarketParameter string `bson:"marketParameter"`
-}
 type ByBitMarketGetInstrumentsInfoSpot struct {
 	Symbol         string         `bson:"symbol"`
 	BaseCoin       string         `bson:"baseCoin"`
@@ -93,29 +94,28 @@ type ByBitMarketGetInstrumentsInfoSpot struct {
 	CreatedAt      time.Time      `bson:"created_at"`
 	UpdatedAt      time.Time      `bson:"updated_at"`
 }
-
 type ByBitMarketGetInstrumentsInfoInverse struct {
-	Symbol             string         `json:"symbol"`
-	ContractType       string         `json:"contractType"`
-	Status             string         `json:"status"`
-	BaseCoin           string         `json:"baseCoin"`
-	QuoteCoin          string         `json:"quoteCoin"`
-	LaunchTime         string         `json:"launchTime"`
-	DeliveryTime       string         `json:"deliveryTime"`
-	DeliveryFeeRate    string         `json:"deliveryFeeRate"`
-	PriceScale         string         `json:"priceScale"`
-	LeverageFilter     LeverageFilter `json:"leverageFilter"`
-	PriceFilter        PriceFilter    `json:"priceFilter"`
-	LotSizeFilter      LotSizeFilter  `json:"lotSizeFilter"`
-	UnifiedMarginTrade bool           `json:"unifiedMarginTrade"`
-	FundingInterval    int            `json:"fundingInterval"`
-	SettleCoin         string         `json:"settleCoin"`
-	CopyTrading        string         `json:"copyTrading"`
-	UpperFundingRate   string         `json:"upperFundingRate"`
-	LowerFundingRate   string         `json:"lowerFundingRate"`
-	IsPreListing       bool           `json:"isPreListing"`
-	PreListingInfo     any            `json:"preListingInfo"`
-	NextPageCursor     string         `json:"nextPageCursor"`
+	Symbol             string         `bson:"symbol"`
+	ContractType       string         `bson:"contractType"`
+	Status             string         `bson:"status"`
+	BaseCoin           string         `bson:"baseCoin"`
+	QuoteCoin          string         `bson:"quoteCoin"`
+	LaunchTime         string         `bson:"launchTime"`
+	DeliveryTime       string         `bson:"deliveryTime"`
+	DeliveryFeeRate    string         `bson:"deliveryFeeRate"`
+	PriceScale         string         `bson:"priceScale"`
+	LeverageFilter     LeverageFilter `bson:"leverageFilter"`
+	PriceFilter        PriceFilter    `bson:"priceFilter"`
+	LotSizeFilter      LotSizeFilter  `bson:"lotSizeFilter"`
+	UnifiedMarginTrade bool           `bson:"unifiedMarginTrade"`
+	FundingInterval    int            `bson:"fundingInterval"`
+	SettleCoin         string         `bson:"settleCoin"`
+	CopyTrading        string         `bson:"copyTrading"`
+	UpperFundingRate   string         `bson:"upperFundingRate"`
+	LowerFundingRate   string         `bson:"lowerFundingRate"`
+	IsPreListing       bool           `bson:"isPreListing"`
+	PreListingInfo     PreListingInfo `bson:"preListingInfo"`
+	NextPageCursor     string         `bson:"nextPageCursor"`
 	CreatedAt          time.Time      `bson:"created_at"`
 	UpdatedAt          time.Time      `bson:"updated_at"`
 }

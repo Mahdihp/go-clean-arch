@@ -27,7 +27,7 @@ func NewUser(db *mongodb.MongoDb) *UserRepositoryImpl {
 }
 
 func (s *UserRepositoryImpl) FindByApiKey(ctx context.Context, apiKey string) (models.ByBitUser, error) {
-	collection := s.db.MongoConn().Collection(models.Coll_ByBitUser)
+	collection := s.db.MongoConn().Collection(models.Collection_ByBit_User)
 	//filter := bson.D{primitive.E{Key: "api_key", Value: apiKey}}
 	filter := bson.D{{params.Field_Search_ApiKey, bson.D{{params.Equal_Opt, apiKey}}}}
 

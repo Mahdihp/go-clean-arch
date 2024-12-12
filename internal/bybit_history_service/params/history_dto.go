@@ -1,4 +1,4 @@
-package models
+package params
 
 type HistoryDto struct {
 	ApiKey      string `json:"api_key"`

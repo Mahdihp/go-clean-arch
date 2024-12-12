@@ -1,13 +1,11 @@
-package params_bybit_http
+package params_bybit_grpc
 
 import (
 	"encoding/json"
-	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/market"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/order"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/position"
 	"github.com/bxcodec/go-clean-arch/util"
 	bybit "github.com/wuhewuhe/bybit.go.api"
-	"google.golang.org/protobuf/types/known/anypb"
 	"strconv"
 )
 
@@ -70,48 +68,6 @@ type CancelAllDto struct {
 	Time int64 `json:"time"`
 }
 
-type GetKlineResponseDto struct {
-	RetCode int    `json:"retCode"`
-	RetMsg  string `json:"retMsg"`
-	Result  struct {
-		Symbol   string     `json:"symbol"`
-		Category string     `json:"category"`
-		List     [][]string `json:"list"`
-	} `json:"result"`
-	RetExtInfo struct {
-	} `json:"retExtInfo"`
-	Time int64 `json:"time"`
-}
-
-func ToGetKlineResponse(data GetKlineResponseDto) market.GetKlineResponse {
-	response := market.GetKlineResponse{}
-	response.RetMsg = data.RetMsg
-	response.RetCode = int32(data.RetCode)
-	var toAny *anypb.Any
-	toAny, err := util.ConvertInterfaceToAny(data.Result.List)
-	if err != nil {
-		toAny = nil
-	}
-	response.Result = &market.GetKlineResponse_Result{
-		Symbol:   data.Result.Symbol,
-		Category: data.Result.Category,
-		List:     toAny,
-	}
-	response.Time = uint64(data.Time)
-	return response
-}
-func ToGetKlineDto(data *bybit.ServerResponse) GetKlineResponseDto {
-	marshal, err := json.Marshal(data)
-	var pl GetKlineResponseDto
-	if err != nil {
-		return pl
-	}
-	err = json.Unmarshal(marshal, &pl)
-	if err != nil {
-		return pl
-	}
-	return pl
-}
 func OrderToCancelAllOrderDto(data *bybit.ServerResponse) CancelAllDto {
 	marshal, err := json.Marshal(data)
 	var pl CancelAllDto

@@ -3,6 +3,7 @@ package bybit_history_service
 import (
 	"github.com/bxcodec/go-clean-arch/config"
 	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/models"
+	params2 "github.com/bxcodec/go-clean-arch/internal/bybit_history_service/params"
 	"github.com/bxcodec/go-clean-arch/internal/validator"
 	"github.com/bxcodec/go-clean-arch/params"
 	"github.com/bxcodec/go-clean-arch/pkg/httpmsg"
@@ -37,7 +38,7 @@ func (s ByBitHistoricalServic) SetRoutes(router *echo.Echo) {
 }
 
 func (s ByBitHistoricalServic) search(ctx echo.Context) error {
-	var req models.HistoryDto
+	var req params2.HistoryDto
 	if err := ctx.Bind(&req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest)
 	}

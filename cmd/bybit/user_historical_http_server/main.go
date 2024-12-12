@@ -46,7 +46,7 @@ func main() {
 
 func setupServices(cfg config.Config) bybit_history_service.ByBitHistoricalServic {
 	//postgresDB := db.NewPostgres(cfg.Postgres)
-	mongoDb := mongodb.NewMongoDb(cfg.MongoDb)
+	mongoDb := mongodb.NewMongoDb(cfg.MongoDbMarket)
 
 	userRepo := bybit_history_service.NewUser(mongoDb)
 	historyRepo := bybit_history_service.NewHistory(mongoDb)

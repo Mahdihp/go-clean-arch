@@ -4,18 +4,19 @@ import (
 	"context"
 	"fmt"
 	"github.com/bxcodec/go-clean-arch/config"
-	"github.com/bxcodec/go-clean-arch/db/mongodb"
 	"github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service"
 	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
-	params_bybit_http "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/params"
-	params2 "github.com/bxcodec/go-clean-arch/params"
+	params_http "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/params"
+	"github.com/bxcodec/go-clean-arch/params"
 	"github.com/go-co-op/gocron/v2"
+	_ "github.com/go-co-op/gocron/v2"
 	bybit "github.com/wuhewuhe/bybit.go.api"
 )
 
-func sendRequestToBybit(cfg config.Config, mongodb *mongodb.MongoDb, category string) *bybit.ServerResponse {
+func sendRequestToBybit(cfg config.Config, category string) *bybit.ServerResponse {
+
 	byBitClient := bybit.NewBybitHttpClient(cfg.ByBitWs.ApiKey, cfg.ByBitWs.ApiSecret, bybit.WithBaseURL(bybit.MAINNET))
-	params := map[string]interface{}{"category": category, "limit": 1000}
+	params := map[string]interface{}{"category": category, "limit": cfg.MaxCountMarket}
 	spotList, err2 := byBitClient.NewClassicalBybitServiceWithParams(params).GetInstrumentInfo(context.Background())
 	if err2 != nil {
 		fmt.Println("sendRequestToBybit is error:", err2)
@@ -23,63 +24,60 @@ func sendRequestToBybit(cfg config.Config, mongodb *mongodb.MongoDb, category st
 	}
 	return spotList
 }
-func UpdateInstrumentInfoInverse(cfg config.Config, mongodb *mongodb.MongoDb) gocron.Task {
-	//return gocron.NewTask(
-	//	func() {
-
-	toBybit := sendRequestToBybit(cfg, mongodb, params2.Market_Inverse)
-	if toBybit == nil {
-		instrumentInfoDto := params_bybit_http.ToGetInstrumentInfoSpotDto(toBybit)
-		coll_InstrumentsInfoSpot := params_bybit_http.ToByBitMarketGetInstrumentsInfoSpot(instrumentInfoDto)
-		service := bybit_grpc_service.NewByBitMarketService(mongodb)
-		err := service.FindOneAndUpdateSpot(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoInverse,
-			coll_InstrumentsInfoSpot)
-		if err != nil {
-			fmt.Println("UpdateInstrumentInfoInverse error...", err)
-		}
-		fmt.Println("UpdateInstrumentInfoInverse is Complate")
-	} else {
-		fmt.Println("Bybit Not Connect.")
-	}
-	//},
-	//)
-	return nil
-}
-func UpdateInstrumentInfoSpot(cfg config.Config, mongodb *mongodb.MongoDb) gocron.Task {
-	//return gocron.NewTask(
-	//	func() {
-	toBybit := sendRequestToBybit(cfg, mongodb, params2.Market_Spot)
-	if toBybit == nil {
-		instrumentInfoDto := params_bybit_http.ToGetInstrumentInfoSpotDto(toBybit)
-		coll_InstrumentsInfoSpot := params_bybit_http.ToByBitMarketGetInstrumentsInfoSpot(instrumentInfoDto)
-		service := bybit_grpc_service.NewByBitMarketService(mongodb)
-		err := service.FindOneAndUpdateSpot(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoSpot,
-			coll_InstrumentsInfoSpot)
-		if err != nil {
-			fmt.Println("UpdateInstrumentInfoSpot error...", err)
-		}
-		fmt.Println("UpdateInstrumentInfoSpot is Complate")
-	} else {
-		fmt.Println("Bybit Not Connect.")
-	}
-	//},
-	//)
-	return nil
-}
-func UpdateInstrumentInfoLinear(cfg config.Config, mongodb *mongodb.MongoDb) gocron.Task {
+func UpdateInstrumentInfoInverse(cfg config.Config, marketSvc bybit_grpc_service.ByBitMarketRepository) gocron.Task {
 	return gocron.NewTask(
 		func() {
-			toBybit := sendRequestToBybit(cfg, mongodb, params2.Market_Linear)
-			if toBybit == nil {
-				instrumentInfoDto := params_bybit_http.ToGetInstrumentInfoLinearDto(toBybit)
-				coll_InstrumentsInfoLinear := params_bybit_http.ToByBitMarketGetInstrumentsInfoLinear(instrumentInfoDto)
-				service := bybit_grpc_service.NewByBitMarketService(mongodb)
-				err := service.FindOneAndUpdateLinear(context.Background(), models_grpc.Coll_ByBitMarketGetInstrumentsInfoLinear,
+
+			toBybit := sendRequestToBybit(cfg, params.Market_Inverse)
+			if toBybit != nil {
+				instrumentInfoDto := params_http.ToGetInstrumentInfoSpotDto(toBybit)
+				coll_InstrumentsInfoSpot := params_http.ToByBitMarketGetInstrumentsInfoSpot(instrumentInfoDto, toBybit.Time)
+				err := marketSvc.FindOneAndUpdateSpot(context.Background(), models_grpc.Collection_ByBit_MGIII,
+					coll_InstrumentsInfoSpot)
+				if err != nil {
+					fmt.Println("Update InstrumentInfo Inverse error...", err)
+				}
+				fmt.Println("Update InstrumentInfo Inverse is Complate")
+			} else {
+				fmt.Println("Bybit Not Connect.")
+			}
+		},
+	)
+}
+func UpdateInstrumentInfoSpot(cfg config.Config, marketSvc bybit_grpc_service.ByBitMarketRepository) gocron.Task {
+	return gocron.NewTask(
+		func() {
+			toBybit := sendRequestToBybit(cfg, params.Market_Spot)
+			if toBybit != nil {
+				instrumentInfoDto := params_http.ToGetInstrumentInfoSpotDto(toBybit)
+				coll_InstrumentsInfoSpot := params_http.ToByBitMarketGetInstrumentsInfoSpot(instrumentInfoDto, toBybit.Time)
+
+				err := marketSvc.FindOneAndUpdateSpot(context.Background(), models_grpc.Collection_ByBit_MGIIS,
+					coll_InstrumentsInfoSpot)
+				if err != nil {
+					fmt.Println("Update InstrumentInfo Spot error...", err)
+				}
+				fmt.Println("Update InstrumentInfo Spot is Complate")
+			} else {
+				fmt.Println("Bybit Not Connect.")
+			}
+		},
+	)
+}
+func UpdateInstrumentInfoLinear(cfg config.Config, marketSvc bybit_grpc_service.ByBitMarketRepository) gocron.Task {
+	return gocron.NewTask(
+		func() {
+			toBybit := sendRequestToBybit(cfg, params.Market_Linear)
+			if toBybit != nil {
+				instrumentInfoDto := params_http.ToGetInstrumentInfoLinearDto(toBybit)
+				coll_InstrumentsInfoLinear := params_http.ToByBitMarketGetInstrumentsInfoLinear(instrumentInfoDto, toBybit.Time)
+
+				err := marketSvc.FindOneAndUpdateLinear(context.Background(), models_grpc.Collection_ByBit_MGIIL,
 					coll_InstrumentsInfoLinear)
 				if err != nil {
-					fmt.Println("UpdateInstrumentInfoLinear error...", err)
+					fmt.Println("Update InstrumentInfo Linear error...", err)
 				}
-				fmt.Println("UpdateInstrumentInfoLinear is Complate")
+				fmt.Println("Update InstrumentInfo Linear is Complate")
 			} else {
 				fmt.Println("Bybit Not Connect.")
 			}

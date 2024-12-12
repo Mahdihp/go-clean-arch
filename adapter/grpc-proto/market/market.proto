@@ -35,52 +35,61 @@ message GetInstrumentsInfoRequest{
   int32  limit = 5;
   string  cursor = 6;
 }
+message LeverageFilter {
+  string minLeverage = 1;
+  string maxLeverage = 2;
+  string leverageStep = 3;
+}
+
+message PriceFilter {
+  string minPrice = 1;
+  string maxPrice = 2;
+  string tickSize = 3;
+}
+
+message LotSizeFilter {
+  string maxOrderQty = 1;
+  string maxMktOrderQty = 2;
+  string minOrderQty = 3;
+  string qtyStep = 4;
+  string postOnlyMaxOrderQty = 5;
+  string minNotionalValue = 6;
+  string basePrecision = 7;
+  string quotePrecision = 8;
+  string minOrderAmt = 9;
+  string maxOrderAmt = 10;
+
+
+}
+
+message Phases {
+  string phase = 1;
+  string startTime = 2;
+  string endTime = 3;
+}
+
+message AuctionFeeInfo {
+  string auctionFeeRate = 1;
+  string takerFeeRate = 2;
+  string makerFeeRate = 3;
+}
+
+message RiskParameters {
+  string limitParameter = 1;
+  string marketParameter = 2;
+}
+
+message PreListingInfo {
+  string curAuctionPhase = 1;
+  repeated Phases phases = 2;
+  AuctionFeeInfo auctionFeeInfo = 3;
+}
 message GetInstrumentsInfoLinearResponse{
   uint32 retCode = 1;
   string retMsg = 2;
   Result result = 3;
   RetExtInfo retExtInfo = 4;
   uint64 time = 5;
-
-  message LeverageFilter {
-    string minLeverage = 1;
-    string maxLeverage = 2;
-    string leverageStep = 3;
-  }
-
-  message PriceFilter {
-    string minPrice = 1;
-    string maxPrice = 2;
-    string tickSize = 3;
-  }
-
-  message LotSizeFilter {
-    string maxOrderQty = 1;
-    string maxMktOrderQty = 2;
-    string minOrderQty = 3;
-    string qtyStep = 4;
-    string postOnlyMaxOrderQty = 5;
-    string minNotionalValue = 6;
-  }
-
-  message Phases {
-    string phase = 1;
-    string startTime = 2;
-    string endTime = 3;
-  }
-
-  message AuctionFeeInfo {
-    string auctionFeeRate = 1;
-    string takerFeeRate = 2;
-    string makerFeeRate = 3;
-  }
-
-  message PreListingInfo {
-    string curAuctionPhase = 1;
-    repeated Phases phases = 2;
-    AuctionFeeInfo auctionFeeInfo = 3;
-  }
-
 
   message List {
     string symbol = 1;
@@ -91,7 +100,7 @@ message GetInstrumentsInfoLinearResponse{
     string launchTime = 6;
     string deliveryTime = 7;
     string deliveryFeeRate = 8;
-    string price_scale = 9;
+    string priceScale = 9;
     LeverageFilter leverageFilter = 10;
     PriceFilter priceFilter = 11;
     LotSizeFilter lotSizeFilter = 12;
@@ -115,42 +124,43 @@ message GetInstrumentsInfoLinearResponse{
   }
 }
 
-message GetInstrumentsInfoOptionResponse {
+message GetInstrumentsInfoInverseResponse {
   uint32 retCode = 1;
   string retMsg = 2;
   Result result = 3;
   RetExtInfo retExtInfo = 4;
   uint64 time = 5;
 
-  message PriceFilter {
-    string minPrice = 1;
-    string maxPrice = 2;
-    string tickSize = 3;
-  }
-
-  message LotSizeFilter {
-    string maxOrderQty = 1;
-    string minOrderQty = 2;
-    string qtyStep = 3;
-  }
 
   message List {
     string symbol = 1;
-    string status = 2;
-    string base_coin = 3;
-    string quote_coin = 4;
-    string settle_coin = 5;
-    string options_type = 6;
-    string launch_time = 7;
-    string delivery_time = 8;
-    string delivery_fee_rate = 9;
-    PriceFilter priceFilter = 10;
-    LotSizeFilter lotSizeFilter = 11;
+    string contractType = 2;
+    string status = 3;
+    string baseCoin = 4;
+    string quoteCoin = 5;
+    string launchTime = 6;
+    string deliveryTime = 7;
+    string deliveryFeeRate = 8;
+    string priceScale = 9;
+    bool unifiedMarginTrade = 10;
+    uint32 fundingInterval = 11;
+    string copyTrading = 12;
+    string upperFundingRate = 13;
+    string lowerFundingRate = 14;
+    bool isPreListing = 15;
+    string settleCoin = 16;
+    string optionsType = 17;
+    LeverageFilter leverageFilter = 18;
+    PriceFilter priceFilter = 19;
+    LotSizeFilter lotSizeFilter = 20;
+    PreListingInfo preListingInfo = 21;
+
+
   }
 
   message Result {
     string category = 1;
-    string next_page_cursor = 2;
+    string nextPageCursor = 2;
     repeated List list = 3;
   }
   message RetExtInfo {
@@ -163,24 +173,6 @@ message GetInstrumentsInfoSpotResponse {
   Result result = 3;
   RetExtInfo retExtInfo = 4;
   uint64 time = 5;
-
-  message LotSizeFilter {
-    string basePrecision = 1;
-    string quotePrecision = 2;
-    string minOrderQty = 3;
-    string maxOrderQty = 4;
-    string minOrderAmt = 5;
-    string maxOrderAmt = 6;
-  }
-
-  message PriceFilter {
-    string tickSize = 1;
-  }
-
-  message RiskParameters {
-    string limitParameter = 1;
-    string marketParameter = 2;
-  }
 
   message List {
     string symbol = 1;
@@ -203,10 +195,147 @@ message GetInstrumentsInfoSpotResponse {
   message RetExtInfo {
   }
 }
+message Test{
+  string name = 1;
+}
+
+message GetTickersRequest{
+  string  category = 1;
+  string  symbol = 2;
+  string  baseCoin = 3;
+  string  expDate = 4;
+}
+
+message GetTickersSpotResponse{
+  uint32 retCode = 1;
+  string retMsg = 2;
+  Result result = 3;
+  RetExtInfo retExtInfo = 4;
+  uint64 time = 5;
+
+  message List {
+    string symbol = 1;
+    string bid1Price = 2;
+    string bid1Size = 3;
+    string ask1Price = 4;
+    string ask1Size = 5;
+    string lastPrice = 6;
+    string prevPrice24h = 7;
+    string price24hPcnt = 8;
+    string highPrice24h = 9;
+    string lowPrice24h = 10;
+    string turnover24h = 11;
+    string volume24h = 12;
+    string usdIndexPrice = 13;
+  }
+
+  message Result {
+    string category = 1;
+    repeated List list = 2;
+  }
+
+  message RetExtInfo {
+  }
+}
+message GetTickersLinearResponse{
+  uint32 retCode = 1;
+  string retMsg = 2;
+  Result result = 3;
+  RetExtInfo retExtInfo = 4;
+  uint64 time = 5;
+
+  message List {
+    string symbol = 1;
+    string lastPrice = 2;
+    string indexPrice = 3;
+    string markPrice = 4;
+    string prevPrice24h = 5;
+    string price24hPcnt = 6;
+    string highPrice24h = 7;
+    string lowPrice24h = 8;
+    string prevPrice1h = 9;
+    string openInterest = 10;
+    string openInterestValue = 11;
+    string turnover24h = 12;
+    string volume24h = 13;
+    string fundingRate = 14;
+    string nextFundingTime = 15;
+    string predictedDeliveryPrice = 16;
+    string basisRate = 17;
+    string deliveryFeeRate = 18;
+    string deliveryTime = 19;
+    string ask1Size = 20;
+    string bid1Price = 21;
+    string ask1Price = 22;
+    string bid1Size = 23;
+    string basis = 24;
+    string preOpenPrice = 25;
+    string preQty = 26;
+    string curPreListingPhase = 27;
+  }
+
+  message Result {
+    string category = 1;
+    repeated List list = 2;
+  }
+
+  message RetExtInfo {
+  }
+}
+message GetTickersInverseResponse{
+  uint32 retCode = 1;
+  string retMsg = 2;
+  Result result = 3;
+  RetExtInfo retExtInfo = 4;
+  uint64 time = 5;
+
+  message List {
+    string symbol = 1;
+    string lastPrice = 2;
+    string indexPrice = 3;
+    string markPrice = 4;
+    string prevPrice24h = 5;
+    string price24hPcnt = 6;
+    string highPrice24h = 7;
+    string lowPrice24h = 8;
+    string prevPrice1h = 9;
+    string openInterest = 10;
+    string openInterestValue = 11;
+    string turnover24h = 12;
+    string volume24h = 13;
+    string fundingRate = 14;
+    string nextFundingTime = 15;
+    string predictedDeliveryPrice = 16;
+    string basisRate = 17;
+    string deliveryFeeRate = 18;
+    string deliveryTime = 19;
+    string ask1Size = 20;
+    string bid1Price = 21;
+    string ask1Price = 22;
+    string bid1Size = 23;
+    string basis = 24;
+    string preOpenPrice = 25;
+    string preQty = 26;
+    string curPreListingPhase = 27;
+  }
+
+  message Result {
+    string category = 1;
+    repeated List list = 2;
+  }
+
+  message RetExtInfo {
+  }
+}
 
 service MarketService {
+  rpc GetTest(Test) returns (GetKlineResponse) {}
   rpc GetKline(GetKlineRequest) returns (GetKlineResponse) {}
   rpc GetInstrumentsInfoLinear(GetInstrumentsInfoRequest) returns (GetInstrumentsInfoLinearResponse) {}
-  rpc GetInstrumentsInfoOption(GetInstrumentsInfoRequest) returns (GetInstrumentsInfoOptionResponse) {}
+  rpc GetInstrumentsInfoInverse(GetInstrumentsInfoRequest) returns (GetInstrumentsInfoInverseResponse) {}
   rpc GetInstrumentsInfoSpot(GetInstrumentsInfoRequest) returns (GetInstrumentsInfoSpotResponse) {}
+
+  rpc GetTickersSpot(GetTickersRequest) returns (GetTickersSpotResponse) {}
+  rpc GetTickersLinear(GetTickersRequest) returns (GetTickersLinearResponse) {}
+  rpc GetTickersInverse(GetTickersRequest) returns (GetTickersInverseResponse) {}
 }

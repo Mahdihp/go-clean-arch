@@ -7,6 +7,8 @@ import (
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/anypb"
+	"log"
+	"strconv"
 	"time"
 )
 
@@ -43,7 +45,19 @@ func EncodeCursor(t time.Time) string {
 	timeString := t.Format(timeFormat)
 	return base64.StdEncoding.EncodeToString([]byte(timeString))
 }
+func MustParseInt64(s string) int64 {
+	d, err := strconv.ParseInt(s, 10, 0)
+	if err != nil {
+		log.Fatalf("failed to parse int: %v", err)
+	}
+	return d
+}
 
+func TimestampToTime(Timestamp int64) time.Time {
+	s := strconv.FormatInt(Timestamp, 10)
+	sec := MustParseInt64(s)
+	return time.UnixMilli(sec)
+}
 func ConvertInterfaceToAny(v interface{}) (*anypb.Any, error) {
 	anyValue := &anypb.Any{}
 	bytes, _ := json.Marshal(v)
