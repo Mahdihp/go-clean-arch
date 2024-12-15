@@ -8,7 +8,27 @@ const (
 	Collection_ByBit_MGIIL string = "ByBitMarketGetInstrumentsInfoLinear"
 	Collection_ByBit_MGIII string = "ByBitMarketGetInstrumentsInfoInverse"
 	Collection_ByBit_MGIIS string = "ByBitMarketGetInstrumentsInfoSpot"
+	Collection_ByBit_MGRL  string = "BybitMarketGetRiskLimit"
 )
+
+type BybitMarketGetRiskLimitDto struct {
+	Category       string                    `json:"category"`
+	List           []BybitMarketGetRiskLimit `json:"list"`
+	NextPageCursor string                    `json:"nextPageCursor"`
+}
+type BybitMarketGetRiskLimit struct {
+	ID                int       `json:"id"`
+	Category          string    `json:"category"`
+	IsLowestRisk      int       `json:"isLowestRisk"`
+	Symbol            string    `json:"symbol"`
+	RiskLimitValue    string    `json:"riskLimitValue"`
+	MaintenanceMargin string    `json:"maintenanceMargin"`
+	InitialMargin     string    `json:"initialMargin"`
+	MaxLeverage       string    `json:"maxLeverage"`
+	MmDeduction       string    `json:"mmDeduction"`
+	CreatedAt         time.Time `json:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at"`
+}
 
 type LeverageFilter struct {
 	MinLeverage  string `bson:"minLeverage"`
@@ -118,4 +138,93 @@ type ByBitMarketGetInstrumentsInfoInverse struct {
 	NextPageCursor     string         `bson:"nextPageCursor"`
 	CreatedAt          time.Time      `bson:"created_at"`
 	UpdatedAt          time.Time      `bson:"updated_at"`
+}
+
+type BybitMarketGetTickerSpotDto struct {
+	Category       string                     `json:"category"`
+	List           []BybitMarketGetTickerSpot `json:"list"`
+	NextPageCursor string                     `json:"nextPageCursor"`
+}
+type BybitMarketGetTickerSpot struct {
+	Symbol        string `json:"symbol"`
+	Bid1Price     string `json:"bid1Price"`
+	Bid1Size      string `json:"bid1Size"`
+	Ask1Price     string `json:"ask1Price"`
+	Ask1Size      string `json:"ask1Size"`
+	LastPrice     string `json:"lastPrice"`
+	PrevPrice24H  string `json:"prevPrice24h"`
+	Price24HPcnt  string `json:"price24hPcnt"`
+	HighPrice24H  string `json:"highPrice24h"`
+	LowPrice24H   string `json:"lowPrice24h"`
+	Turnover24H   string `json:"turnover24h"`
+	Volume24H     string `json:"volume24h"`
+	UsdIndexPrice string `json:"usdIndexPrice"`
+}
+type BybitMarketGetTickerLinear struct {
+	Symbol                 string `json:"symbol"`
+	LastPrice              string `json:"lastPrice"`
+	IndexPrice             string `json:"indexPrice"`
+	MarkPrice              string `json:"markPrice"`
+	PrevPrice24H           string `json:"prevPrice24h"`
+	Price24HPcnt           string `json:"price24hPcnt"`
+	HighPrice24H           string `json:"highPrice24h"`
+	LowPrice24H            string `json:"lowPrice24h"`
+	PrevPrice1H            string `json:"prevPrice1h"`
+	OpenInterest           string `json:"openInterest"`
+	OpenInterestValue      string `json:"openInterestValue"`
+	Turnover24H            string `json:"turnover24h"`
+	Volume24H              string `json:"volume24h"`
+	FundingRate            string `json:"fundingRate"`
+	NextFundingTime        string `json:"nextFundingTime"`
+	PredictedDeliveryPrice string `json:"predictedDeliveryPrice"`
+	BasisRate              string `json:"basisRate"`
+	DeliveryFeeRate        string `json:"deliveryFeeRate"`
+	DeliveryTime           string `json:"deliveryTime"`
+	Ask1Size               string `json:"ask1Size"`
+	Bid1Price              string `json:"bid1Price"`
+	Ask1Price              string `json:"ask1Price"`
+	Bid1Size               string `json:"bid1Size"`
+	Basis                  string `json:"basis"`
+	PreOpenPrice           string `json:"preOpenPrice"`
+	PreQty                 string `json:"preQty"`
+	CurPreListingPhase     string `json:"curPreListingPhase"`
+}
+
+type BybitMarketGetTickerLinearDto struct {
+	Category string                       `json:"category"`
+	List     []BybitMarketGetTickerLinear `json:"list"`
+}
+
+type BybitMarketGetTickerInverse struct {
+	Symbol                 string `json:"symbol"`
+	LastPrice              string `json:"lastPrice"`
+	IndexPrice             string `json:"indexPrice"`
+	MarkPrice              string `json:"markPrice"`
+	PrevPrice24H           string `json:"prevPrice24h"`
+	Price24HPcnt           string `json:"price24hPcnt"`
+	HighPrice24H           string `json:"highPrice24h"`
+	LowPrice24H            string `json:"lowPrice24h"`
+	PrevPrice1H            string `json:"prevPrice1h"`
+	OpenInterest           string `json:"openInterest"`
+	OpenInterestValue      string `json:"openInterestValue"`
+	Turnover24H            string `json:"turnover24h"`
+	Volume24H              string `json:"volume24h"`
+	FundingRate            string `json:"fundingRate"`
+	NextFundingTime        string `json:"nextFundingTime"`
+	PredictedDeliveryPrice string `json:"predictedDeliveryPrice"`
+	BasisRate              string `json:"basisRate"`
+	DeliveryFeeRate        string `json:"deliveryFeeRate"`
+	DeliveryTime           string `json:"deliveryTime"`
+	Ask1Size               string `json:"ask1Size"`
+	Bid1Price              string `json:"bid1Price"`
+	Ask1Price              string `json:"ask1Price"`
+	Bid1Size               string `json:"bid1Size"`
+	Basis                  string `json:"basis"`
+	PreOpenPrice           string `json:"preOpenPrice"`
+	PreQty                 string `json:"preQty"`
+	CurPreListingPhase     string `json:"curPreListingPhase"`
+}
+type BybitMarketGetTickerInverseDto struct {
+	Category string                        `json:"category"`
+	List     []BybitMarketGetTickerInverse `json:"list"`
 }

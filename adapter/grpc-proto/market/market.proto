@@ -327,7 +327,40 @@ message GetTickersInverseResponse{
   message RetExtInfo {
   }
 }
+message GetRiskLimitRequest{
+  string  category = 1;
+  string  symbol = 2;
+  string  cursor = 3;
+}
 
+message GetRiskLimitResponse {
+
+  message List {
+    uint32 id = 1;
+    string symbol = 2;
+    string riskLimitValue = 3;
+    string maintenanceMargin = 4;
+    string initialMargin = 5;
+    uint32 isLowestRisk = 6;
+    string maxLeverage = 7;
+    string mmDeduction = 8;
+  }
+
+  message Result {
+    string category = 1;
+    repeated List list = 2;
+    string nextPageCursor = 3;
+  }
+
+  message Retextinfo {
+  }
+
+  uint32 retCode = 1;
+  string retMsg = 2;
+  Result result = 3;
+  Retextinfo retExtInfo = 4;
+  uint64 time = 5;
+}
 service MarketService {
   rpc GetTest(Test) returns (GetKlineResponse) {}
   rpc GetKline(GetKlineRequest) returns (GetKlineResponse) {}
@@ -338,4 +371,7 @@ service MarketService {
   rpc GetTickersSpot(GetTickersRequest) returns (GetTickersSpotResponse) {}
   rpc GetTickersLinear(GetTickersRequest) returns (GetTickersLinearResponse) {}
   rpc GetTickersInverse(GetTickersRequest) returns (GetTickersInverseResponse) {}
+
+  rpc GetRiskLimitLinear(GetRiskLimitRequest) returns (GetRiskLimitResponse){}
+  rpc GetRiskLimitInverse(GetRiskLimitRequest) returns (GetRiskLimitResponse){}
 }

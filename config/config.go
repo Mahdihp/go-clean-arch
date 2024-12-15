@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	MaxCountMarket    int
 	WsOrderBookServer BybitWSServer
 	TradeGrpcServer   BybitTradGrpcServer
 	HistoricalServer  BybitHistoricalServer
@@ -14,8 +15,8 @@ type Config struct {
 	ByBitWs           ByBitWS
 	MongoDbMarket     MongoDbMarket
 	MongoDbHistory    MongoDbHistory
+	RedisMarket       RedisMarket
 	CronJob           CronJob
-	MaxCountMarket    int
 }
 type ByBitWS struct {
 	ApiKey         string `mapstructure:"APIKEY"`
@@ -54,6 +55,14 @@ type MongoDbMarket struct {
 	DBName   string `mapstructure:"MONGODB_MARKET_DB"`
 	Username string `mapstructure:"MONGODB_MARKET_USER"`
 	Password string `mapstructure:"MONGODB_MARKET_PASS"`
+}
+type RedisMarket struct {
+	Host                       string `mapstructure:"REDIS_MARKET_HOST"`
+	HttpPort                   int    `mapstructure:"REDIS_MARKET_PORT"`
+	DBName                     string `mapstructure:"REDIS_MARKET_DB"`
+	Username                   string `mapstructure:"REDIS_MARKET_USER"`
+	Password                   string `mapstructure:"REDIS_MARKET_PASS"`
+	IntervalSecondMarketTicker int    `mapstructure:"INTERVAL_SECOND_MARKET_TICKER"`
 }
 
 type MongoDbHistory struct {
@@ -104,6 +113,13 @@ func LoadConfig() Config {
 	c.MongoDbHistory.DBName = os.Getenv("MONGODB_HISTORY_MARKET_DB")
 	c.MongoDbHistory.Username = os.Getenv("MONGODB_HISTORY_USER")
 	c.MongoDbHistory.Password = os.Getenv("MONGODB_HISTORY_PASS")
+
+	c.RedisMarket.Host = os.Getenv("REDIS_MARKET_HOST")
+	c.RedisMarket.HttpPort, _ = strconv.Atoi(os.Getenv("REDIS_MARKET_PORT"))
+	c.RedisMarket.DBName = os.Getenv("REDIS_MARKET_DB")
+	c.RedisMarket.Username = os.Getenv("REDIS_MARKET_USER")
+	c.RedisMarket.Password = os.Getenv("REDIS_MARKET_PASS")
+	c.RedisMarket.IntervalSecondMarketTicker, _ = strconv.Atoi(os.Getenv("INTERVAL_SECOND_MARKET_TICKER"))
 
 	c.CronJob.DurationBySecond, _ = strconv.Atoi(os.Getenv("GOCRON_DURATION_JOB_SECOND"))
 	c.MaxCountMarket, _ = strconv.Atoi(os.Getenv("MAX_COUNT_MARKET"))

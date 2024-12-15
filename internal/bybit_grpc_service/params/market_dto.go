@@ -115,6 +115,25 @@ func ToGetInstrumentInfoSpotDto(data *bybit.ServerResponse) GetInstrumentInfoSpo
 	}
 	return pl
 }
+func ToBybitMarketGetRiskLimitCollection(data models_grpc.BybitMarketGetRiskLimitDto, time int64, linear string) []models_grpc.BybitMarketGetRiskLimit {
+	var ret []models_grpc.BybitMarketGetRiskLimit
+	for _, item := range data.List {
+		ret = append(ret, models_grpc.BybitMarketGetRiskLimit{
+			ID:                item.ID,
+			Category:          linear,
+			IsLowestRisk:      item.IsLowestRisk,
+			Symbol:            item.Symbol,
+			RiskLimitValue:    item.RiskLimitValue,
+			MaintenanceMargin: item.MaintenanceMargin,
+			InitialMargin:     item.InitialMargin,
+			MaxLeverage:       item.MaxLeverage,
+			MmDeduction:       item.MmDeduction,
+			CreatedAt:         util.TimestampToTime(time),
+			UpdatedAt:         util.TimestampToTime(time),
+		})
+	}
+	return ret
+}
 func ToByBitMarketGetInstrumentsInfoSpot(data GetInstrumentInfoSpotDto, time int64) []models_grpc.ByBitMarketGetInstrumentsInfoSpot {
 	var ret []models_grpc.ByBitMarketGetInstrumentsInfoSpot
 	for _, item := range data.Result.List {
@@ -208,14 +227,118 @@ func ToGetKlineDto(data *bybit.ServerResponse) GetKlineResponseDto {
 	}
 	return pl
 }
+func ToGetTickersInverse(data []models_grpc.BybitMarketGetTickerInverse) market.GetTickersInverseResponse {
+	var mainOutput market.GetTickersInverseResponse
+	var resultOutput market.GetTickersInverseResponse_Result
+	mainOutput.RetCode = 200
+	mainOutput.RetMsg = "OK"
+	mainOutput.Time = uint64(time.Now().UnixMilli())
+	for _, item := range data {
+		resultOutput.List = append(resultOutput.List, &market.GetTickersInverseResponse_List{
+			Symbol:                 item.Symbol,
+			LastPrice:              item.LastPrice,
+			IndexPrice:             item.IndexPrice,
+			MarkPrice:              item.MarkPrice,
+			PrevPrice24H:           item.PrevPrice24H,
+			Price24HPcnt:           item.Price24HPcnt,
+			HighPrice24H:           item.HighPrice24H,
+			LowPrice24H:            item.LowPrice24H,
+			PrevPrice1H:            item.PrevPrice1H,
+			OpenInterest:           item.OpenInterest,
+			OpenInterestValue:      item.OpenInterestValue,
+			Turnover24H:            item.Turnover24H,
+			Volume24H:              item.Volume24H,
+			FundingRate:            item.FundingRate,
+			NextFundingTime:        item.NextFundingTime,
+			PredictedDeliveryPrice: item.PredictedDeliveryPrice,
+			BasisRate:              item.BasisRate,
+			DeliveryFeeRate:        item.DeliveryFeeRate,
+			DeliveryTime:           item.DeliveryTime,
+			Ask1Size:               item.Ask1Size,
+			Bid1Price:              item.Bid1Price,
+			Ask1Price:              item.Ask1Price,
+			Bid1Size:               item.Bid1Size,
+			Basis:                  item.Basis,
+			PreOpenPrice:           item.PreOpenPrice,
+			PreQty:                 item.PreQty,
+			CurPreListingPhase:     item.CurPreListingPhase,
+		})
+	}
+	mainOutput.Result = &resultOutput
+	return mainOutput
+}
+func ToGetTickersLinear(data []models_grpc.BybitMarketGetTickerLinear) market.GetTickersLinearResponse {
+	var mainOutput market.GetTickersLinearResponse
+	var resultOutput market.GetTickersLinearResponse_Result
+	mainOutput.RetCode = 200
+	mainOutput.RetMsg = "OK"
+	mainOutput.Time = uint64(time.Now().UnixMilli())
+	for _, item := range data {
+		resultOutput.List = append(resultOutput.List, &market.GetTickersLinearResponse_List{
+			Symbol:                 item.Symbol,
+			LastPrice:              item.LastPrice,
+			IndexPrice:             item.IndexPrice,
+			MarkPrice:              item.MarkPrice,
+			PrevPrice24H:           item.PrevPrice24H,
+			Price24HPcnt:           item.Price24HPcnt,
+			HighPrice24H:           item.HighPrice24H,
+			LowPrice24H:            item.LowPrice24H,
+			PrevPrice1H:            item.PrevPrice1H,
+			OpenInterest:           item.OpenInterest,
+			OpenInterestValue:      item.OpenInterestValue,
+			Turnover24H:            item.Turnover24H,
+			Volume24H:              item.Volume24H,
+			FundingRate:            item.FundingRate,
+			NextFundingTime:        item.NextFundingTime,
+			PredictedDeliveryPrice: item.PredictedDeliveryPrice,
+			BasisRate:              item.BasisRate,
+			DeliveryFeeRate:        item.DeliveryFeeRate,
+			DeliveryTime:           item.DeliveryTime,
+			Ask1Size:               item.Ask1Size,
+			Bid1Price:              item.Bid1Price,
+			Ask1Price:              item.Ask1Price,
+			Bid1Size:               item.Bid1Size,
+			Basis:                  item.Basis,
+			PreOpenPrice:           item.PreOpenPrice,
+			PreQty:                 item.PreQty,
+			CurPreListingPhase:     item.CurPreListingPhase,
+		})
+	}
+	mainOutput.Result = &resultOutput
+	return mainOutput
+}
+func ToGetTickersSpot(data []models_grpc.BybitMarketGetTickerSpot) market.GetTickersSpotResponse {
+	var mainOutput market.GetTickersSpotResponse
+	var resultOutput market.GetTickersSpotResponse_Result
+	mainOutput.RetCode = 200
+	mainOutput.RetMsg = "OK"
+	mainOutput.Time = uint64(time.Now().UnixMilli())
+	for _, item := range data {
+		resultOutput.List = append(resultOutput.List, &market.GetTickersSpotResponse_List{
+			Symbol:        item.Symbol,
+			Bid1Price:     item.Bid1Price,
+			Bid1Size:      item.Bid1Size,
+			Ask1Price:     item.Ask1Price,
+			Ask1Size:      item.Ask1Size,
+			LastPrice:     item.LastPrice,
+			PrevPrice24H:  item.PrevPrice24H,
+			Price24HPcnt:  item.Price24HPcnt,
+			HighPrice24H:  item.HighPrice24H,
+			LowPrice24H:   item.LowPrice24H,
+			Turnover24H:   item.Turnover24H,
+			Volume24H:     item.Volume24H,
+			UsdIndexPrice: item.UsdIndexPrice,
+		})
+	}
+	mainOutput.Result = &resultOutput
+	return mainOutput
+}
 func ToGetInstrumentsInfoInverseResponse(data []models_grpc.ByBitMarketGetInstrumentsInfoInverse) market.GetInstrumentsInfoInverseResponse {
 	var mainOutput market.GetInstrumentsInfoInverseResponse
 	var resultOutput market.GetInstrumentsInfoInverseResponse_Result
 	mainOutput.RetCode = 200
 	mainOutput.RetMsg = "OK"
 	mainOutput.Time = uint64(time.Now().UnixMilli())
-
-	mainOutput.Result = &resultOutput
 
 	var Phases []*market.Phases
 	for _, item := range data {
@@ -274,6 +397,7 @@ func ToGetInstrumentsInfoInverseResponse(data []models_grpc.ByBitMarketGetInstru
 			},
 		})
 	}
+	mainOutput.Result = &resultOutput
 	return mainOutput
 }
 func ToGetInstrumentsInfoSpotResponse(data []models_grpc.ByBitMarketGetInstrumentsInfoSpot) market.GetInstrumentsInfoSpotResponse {
@@ -282,8 +406,6 @@ func ToGetInstrumentsInfoSpotResponse(data []models_grpc.ByBitMarketGetInstrumen
 	mainOutput.RetCode = 200
 	mainOutput.RetMsg = "OK"
 	mainOutput.Time = uint64(time.Now().UnixMilli())
-
-	mainOutput.Result = &resultOutput
 
 	for _, item := range data {
 
@@ -305,6 +427,7 @@ func ToGetInstrumentsInfoSpotResponse(data []models_grpc.ByBitMarketGetInstrumen
 			},
 		})
 	}
+	mainOutput.Result = &resultOutput
 	return mainOutput
 }
 func ToGetInstrumentsInfoLinearResponse(data []models_grpc.ByBitMarketGetInstrumentsInfoLinear) market.GetInstrumentsInfoLinearResponse {
@@ -313,8 +436,6 @@ func ToGetInstrumentsInfoLinearResponse(data []models_grpc.ByBitMarketGetInstrum
 	mainOutput.RetCode = 200
 	mainOutput.RetMsg = "OK"
 	mainOutput.Time = uint64(time.Now().UnixMilli())
-
-	mainOutput.Result = &resultOutput
 
 	var Phases []*market.Phases
 	for _, item := range data {
@@ -377,5 +498,55 @@ func ToGetInstrumentsInfoLinearResponse(data []models_grpc.ByBitMarketGetInstrum
 			},
 		})
 	}
+	mainOutput.Result = &resultOutput
 	return mainOutput
+}
+
+func ToBybitMarketGetTickerInverseDto(data *bybit.ServerResponse) models_grpc.BybitMarketGetTickerInverseDto {
+	marshal, err := json.Marshal(data.Result)
+	var pl models_grpc.BybitMarketGetTickerInverseDto
+	if err != nil {
+		return pl
+	}
+	err = json.Unmarshal(marshal, &pl)
+	if err != nil {
+		return pl
+	}
+	return pl
+}
+func ToBybitMarketGetTickerLinearDto(data *bybit.ServerResponse) models_grpc.BybitMarketGetTickerLinearDto {
+	marshal, err := json.Marshal(data.Result)
+	var pl models_grpc.BybitMarketGetTickerLinearDto
+	if err != nil {
+		return pl
+	}
+	err = json.Unmarshal(marshal, &pl)
+	if err != nil {
+		return pl
+	}
+	return pl
+}
+func ToBybitMarketGetTickerSpotDto(data *bybit.ServerResponse) models_grpc.BybitMarketGetTickerSpotDto {
+	marshal, err := json.Marshal(data.Result)
+	var pl models_grpc.BybitMarketGetTickerSpotDto
+	if err != nil {
+		return pl
+	}
+	err = json.Unmarshal(marshal, &pl)
+	if err != nil {
+		return pl
+	}
+	return pl
+}
+func ToBybitMarketGetRiskLimitDto(data *bybit.ServerResponse) []models_grpc.BybitMarketGetRiskLimit {
+	marshal, err := json.Marshal(data.Result)
+	var pl []models_grpc.BybitMarketGetRiskLimit
+	if err != nil {
+		return pl
+	}
+	err = json.Unmarshal(marshal, &pl)
+	if err != nil {
+		return pl
+	}
+	return pl
 }

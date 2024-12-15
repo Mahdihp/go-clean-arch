@@ -16,6 +16,10 @@ const (
 	timeFormat = "2006-01-02 15:04:05" // reduce precision from RFC3339Nano as date format
 )
 
+func StructToJson(data interface{}) string {
+	bytes, _ := json.Marshal(data)
+	return string(bytes)
+}
 func MapToString(data map[string]string) string {
 	var str string
 	for key, value := range data {

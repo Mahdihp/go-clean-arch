@@ -1,10 +1,11 @@
-package bybit_grpc_service
+package repository
 
 import (
 	"context"
 	"fmt"
 	"github.com/bxcodec/go-clean-arch/config"
 	"github.com/bxcodec/go-clean-arch/db/mongodb"
+	"github.com/bxcodec/go-clean-arch/db/redis"
 	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
 	"github.com/bxcodec/go-clean-arch/params"
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -14,11 +15,13 @@ import (
 
 type ByBitMarketRepository struct {
 	Mongodb *mongodb.MongoDb
+	Redisdb redis.RedisDb
 }
 
 func New(cfg config.Config) ByBitMarketRepository {
 	return ByBitMarketRepository{
 		Mongodb: mongodb.NewMongoDb(cfg.MongoDbMarket),
+		Redisdb: redis.NewRedis(cfg.RedisMarket),
 	}
 }
 func (receiver ByBitMarketRepository) GetCountCollecton(ctx context.Context, collName string) int64 {
@@ -31,7 +34,8 @@ func (receiver ByBitMarketRepository) GetCountCollecton(ctx context.Context, col
 	}
 	return documents
 }
-func (s *ByBitMarketRepository) FindAllSpotInverse(ctx context.Context, collectionName string, symbol string) ([]models_grpc.ByBitMarketGetInstrumentsInfoInverse, error) {
+
+func (s *ByBitMarketRepository) FindAllInverse(ctx context.Context, collectionName string, symbol string) ([]models_grpc.ByBitMarketGetInstrumentsInfoInverse, error) {
 	collection := s.Mongodb.MongoConn().Collection(collectionName)
 	var spots []models_grpc.ByBitMarketGetInstrumentsInfoInverse
 
@@ -88,10 +92,8 @@ func (s *ByBitMarketRepository) FindAllLinear(ctx context.Context, collectionNam
 	}
 	return linears, nil
 }
-func (s *ByBitMarketRepository) FindOneAndUpdateInverse(ctx context.Context, collectionName string, items []models_grpc.ByBitMarketGetInstrumentsInfoSpot) error {
-	return nil
-}
-func (s *ByBitMarketRepository) FindOneAndUpdateSpot(ctx context.Context, collectionName string, items []models_grpc.ByBitMarketGetInstrumentsInfoSpot) error {
+
+func (s *ByBitMarketRepository) UpdateInverse(ctx context.Context, collectionName string, items []models_grpc.ByBitMarketGetInstrumentsInfoSpot) error {
 	collection := s.Mongodb.MongoConn().Collection(collectionName)
 	var err error
 	fmt.Println("items len: ", len(items))
@@ -124,7 +126,40 @@ func (s *ByBitMarketRepository) FindOneAndUpdateSpot(ctx context.Context, collec
 	}
 	return err
 }
-func (s *ByBitMarketRepository) FindOneAndUpdateLinear(ctx context.Context, collectionName string, items []models_grpc.ByBitMarketGetInstrumentsInfoLinear) error {
+func (s *ByBitMarketRepository) UpdateSpot(ctx context.Context, collectionName string, items []models_grpc.ByBitMarketGetInstrumentsInfoSpot) error {
+	collection := s.Mongodb.MongoConn().Collection(collectionName)
+	var err error
+	fmt.Println("items len: ", len(items))
+	documents := s.GetCountCollecton(ctx, collectionName)
+
+	fmt.Println("documents len: ", documents)
+	if documents > 0 {
+		for _, item := range items {
+			filter := bson.D{{params.Field_Search_Symbol, item.Symbol}}
+			update := bson.D{{"$set", item}}
+
+			write, err := collection.UpdateOne(ctx, filter, update)
+			if err != nil {
+				log.Fatal("UpdateOne error:", err)
+			}
+			if write.MatchedCount == 0 {
+				_, err = collection.InsertOne(context.TODO(), item)
+				if err != nil {
+					log.Fatal("InsertOne error:", err)
+				}
+			}
+		}
+	} else {
+		for _, item := range items {
+			_, err = collection.InsertOne(context.TODO(), item)
+			if err != nil {
+				log.Fatal("InsertOne error:", err)
+			}
+		}
+	}
+	return err
+}
+func (s *ByBitMarketRepository) UpdateLinear(ctx context.Context, collectionName string, items []models_grpc.ByBitMarketGetInstrumentsInfoLinear) error {
 	collection := s.Mongodb.MongoConn().Collection(collectionName)
 	var err error
 	fmt.Println("items len: ", len(items))

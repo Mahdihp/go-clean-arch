@@ -82,6 +82,7 @@ func existDb(client *mongo.Client, cfg config.MongoDbMarket) *mongo.Database {
 			d.CreateCollection(context.Background(), models_grpc.Collection_ByBit_MGIIL)
 			d.CreateCollection(context.Background(), models_grpc.Collection_ByBit_MGIII)
 			d.CreateCollection(context.Background(), models_grpc.Collection_ByBit_MGIIS)
+			d.CreateCollection(context.Background(), models_grpc.Collection_ByBit_MGRL)
 		}
 	}
 	if d == nil {

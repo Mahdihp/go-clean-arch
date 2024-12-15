@@ -28,4 +28,5 @@ const (
 	Field_Search_ApiKey    string = "api_key"
 	Field_Search_UserId    string = "user_id"
 	Field_Search_CreatedAt string = "created_at"
+	Field_Search_Category  string = "category"
 )
