@@ -49,8 +49,8 @@ func (s *ByBitMarketRepository) FindAllInverse(ctx context.Context, collectionNa
 	if err != nil {
 		return []models_grpc.ByBitMarketGetInstrumentsInfoInverse{}, err
 	}
-	if err = cursor.All(context.TODO(), &spots); err != nil {
-		panic(err)
+	if err = cursor.All(ctx, &spots); err != nil {
+		return []models_grpc.ByBitMarketGetInstrumentsInfoInverse{}, err
 	}
 	return spots, nil
 }
@@ -68,8 +68,8 @@ func (s *ByBitMarketRepository) FindAllSpot(ctx context.Context, collectionName 
 	if err != nil {
 		return []models_grpc.ByBitMarketGetInstrumentsInfoSpot{}, err
 	}
-	if err = cursor.All(context.TODO(), &spots); err != nil {
-		panic(err)
+	if err = cursor.All(ctx, &spots); err != nil {
+		return []models_grpc.ByBitMarketGetInstrumentsInfoSpot{}, err
 	}
 	return spots, nil
 }
@@ -87,8 +87,8 @@ func (s *ByBitMarketRepository) FindAllLinear(ctx context.Context, collectionNam
 	if err != nil {
 		return []models_grpc.ByBitMarketGetInstrumentsInfoLinear{}, err
 	}
-	if err = cursor.All(context.TODO(), &linears); err != nil {
-		panic(err)
+	if err = cursor.All(ctx, &linears); err != nil {
+		return []models_grpc.ByBitMarketGetInstrumentsInfoLinear{}, err
 	}
 	return linears, nil
 }
@@ -110,7 +110,7 @@ func (s *ByBitMarketRepository) UpdateInverse(ctx context.Context, collectionNam
 				log.Fatal("UpdateOne error:", err)
 			}
 			if write.MatchedCount == 0 {
-				_, err = collection.InsertOne(context.TODO(), item)
+				_, err = collection.InsertOne(ctx, item)
 				if err != nil {
 					log.Fatal("InsertOne error:", err)
 				}
@@ -118,7 +118,7 @@ func (s *ByBitMarketRepository) UpdateInverse(ctx context.Context, collectionNam
 		}
 	} else {
 		for _, item := range items {
-			_, err = collection.InsertOne(context.TODO(), item)
+			_, err = collection.InsertOne(ctx, item)
 			if err != nil {
 				log.Fatal("InsertOne error:", err)
 			}
@@ -143,7 +143,7 @@ func (s *ByBitMarketRepository) UpdateSpot(ctx context.Context, collectionName s
 				log.Fatal("UpdateOne error:", err)
 			}
 			if write.MatchedCount == 0 {
-				_, err = collection.InsertOne(context.TODO(), item)
+				_, err = collection.InsertOne(ctx, item)
 				if err != nil {
 					log.Fatal("InsertOne error:", err)
 				}
@@ -151,7 +151,7 @@ func (s *ByBitMarketRepository) UpdateSpot(ctx context.Context, collectionName s
 		}
 	} else {
 		for _, item := range items {
-			_, err = collection.InsertOne(context.TODO(), item)
+			_, err = collection.InsertOne(ctx, item)
 			if err != nil {
 				log.Fatal("InsertOne error:", err)
 			}
@@ -179,7 +179,7 @@ func (s *ByBitMarketRepository) UpdateLinear(ctx context.Context, collectionName
 				log.Fatal("UpdateOne error:", err)
 			}
 			if write.MatchedCount == 0 {
-				_, err = collection.InsertOne(context.TODO(), item)
+				_, err = collection.InsertOne(ctx, item)
 				if err != nil {
 					log.Fatal("InsertOne error:", err)
 				}
@@ -187,7 +187,7 @@ func (s *ByBitMarketRepository) UpdateLinear(ctx context.Context, collectionName
 		}
 	} else {
 		for _, item := range items {
-			_, err = collection.InsertOne(context.TODO(), item)
+			_, err = collection.InsertOne(ctx, item)
 			if err != nil {
 				log.Fatal("InsertOne error:", err)
 			}
@@ -206,8 +206,8 @@ func (s *ByBitMarketRepository) FindLastItemBySymbol(ctx context.Context, collec
 	if err != nil {
 		return []models_grpc.ByBitMarketGetInstrumentsInfoLinear{}, err
 	}
-	if err = cursor.All(context.TODO(), &linears); err != nil {
-		panic(err)
+	if err = cursor.All(ctx, &linears); err != nil {
+		return []models_grpc.ByBitMarketGetInstrumentsInfoLinear{}, err
 	}
 	return linears, nil
 
@@ -221,8 +221,8 @@ func (s *ByBitMarketRepository) FindBySymbol(ctx context.Context, collectionName
 	if err != nil {
 		return []models_grpc.ByBitMarketGetInstrumentsInfoLinear{}, err
 	}
-	if err = cursor.All(context.TODO(), &linears); err != nil {
-		panic(err)
+	if err = cursor.All(ctx, &linears); err != nil {
+		return []models_grpc.ByBitMarketGetInstrumentsInfoLinear{}, err
 	}
 	return linears, nil
 }

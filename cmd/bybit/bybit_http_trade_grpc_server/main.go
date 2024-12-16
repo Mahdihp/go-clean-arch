@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/account"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/market"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/order"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/position"
@@ -38,10 +39,12 @@ func main() {
 	grpcServer_Order := bybit_grpc_service.NewByBitHttpServerOrder(cfg)
 	grpcServer_Position := bybit_grpc_service.NewByBitHttpServerPosition(cfg)
 	grpcServer_Market := bybit_grpc_service.NewByBitHttpServerMarket(cfg, marketRepository)
+	grpcserver_Account := bybit_grpc_service.NewByBitHttpServerAccount(cfg)
 
 	position.RegisterPositionServiceServer(s, &grpcServer_Position)
 	order.RegisterOrderServiceServer(s, &grpcServer_Order)
 	market.RegisterMarketServiceServer(s, &grpcServer_Market)
+	account.RegisterAccountServicServer(s, &grpcserver_Account)
 
 	go jobs.SetupCronJob(cfg, marketRepository)
 

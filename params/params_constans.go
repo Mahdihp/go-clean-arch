@@ -23,7 +23,7 @@ const (
 	LessThan_Opt         string = "$lt"  // <
 	LessThanEqual_Opt    string = "$lte" // <=
 
-	Field_Search_ID        string = "_id"
+	Field_Search_ID        string = "id"
 	Field_Search_Symbol    string = "symbol"
 	Field_Search_ApiKey    string = "api_key"
 	Field_Search_UserId    string = "user_id"

@@ -8,6 +8,7 @@ import (
 	params_bybit_http "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/params"
 	"github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/repository"
 	"github.com/bxcodec/go-clean-arch/internal/validator"
+	"github.com/bxcodec/go-clean-arch/params"
 	"github.com/bxcodec/go-clean-arch/util"
 	bybit "github.com/wuhewuhe/bybit.go.api"
 )
@@ -105,11 +106,26 @@ func (s *ByBitHttpServerMarket) GetKline(ctx context.Context, in *market.GetKlin
 	getKlineDto := params_bybit_http.ToGetKlineResponse(marketDto)
 	return &getKlineDto, nil
 }
+
 func (s *ByBitHttpServerMarket) GetRiskLimitLinear(ctx context.Context, in *market.GetRiskLimitRequest) (*market.GetRiskLimitResponse, error) {
-	return nil, nil
+	Linears, err := s.bybitMarketSvc.FindAllRiskLimitPagination(ctx, models_grpc.Collection_ByBit_MGRL, params.Market_Linear, in.Symbol, int(in.PageIndex), int(in.PageSize))
+	if err != nil {
+		return &market.GetRiskLimitResponse{
+			RetMsg: err.Error(),
+		}, err
+	}
+	response := params_bybit_http.ToGetRiskLimitResponse(Linears)
+	return &response, nil
 }
 func (s *ByBitHttpServerMarket) GetRiskLimitInverse(ctx context.Context, in *market.GetRiskLimitRequest) (*market.GetRiskLimitResponse, error) {
-	return nil, nil
+	Inverses, err := s.bybitMarketSvc.FindAllRiskLimitPagination(ctx, models_grpc.Collection_ByBit_MGRL, params.Market_Inverse, "", int(in.PageIndex), int(in.PageSize))
+	if err != nil {
+		return &market.GetRiskLimitResponse{
+			RetMsg: err.Error(),
+		}, err
+	}
+	response := params_bybit_http.ToGetRiskLimitResponse(Inverses)
+	return &response, nil
 }
 
 func selectCollection(collName string) string {

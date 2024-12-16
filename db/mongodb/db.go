@@ -72,13 +72,6 @@ func existDb(client *mongo.Client, cfg config.MongoDbMarket) *mongo.Database {
 			log.Info("ListCollections All Error ", err)
 		}
 		if len(colls) == 0 {
-			/*d.CreateCollection(context.Background(), models.Collection_ByBit_User)
-			d.CreateCollection(context.Background(), models.Collection_Bybit_FutureOrderHistory)
-			d.CreateCollection(context.Background(), models.Collection_Bybit_FutureTradeHistory)
-			d.CreateCollection(context.Background(), models.Collection_Bybit_FuturePnlHistory)
-			d.CreateCollection(context.Background(), models.Collection_Bybit_SpotOrderHistory)
-			d.CreateCollection(context.Background(), models.Collection_Bybit_SpotTradelHistory)*/
-
 			d.CreateCollection(context.Background(), models_grpc.Collection_ByBit_MGIIL)
 			d.CreateCollection(context.Background(), models_grpc.Collection_ByBit_MGIII)
 			d.CreateCollection(context.Background(), models_grpc.Collection_ByBit_MGIIS)

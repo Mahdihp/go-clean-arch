@@ -11,23 +11,21 @@ const (
 	Collection_ByBit_MGRL  string = "BybitMarketGetRiskLimit"
 )
 
-type BybitMarketGetRiskLimitDto struct {
-	Category       string                    `json:"category"`
-	List           []BybitMarketGetRiskLimit `json:"list"`
-	NextPageCursor string                    `json:"nextPageCursor"`
-}
 type BybitMarketGetRiskLimit struct {
-	ID                int       `json:"id"`
-	Category          string    `json:"category"`
-	IsLowestRisk      int       `json:"isLowestRisk"`
-	Symbol            string    `json:"symbol"`
-	RiskLimitValue    string    `json:"riskLimitValue"`
-	MaintenanceMargin string    `json:"maintenanceMargin"`
-	InitialMargin     string    `json:"initialMargin"`
-	MaxLeverage       string    `json:"maxLeverage"`
-	MmDeduction       string    `json:"mmDeduction"`
-	CreatedAt         time.Time `json:"created_at"`
-	UpdatedAt         time.Time `json:"updated_at"`
+	Category  string      `bson:"category"`
+	Symbol    string      `bson:"symbol"`
+	RiskLimit []RiskLimit `bson:"riskLimit"`
+	CreatedAt time.Time   `bson:"created_at"`
+	UpdatedAt time.Time   `bson:"updated_at"`
+}
+type RiskLimit struct {
+	ID                int    `bson:"id"`
+	IsLowestRisk      int    `bson:"isLowestRisk"`
+	RiskLimitValue    string `bson:"riskLimitValue"`
+	MaintenanceMargin string `bson:"maintenanceMargin"`
+	InitialMargin     string `bson:"initialMargin"`
+	MaxLeverage       string `bson:"maxLeverage"`
+	MmDeduction       string `bson:"mmDeduction"`
 }
 
 type LeverageFilter struct {

@@ -18,6 +18,7 @@ func SetupCronJob(cfg config.Config, svc repository.ByBitMarketRepository) {
 	}()
 	c := cron.New(cron.WithSeconds())
 
+	//------------------------------Get Ticker---------------------------------------------
 	IntervalSecondMarketTicker := "@every 00h00m" + strconv.Itoa(cfg.RedisMarket.IntervalSecondMarketTicker) + "s"
 
 	c.AddFunc(IntervalSecondMarketTicker, func() {
@@ -29,7 +30,7 @@ func SetupCronJob(cfg config.Config, svc repository.ByBitMarketRepository) {
 	c.AddFunc(IntervalSecondMarketTicker, func() {
 		SaveTickerInverse(cfg, svc)
 	})
-	//------------------------------InstrumentInfo-------------------------------------------------------
+	//------------------------------Instrument Info-------------------------------------------------------
 	//"@every 00h00m00s"
 	DurationBySecond := "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/60) + "m00s"
 	if svc.GetCountCollecton(context.Background(), models_grpc.Collection_ByBit_MGIIL) <= 0 {
@@ -56,14 +57,22 @@ func SetupCronJob(cfg config.Config, svc repository.ByBitMarketRepository) {
 		})
 	}
 	//------------------------------Risk Limit-------------------------------------------------------
-	//DurationBySecond = "@every 00h00m2s"
-	//if svc.GetCountCollecton(context.Background(), models_grpc.Collection_ByBit_MGIII) <= 0 {
-	//	UpdateRiskLimitLinear(cfg, svc)
-	//} else {
-	c.AddFunc("@every 00h00m2s", func() {
+	DurationBySecond = "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/40) + "m00s"
+	if svc.GetCountCollecton(context.Background(), models_grpc.Collection_ByBit_MGRL) <= 0 {
 		UpdateRiskLimitLinear(cfg, svc)
-	})
-	//}
+	} else {
+		c.AddFunc(DurationBySecond, func() {
+			UpdateRiskLimitInverse(cfg, svc)
+		})
+	}
+	DurationBySecond = "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/35) + "m00s"
+	if svc.GetCountCollecton(context.Background(), models_grpc.Collection_ByBit_MGRL) <= 0 {
+		UpdateRiskLimitInverse(cfg, svc)
+	} else {
+		c.AddFunc(DurationBySecond, func() {
+			UpdateRiskLimitInverse(cfg, svc)
+		})
+	}
 
 	// Start the cron scheduler
 	c.Start()

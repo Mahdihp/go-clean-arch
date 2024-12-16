@@ -2,11 +2,14 @@ package params_bybit_grpc
 
 import (
 	"encoding/json"
+	"fmt"
+	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/account"
 	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/market"
 	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
 	"github.com/bxcodec/go-clean-arch/util"
 	bybit "github.com/wuhewuhe/bybit.go.api"
 	"google.golang.org/protobuf/types/known/anypb"
+	"slices"
 	"time"
 )
 
@@ -115,25 +118,42 @@ func ToGetInstrumentInfoSpotDto(data *bybit.ServerResponse) GetInstrumentInfoSpo
 	}
 	return pl
 }
-func ToBybitMarketGetRiskLimitCollection(data models_grpc.BybitMarketGetRiskLimitDto, time int64, linear string) []models_grpc.BybitMarketGetRiskLimit {
-	var ret []models_grpc.BybitMarketGetRiskLimit
-	for _, item := range data.List {
-		ret = append(ret, models_grpc.BybitMarketGetRiskLimit{
-			ID:                item.ID,
-			Category:          linear,
-			IsLowestRisk:      item.IsLowestRisk,
-			Symbol:            item.Symbol,
-			RiskLimitValue:    item.RiskLimitValue,
-			MaintenanceMargin: item.MaintenanceMargin,
-			InitialMargin:     item.InitialMargin,
-			MaxLeverage:       item.MaxLeverage,
-			MmDeduction:       item.MmDeduction,
-			CreatedAt:         util.TimestampToTime(time),
-			UpdatedAt:         util.TimestampToTime(time),
+func ToBybitMarketGetRiskLimitCollection(data GetRiskLimitLinearDto, time int64, linear string) []models_grpc.BybitMarketGetRiskLimit {
+	riskLimitdto := make([]models_grpc.BybitMarketGetRiskLimit, 0)
+	for _, item := range data.Result.List {
+		newItem := models_grpc.BybitMarketGetRiskLimit{
+			Category:  linear,
+			Symbol:    item.Symbol,
+			CreatedAt: util.TimestampToTime(time),
+			UpdatedAt: util.TimestampToTime(time),
+		}
+		containsFunc := slices.ContainsFunc(riskLimitdto, func(limit models_grpc.BybitMarketGetRiskLimit) bool {
+			return item.Symbol == limit.Symbol
 		})
+		if containsFunc == false {
+			riskLimitdto = append(riskLimitdto, newItem)
+		}
 	}
-	return ret
+	for i := 0; i < len(riskLimitdto); i++ {
+		for j := 0; j < len(data.Result.List); j++ {
+			if riskLimitdto[i].Symbol == data.Result.List[j].Symbol {
+				riskLimitdto[i].RiskLimit = append(riskLimitdto[i].RiskLimit, models_grpc.RiskLimit{
+					ID:                data.Result.List[j].ID,
+					IsLowestRisk:      data.Result.List[j].IsLowestRisk,
+					RiskLimitValue:    data.Result.List[j].RiskLimitValue,
+					MaintenanceMargin: data.Result.List[j].MaintenanceMargin,
+					InitialMargin:     data.Result.List[j].InitialMargin,
+					MaxLeverage:       data.Result.List[j].MaxLeverage,
+					MmDeduction:       data.Result.List[j].MmDeduction,
+				})
+			}
+		}
+	}
+
+	fmt.Println(len(riskLimitdto[0].RiskLimit))
+	return riskLimitdto
 }
+
 func ToByBitMarketGetInstrumentsInfoSpot(data GetInstrumentInfoSpotDto, time int64) []models_grpc.ByBitMarketGetInstrumentsInfoSpot {
 	var ret []models_grpc.ByBitMarketGetInstrumentsInfoSpot
 	for _, item := range data.Result.List {
@@ -430,6 +450,50 @@ func ToGetInstrumentsInfoSpotResponse(data []models_grpc.ByBitMarketGetInstrumen
 	mainOutput.Result = &resultOutput
 	return mainOutput
 }
+func ToGetRiskLimitResponse(data []models_grpc.BybitMarketGetRiskLimit) market.GetRiskLimitResponse {
+	var mainOutput market.GetRiskLimitResponse
+
+	//var RiskLimitSymbols []market.GetRiskLimitResponse_RiskLimitSymbol
+	//var RiskLimits []*market.GetRiskLimitResponse_RiskLimit
+	mainOutput.RetCode = 200
+	mainOutput.RetMsg = "OK"
+	mainOutput.Time = uint64(time.Now().UnixMilli())
+
+	for _, item := range data {
+		mainOutput.Result = append(mainOutput.Result, &market.GetRiskLimitResponse_RiskLimitSymbol{
+			Symbol:   item.Symbol,
+			Category: item.Category,
+		})
+		//for _, item2 := range item.RiskLimit {
+		//	RiskLimits = append(RiskLimits, &market.GetRiskLimitResponse_RiskLimit{
+		//		Id:                uint32(item2.ID),
+		//		IsLowestRisk:      uint32(item2.IsLowestRisk),
+		//		RiskLimitValue:    item2.RiskLimitValue,
+		//		MaintenanceMargin: item2.MaintenanceMargin,
+		//		InitialMargin:     item2.InitialMargin,
+		//		MaxLeverage:       item2.MaxLeverage,
+		//		MmDeduction:       item2.MmDeduction,
+		//	})
+		//}
+		//RiskLimits = []*market.GetRiskLimitResponse_RiskLimit{}
+	}
+	for i := 0; i < len(mainOutput.Result); i++ {
+		if mainOutput.Result[i].Symbol == data[i].Symbol {
+			for _, limit := range data[i].RiskLimit {
+				mainOutput.Result[i].List = append(mainOutput.Result[i].List, &market.GetRiskLimitResponse_RiskLimit{
+					Id:                uint32(limit.ID),
+					IsLowestRisk:      uint32(limit.IsLowestRisk),
+					RiskLimitValue:    limit.RiskLimitValue,
+					MaintenanceMargin: limit.MaintenanceMargin,
+					InitialMargin:     limit.InitialMargin,
+					MaxLeverage:       limit.MaxLeverage,
+					MmDeduction:       limit.MmDeduction,
+				})
+			}
+		}
+	}
+	return mainOutput
+}
 func ToGetInstrumentsInfoLinearResponse(data []models_grpc.ByBitMarketGetInstrumentsInfoLinear) market.GetInstrumentsInfoLinearResponse {
 	var mainOutput market.GetInstrumentsInfoLinearResponse
 	var resultOutput market.GetInstrumentsInfoLinearResponse_Result
@@ -514,6 +578,18 @@ func ToBybitMarketGetTickerInverseDto(data *bybit.ServerResponse) models_grpc.By
 	}
 	return pl
 }
+func ToGetWalletBalanceResponse(data *bybit.ServerResponse) account.GetWalletBalanceResponse {
+	marshal, err := json.Marshal(data)
+	var pl account.GetWalletBalanceResponse
+	if err != nil {
+		return pl
+	}
+	err = json.Unmarshal(marshal, &pl)
+	if err != nil {
+		return pl
+	}
+	return pl
+}
 func ToBybitMarketGetTickerLinearDto(data *bybit.ServerResponse) models_grpc.BybitMarketGetTickerLinearDto {
 	marshal, err := json.Marshal(data.Result)
 	var pl models_grpc.BybitMarketGetTickerLinearDto
@@ -538,9 +614,32 @@ func ToBybitMarketGetTickerSpotDto(data *bybit.ServerResponse) models_grpc.Bybit
 	}
 	return pl
 }
-func ToBybitMarketGetRiskLimitDto(data *bybit.ServerResponse) []models_grpc.BybitMarketGetRiskLimit {
-	marshal, err := json.Marshal(data.Result)
-	var pl []models_grpc.BybitMarketGetRiskLimit
+
+type GetRiskLimitLinearDto struct {
+	RetCode int    `json:"retCode"`
+	RetMsg  string `json:"retMsg"`
+	Result  struct {
+		Category string `json:"category"`
+		List     []struct {
+			ID                int    `json:"id"`
+			Symbol            string `json:"symbol"`
+			RiskLimitValue    string `json:"riskLimitValue"`
+			MaintenanceMargin string `json:"maintenanceMargin"`
+			InitialMargin     string `json:"initialMargin"`
+			IsLowestRisk      int    `json:"isLowestRisk"`
+			MaxLeverage       string `json:"maxLeverage"`
+			MmDeduction       string `json:"mmDeduction"`
+		} `json:"list"`
+		NextPageCursor string `json:"nextPageCursor"`
+	} `json:"result"`
+	RetExtInfo struct {
+	} `json:"retExtInfo"`
+	Time int64 `json:"time"`
+}
+
+func ToBybitMarketGetRiskLimitDto(data *bybit.ServerResponse) GetRiskLimitLinearDto {
+	marshal, err := json.Marshal(data)
+	var pl GetRiskLimitLinearDto
 	if err != nil {
 		return pl
 	}

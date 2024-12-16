@@ -1,13 +1,64 @@
 syntax = "proto3";
 package account;
 
-option go_package = "adapter/grpc-proto/bybit_ws";
+option go_package = "adapter/grpc-proto/account";
 
 
-message Account{
-  //  int32  statusCode = 1;
-  //  string  message = 2;
-  //  string  operation = 3;
-  //  string  data = 4;
-  //  repeated  string  errors = 5;
+message GetWalletBalanceResponse{
+  message Coin {
+    string availableToBorrow = 1;
+    string bonus = 2;
+    string accruedInterest = 3;
+    string availableToWithdraw = 4;
+    string totalOrderIM = 5;
+    string equity = 6;
+    string totalPositionMM = 7;
+    string usdValue = 8;
+    string spotHedgingQty = 9;
+    string unrealisedPnl = 10;
+    bool collateralSwitch = 11;
+    string borrowAmount = 12;
+    string totalPositionIM = 13;
+    string walletBalance = 14;
+    string cumRealisedPnl = 15;
+    string locked = 16;
+    bool marginCollateral = 17;
+    string coin = 18;
+  }
+
+  message List {
+    string totalEquity = 1;
+    string accountIMRate = 2;
+    string totalMarginBalance = 3;
+    string totalInitialMargin = 4;
+    string accountType = 5;
+    string totalAvailableBalance = 6;
+    string accountMMRate = 7;
+    string totalPerpUPL = 8;
+    string totalWalletBalance = 9;
+    string accountLTV = 10;
+    string totalMaintenanceMargin = 11;
+    repeated Coin coin = 12;
+  }
+
+  message Result {
+    repeated List list = 1;
+  }
+
+  message Retextinfo {
+  }
+
+  uint32 retCode = 1;
+  string retMsg = 2;
+  Result result = 3;
+  Retextinfo retExtInfo = 4;
+  uint64 time = 5;
+}
+message GetWalletBalanceRequest{
+  string accountType = 1;
+  string coin = 2;
+
+}
+service AccountServic{
+  rpc GetWalletBalance(GetWalletBalanceRequest) returns (GetWalletBalanceResponse){}
 }

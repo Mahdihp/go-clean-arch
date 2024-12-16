@@ -10,7 +10,6 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
-	"log"
 )
 
 type HistoryRepository interface {
@@ -50,15 +49,9 @@ func (s *HistoryRepositoryImpl) FindBySymbol(ctx context.Context, collectionName
 	if err != nil {
 		return nil, err
 	}
-	for cursor.Next(ctx) {
-		var user models.BybitFutureOrderHistory
-		if err := cursor.Decode(user); err != nil {
-			log.Fatal(err)
-			return []models.BybitFutureOrderHistory{}, err
-		}
-		historys = append(historys, user)
+	if err = cursor.All(ctx, &historys); err != nil {
+		return nil, err
 	}
-	cursor.Close(ctx)
 	return historys, nil
 }
 

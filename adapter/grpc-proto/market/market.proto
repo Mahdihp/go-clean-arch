@@ -330,14 +330,25 @@ message GetTickersInverseResponse{
 message GetRiskLimitRequest{
   string  category = 1;
   string  symbol = 2;
-  string  cursor = 3;
+  int32  pageIndex = 3;
+  int32  pageSize = 4;
 }
 
 message GetRiskLimitResponse {
+  uint32 retCode = 1;
+  string retMsg = 2;
+  repeated RiskLimitSymbol  result = 5;
+  Retextinfo retExtInfo = 3;
+  uint64 time = 4;
 
-  message List {
+  message RiskLimitSymbol{
+    string  symbol = 1;
+    string  category = 2;
+    repeated RiskLimit  list = 3;
+  }
+
+  message RiskLimit {
     uint32 id = 1;
-    string symbol = 2;
     string riskLimitValue = 3;
     string maintenanceMargin = 4;
     string initialMargin = 5;
@@ -346,20 +357,11 @@ message GetRiskLimitResponse {
     string mmDeduction = 8;
   }
 
-  message Result {
-    string category = 1;
-    repeated List list = 2;
-    string nextPageCursor = 3;
-  }
 
   message Retextinfo {
   }
 
-  uint32 retCode = 1;
-  string retMsg = 2;
-  Result result = 3;
-  Retextinfo retExtInfo = 4;
-  uint64 time = 5;
+
 }
 service MarketService {
   rpc GetTest(Test) returns (GetKlineResponse) {}
