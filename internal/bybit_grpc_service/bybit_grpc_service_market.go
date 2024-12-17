@@ -60,7 +60,7 @@ func (s *ByBitHttpServerMarket) GetTickersInverse(ctx context.Context, in *marke
 
 func (s *ByBitHttpServerMarket) GetInstrumentsInfoLinear(ctx context.Context, in *market.GetInstrumentsInfoRequest) (*market.GetInstrumentsInfoLinearResponse, error) {
 	collection := selectCollection(in.Category)
-	linears, err := s.bybitMarketSvc.FindAllLinear(ctx, collection, in.Symbol)
+	linears, err := s.bybitMarketSvc.FindRedisLinear(ctx, collection, in.Symbol)
 	if err != nil {
 		return &market.GetInstrumentsInfoLinearResponse{}, err
 	}
@@ -69,7 +69,7 @@ func (s *ByBitHttpServerMarket) GetInstrumentsInfoLinear(ctx context.Context, in
 }
 func (s *ByBitHttpServerMarket) GetInstrumentsInfoInverse(ctx context.Context, in *market.GetInstrumentsInfoRequest) (*market.GetInstrumentsInfoInverseResponse, error) {
 	collection := selectCollection(in.Category)
-	spots, err := s.bybitMarketSvc.FindAllInverse(ctx, collection, in.Symbol)
+	spots, err := s.bybitMarketSvc.FindRedisInverse(ctx, collection, in.Symbol)
 	if err != nil {
 		return &market.GetInstrumentsInfoInverseResponse{}, err
 	}
@@ -79,7 +79,7 @@ func (s *ByBitHttpServerMarket) GetInstrumentsInfoInverse(ctx context.Context, i
 }
 func (s *ByBitHttpServerMarket) GetInstrumentsInfoSpot(ctx context.Context, in *market.GetInstrumentsInfoRequest) (*market.GetInstrumentsInfoSpotResponse, error) {
 	collection := selectCollection(in.Category)
-	spots, err := s.bybitMarketSvc.FindAllSpot(ctx, collection, in.Symbol)
+	spots, err := s.bybitMarketSvc.FindRedisSpot(ctx, collection, in.Symbol)
 	if err != nil {
 		return &market.GetInstrumentsInfoSpotResponse{}, err
 	}
@@ -108,7 +108,7 @@ func (s *ByBitHttpServerMarket) GetKline(ctx context.Context, in *market.GetKlin
 }
 
 func (s *ByBitHttpServerMarket) GetRiskLimitLinear(ctx context.Context, in *market.GetRiskLimitRequest) (*market.GetRiskLimitResponse, error) {
-	Linears, err := s.bybitMarketSvc.FindAllRiskLimitPagination(ctx, models_grpc.Collection_ByBit_MGRL, params.Market_Linear, in.Symbol, int(in.PageIndex), int(in.PageSize))
+	Linears, err := s.bybitMarketSvc.FindAllRiskLimit(ctx, params.Market_Linear, in.Symbol)
 	if err != nil {
 		return &market.GetRiskLimitResponse{
 			RetMsg: err.Error(),
@@ -118,7 +118,7 @@ func (s *ByBitHttpServerMarket) GetRiskLimitLinear(ctx context.Context, in *mark
 	return &response, nil
 }
 func (s *ByBitHttpServerMarket) GetRiskLimitInverse(ctx context.Context, in *market.GetRiskLimitRequest) (*market.GetRiskLimitResponse, error) {
-	Inverses, err := s.bybitMarketSvc.FindAllRiskLimitPagination(ctx, models_grpc.Collection_ByBit_MGRL, params.Market_Inverse, "", int(in.PageIndex), int(in.PageSize))
+	Inverses, err := s.bybitMarketSvc.FindAllRiskLimit(ctx, params.Market_Inverse, in.Symbol)
 	if err != nil {
 		return &market.GetRiskLimitResponse{
 			RetMsg: err.Error(),

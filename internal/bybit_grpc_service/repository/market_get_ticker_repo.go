@@ -12,18 +12,35 @@ import (
 )
 
 func (s ByBitMarketRepository) SaveTickerInverse(ctx context.Context, dto []models_grpc.BybitMarketGetTickerInverse) {
-	cat := strings.ToLower(params.Market_Inverse)
+	key := params.Market_Ticker + ":" + strings.ToLower(params.Market_Inverse)
 	json := util.StructToJson(dto)
-	_, err := s.Redisdb.Client().Set(ctx, cat, json, 0).Result()
+	_, err := s.Redisdb.Client().Set(ctx, key, json, 0).Result()
 	if err != nil {
 		return
 	}
 }
+func (s ByBitMarketRepository) SaveTickerLinear(ctx context.Context, dto []models_grpc.BybitMarketGetTickerLinear) {
+	key := params.Market_Ticker + ":" + strings.ToLower(params.Market_Linear)
+	json := util.StructToJson(dto)
+	_, err := s.Redisdb.Client().Set(ctx, key, json, 0).Result()
+	if err != nil {
+		return
+	}
+}
+func (s ByBitMarketRepository) SaveTickerSpot(ctx context.Context, dto []models_grpc.BybitMarketGetTickerSpot) {
+	key := params.Market_Ticker + ":" + strings.ToLower(params.Market_Spot)
+	json := util.StructToJson(dto)
+	_, err := s.Redisdb.Client().Set(ctx, key, json, 0).Result()
+	if err != nil {
+		return
+	}
+}
+
 func (s ByBitMarketRepository) FindTickerInverse(ctx context.Context) ([]models_grpc.BybitMarketGetTickerInverse, error) {
 	var spots []models_grpc.BybitMarketGetTickerInverse
-	cat := strings.ToLower(params.Market_Inverse)
+	key := params.Market_Ticker + ":" + strings.ToLower(params.Market_Inverse)
 	fmt.Println(time.Now())
-	result, err := s.Redisdb.Client().Get(ctx, cat).Result()
+	result, err := s.Redisdb.Client().Get(ctx, key).Result()
 	if err != nil {
 		return spots, err
 	}
@@ -33,15 +50,6 @@ func (s ByBitMarketRepository) FindTickerInverse(ctx context.Context) ([]models_
 	}
 	fmt.Println(time.Now())
 	return spots, nil
-}
-
-func (s ByBitMarketRepository) SaveTickerLinear(ctx context.Context, dto []models_grpc.BybitMarketGetTickerLinear) {
-	cat := strings.ToLower(params.Market_Linear)
-	json := util.StructToJson(dto)
-	_, err := s.Redisdb.Client().Set(ctx, cat, json, 0).Result()
-	if err != nil {
-		return
-	}
 }
 func (s ByBitMarketRepository) FindTickerLinear(ctx context.Context) ([]models_grpc.BybitMarketGetTickerLinear, error) {
 	var spots []models_grpc.BybitMarketGetTickerLinear
@@ -57,15 +65,6 @@ func (s ByBitMarketRepository) FindTickerLinear(ctx context.Context) ([]models_g
 	}
 	fmt.Println(time.Now())
 	return spots, nil
-}
-
-func (s ByBitMarketRepository) SaveTickerSpot(ctx context.Context, dto []models_grpc.BybitMarketGetTickerSpot) {
-	cat := strings.ToLower(params.Market_Spot)
-	json := util.StructToJson(dto)
-	_, err := s.Redisdb.Client().Set(ctx, cat, json, 0).Result()
-	if err != nil {
-		return
-	}
 }
 func (s ByBitMarketRepository) FindTickerSpot(ctx context.Context) ([]models_grpc.BybitMarketGetTickerSpot, error) {
 	var spots []models_grpc.BybitMarketGetTickerSpot

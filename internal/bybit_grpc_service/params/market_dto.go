@@ -73,16 +73,10 @@ type GetInstrumentInfoSpotDto struct {
 	} `json:"retExtInfo"`
 	Time int64 `json:"time"`
 }
-type InstrumentInfoInverseDto struct {
-	Symbol     string `json:"symbol"`
-	BaseCoin   string `json:"baseCoin"`
-	QuoteCoin  string `json:"quoteCoin"`
-	Innovation string `json:"innovation"`
-	Status     string `json:"status"`
-}
+
 type ResultListInverseDto struct {
-	Category string                     `json:"category"`
-	List     []InstrumentInfoInverseDto `json:"list"`
+	Category string                                             `json:"category"`
+	List     []models_grpc.ByBitMarketGetInstrumentsInfoInverse `json:"list"`
 }
 type GetInstrumentInfoInverseDto struct {
 	RetCode    int                  `json:"retCode"`
@@ -106,6 +100,18 @@ type GetKlineResponseDto struct {
 	Time int64 `json:"time"`
 }
 
+func ToGetInstrumentInfoInverseDto(data *bybit.ServerResponse) GetInstrumentInfoInverseDto {
+	marshal, err := json.Marshal(data)
+	var pl GetInstrumentInfoInverseDto
+	if err != nil {
+		return pl
+	}
+	err = json.Unmarshal(marshal, &pl)
+	if err != nil {
+		return pl
+	}
+	return pl
+}
 func ToGetInstrumentInfoSpotDto(data *bybit.ServerResponse) GetInstrumentInfoSpotDto {
 	marshal, err := json.Marshal(data)
 	var pl GetInstrumentInfoSpotDto

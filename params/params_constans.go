@@ -8,6 +8,11 @@ const (
 	Order     string = VerRoute + "/order"
 	History   string = VerRoute + "/history"
 
+	Market_All            string = "all"
+	Market_RiskLimit      string = "risklimit"
+	Market_InstrumentInfo string = "instrumentinfo"
+	Market_Ticker         string = "ticker"
+
 	Market_Spot    string = "spot"
 	Market_Linear  string = "linear"
 	Market_Inverse string = "inverse"

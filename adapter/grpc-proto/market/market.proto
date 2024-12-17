@@ -29,7 +29,7 @@ message GetKlineResponse{
 }
 message GetInstrumentsInfoRequest{
   string  category = 1;
-  string  symbol = 2;
+  repeated string  symbol = 2;
   string  status = 3;
   string  baseCoin = 4;
   int32  limit = 5;
@@ -329,7 +329,7 @@ message GetTickersInverseResponse{
 }
 message GetRiskLimitRequest{
   string  category = 1;
-  string  symbol = 2;
+  repeated string  symbol = 2;
   int32  pageIndex = 3;
   int32  pageSize = 4;
 }
@@ -366,6 +366,7 @@ message GetRiskLimitResponse {
 service MarketService {
   rpc GetTest(Test) returns (GetKlineResponse) {}
   rpc GetKline(GetKlineRequest) returns (GetKlineResponse) {}
+
   rpc GetInstrumentsInfoLinear(GetInstrumentsInfoRequest) returns (GetInstrumentsInfoLinearResponse) {}
   rpc GetInstrumentsInfoInverse(GetInstrumentsInfoRequest) returns (GetInstrumentsInfoInverseResponse) {}
   rpc GetInstrumentsInfoSpot(GetInstrumentsInfoRequest) returns (GetInstrumentsInfoSpotResponse) {}

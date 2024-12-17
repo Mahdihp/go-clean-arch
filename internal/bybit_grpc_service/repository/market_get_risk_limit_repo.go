@@ -2,15 +2,78 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
 	"github.com/bxcodec/go-clean-arch/params"
+	"github.com/bxcodec/go-clean-arch/util"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"log"
+	"strings"
 )
 
+func (s ByBitMarketRepository) FindAllRiskLimit(ctx context.Context, category string, symbol string) ([]models_grpc.BybitMarketGetRiskLimit, error) {
+	var spots []models_grpc.BybitMarketGetRiskLimit
+	var key string
+	if len(category) > 0 && len(symbol) > 0 {
+		key = params.Market_RiskLimit + ":" + category + ":" + symbol
+	}
+	if len(category) > 0 && len(symbol) <= 0 {
+		key = params.Market_RiskLimit + ":" + category + "*"
+	}
+
+	keys := s.Redisdb.Client().Keys(ctx, key)
+	if keys != nil {
+		pipeliner := s.Redisdb.Client().Pipeline()
+		for _, key := range keys.Val() {
+			pipeliner.Get(ctx, key)
+		}
+		exec, err := pipeliner.Exec(ctx)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+		for _, cmder := range exec {
+			split := strings.Split(cmder.String(), " ")
+			var ee models_grpc.BybitMarketGetRiskLimit
+			err := json.Unmarshal([]byte(split[2]), &ee)
+			if err != nil {
+				fmt.Println(err)
+				return nil, err
+			}
+			spots = append(spots, ee)
+		}
+	}
+
+	return spots, nil
+}
+func (s ByBitMarketRepository) UpdateRiskLimitRedisAll(ctx context.Context, keyGroup string, json interface{}) error {
+	key := params.Market_RiskLimit + ":" + params.Market_All + ":" + keyGroup
+	//json := util.StructToJson(items)
+	_, err := s.Redisdb.Client().Set(ctx, key, json, 0).Result()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+func (s ByBitMarketRepository) UpdateRiskLimitRedis(ctx context.Context, keyGroup string, items []models_grpc.BybitMarketGetRiskLimit) error {
+	key := keyGroup
+	pipeliner := s.Redisdb.Client().Pipeline()
+	for _, item := range items {
+		Key := params.Market_RiskLimit + ":" + key + ":" + item.Symbol
+		json := util.StructToJson(item)
+		pipeliner.Set(ctx, Key, json, 0)
+	}
+	_, err := pipeliner.Exec(ctx)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
 func (s ByBitMarketRepository) UpdateRiskLimit(ctx context.Context, collectionName string, items []models_grpc.BybitMarketGetRiskLimit) error {
 	collection := s.Mongodb.MongoConn().Collection(collectionName)
 	var err error

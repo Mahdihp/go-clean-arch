@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/bxcodec/go-clean-arch/config"
-	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
 	params_http "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/params"
 	"github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/repository"
 	"github.com/bxcodec/go-clean-arch/params"
+	"github.com/bxcodec/go-clean-arch/util"
 	bybit "github.com/wuhewuhe/bybit.go.api"
 	"time"
 )
@@ -39,7 +39,8 @@ func UpdateRiskLimitLinear(cfg config.Config, marketSvc repository.ByBitMarketRe
 			}
 			fmt.Println("Update Risk Limit Linear  Cursor...", cursor)
 			risklimitDtoCollection := params_http.ToBybitMarketGetRiskLimitCollection(riskLimitDto, toBybit.Time, params.Market_Linear)
-			err := marketSvc.UpdateRiskLimit(context.Background(), models_grpc.Collection_ByBit_MGRL, risklimitDtoCollection)
+			//err := marketSvc.UpdateRiskLimit(context.Background(), models_grpc.Collection_ByBit_MGRL, risklimitDtoCollection)
+			err := marketSvc.UpdateRiskLimitRedis(context.Background(), params.Market_Linear, risklimitDtoCollection)
 			if err != nil {
 				fmt.Println("Update Risk Limit Linear  error...", err)
 			}
@@ -70,10 +71,13 @@ func UpdateRiskLimitInverse(cfg config.Config, marketSvc repository.ByBitMarketR
 			}
 			fmt.Println("Update Risk Limit Inverse  Cursor...", cursor)
 			risklimitDtoCollection := params_http.ToBybitMarketGetRiskLimitCollection(riskLimitDto, toBybit.Time, params.Market_Inverse)
-			err := marketSvc.UpdateRiskLimit(context.Background(), models_grpc.Collection_ByBit_MGRL, risklimitDtoCollection)
+			//err := marketSvc.UpdateRiskLimit(context.Background(), models_grpc.Collection_ByBit_MGRL, risklimitDtoCollection)
+			err := marketSvc.UpdateRiskLimitRedis(context.Background(), params.Market_Inverse, risklimitDtoCollection)
 			if err != nil {
 				fmt.Println("Update Risk Limit Inverse  error...", err)
 			}
+			all := util.StructToJson(risklimitDtoCollection)
+			marketSvc.UpdateRiskLimitRedisAll(context.Background(), params.Market_Inverse, all)
 
 		} else {
 			retryCount++
