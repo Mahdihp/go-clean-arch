@@ -5,9 +5,11 @@ import (
 	"github.com/bxcodec/go-clean-arch/config"
 	"github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/repository"
 	"github.com/robfig/cron/v3"
+	"strconv"
 )
 
-func SetupCronJob(cfg config.Config, svc repository.ByBitMarketRepository) {
+// setup cron jobs
+func SetupCronJob(cfg config.Config, svc repository.MarketRepository) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("setupCronJob. Error:\n", r)
@@ -16,17 +18,17 @@ func SetupCronJob(cfg config.Config, svc repository.ByBitMarketRepository) {
 	c := cron.New(cron.WithSeconds())
 
 	//------------------------------Get Ticker---------------------------------------------
-	//IntervalSecondMarketTicker := "@every 00h00m" + strconv.Itoa(cfg.RedisMarket.IntervalSecondMarketTicker) + "s"
-	//
-	//c.AddFunc(IntervalSecondMarketTicker, func() {
-	//	SaveTickerSpot(cfg, svc)
-	//})
-	//c.AddFunc(IntervalSecondMarketTicker, func() {
-	//	SaveTickerLinear(cfg, svc)
-	//})
-	//c.AddFunc(IntervalSecondMarketTicker, func() {
-	//	SaveTickerInverse(cfg, svc)
-	//})
+	IntervalSecondMarketTicker := "@every 00h00m" + strconv.Itoa(cfg.RedisMarket.IntervalSecondMarketTicker) + "s"
+
+	c.AddFunc(IntervalSecondMarketTicker, func() {
+		SaveTickerSpot(cfg, svc)
+	})
+	c.AddFunc(IntervalSecondMarketTicker, func() {
+		SaveTickerLinear(cfg, svc)
+	})
+	c.AddFunc(IntervalSecondMarketTicker, func() {
+		SaveTickerInverse(cfg, svc)
+	})
 	//------------------------------Instrument Info-------------------------------------------------------
 	//"@every 00h00m00s"
 	//DurationBySecond := "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/60) + "m00s"
@@ -46,12 +48,12 @@ func SetupCronJob(cfg config.Config, svc repository.ByBitMarketRepository) {
 	//------------------------------Risk Limit-------------------------------------------------------
 	//DurationBySecond = "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/40) + "m00s"
 	//c.AddFunc(DurationBySecond, func() {
-	//	UpdateRiskLimitInverse(cfg, svc)
+	UpdateRiskLimitLinear(cfg, svc)
 	//})
 	//
 	//DurationBySecond = "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/35) + "m00s"
 	//c.AddFunc(DurationBySecond, func() {
-	//	UpdateRiskLimitInverse(cfg, svc)
+	UpdateRiskLimitInverse(cfg, svc)
 	//})
 
 	// Start the cron scheduler

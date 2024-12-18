@@ -11,6 +11,20 @@ const (
 	Collection_ByBit_MGRL  string = "BybitMarketGetRiskLimit"
 )
 
+type GetRiskLimitLinearDto struct {
+	RetCode    int                         `json:"retCode"`
+	RetMsg     string                      `json:"retMsg"`
+	Result     GetRiskLimitLinearResultDto `json:"result"`
+	RetExtInfo struct {
+	} `json:"retExtInfo"`
+	Time int64 `json:"time"`
+}
+type GetRiskLimitLinearResultDto struct {
+	List           []BybitMarketGetRiskLimit `json:"list"`
+	NextPageCursor string                    `json:"nextPageCursor"`
+	Category       string                    `json:"category"`
+}
+
 type BybitMarketGetRiskLimit struct {
 	Category  string      `json:"category"`
 	Symbol    string      `json:"symbol"`
@@ -112,6 +126,21 @@ type ByBitMarketGetInstrumentsInfoSpot struct {
 	CreatedAt      time.Time      `json:"created_at"`
 	UpdatedAt      time.Time      `jsonl:"updated_at"`
 }
+
+type ResultListLinearDto struct {
+	Category       string                                `json:"category"`
+	List           []ByBitMarketGetInstrumentsInfoLinear `json:"list"`
+	NextPageCursor string                                `json:"nextPageCursor"`
+}
+type GetInstrumentInfoLinearDto struct {
+	RetCode    int                 `json:"retCode"`
+	RetMsg     string              `json:"retMsg"`
+	Result     ResultListLinearDto `json:"result"`
+	RetExtInfo struct {
+	} `json:"retExtInfo"`
+	Time int64 `json:"time"`
+}
+
 type ByBitMarketGetInstrumentsInfoInverse struct {
 	Symbol             string         `json:"symbol"`
 	ContractType       string         `json:"contractType"`

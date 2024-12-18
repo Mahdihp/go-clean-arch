@@ -7,6 +7,7 @@ import (
 	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
 	"github.com/bxcodec/go-clean-arch/params"
 	"github.com/bxcodec/go-clean-arch/util"
+	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -14,52 +15,87 @@ import (
 	"strings"
 )
 
-func (s ByBitMarketRepository) FindAllRiskLimit(ctx context.Context, category string, symbol string) ([]models_grpc.BybitMarketGetRiskLimit, error) {
-	var spots []models_grpc.BybitMarketGetRiskLimit
-	var key string
-	if len(category) > 0 && len(symbol) > 0 {
-		key = params.Market_RiskLimit + ":" + category + ":" + symbol
-	}
-	if len(category) > 0 && len(symbol) <= 0 {
-		key = params.Market_RiskLimit + ":" + category + "*"
-	}
+func (s MarketRepository) FindAllRiskLimit(ctx context.Context, category string, symbol []string) (models_grpc.GetRiskLimitLinearDto, error) {
+	var spots models_grpc.GetRiskLimitLinearDto
 
-	keys := s.Redisdb.Client().Keys(ctx, key)
-	if keys != nil {
-		pipeliner := s.Redisdb.Client().Pipeline()
-		for _, key := range keys.Val() {
+	var key string
+	pipeliner := s.Redisdb.Client().Pipeline()
+	if len(symbol) > 0 {
+		for _, item := range symbol {
+			key = params.Market_RiskLimit + ":" + category + ":" + item
 			pipeliner.Get(ctx, key)
 		}
-		exec, err := pipeliner.Exec(ctx)
+		var err error
+		spots, err := retrivePiplineRiskLimitArray(ctx, pipeliner)
 		if err != nil {
-			fmt.Println(err)
-			return nil, err
+			return spots, err
 		}
-		for _, cmder := range exec {
-			split := strings.Split(cmder.String(), " ")
-			var ee models_grpc.BybitMarketGetRiskLimit
-			err := json.Unmarshal([]byte(split[2]), &ee)
-			if err != nil {
-				fmt.Println(err)
-				return nil, err
+		return spots, err
+	} else {
+		key := params.Market_RiskLimit + ":" + params.Market_All + ":" + category
+		keys := s.Redisdb.Client().Keys(ctx, key)
+		if keys != nil {
+			for _, key := range keys.Val() {
+				pipeliner.Get(ctx, key)
 			}
-			spots = append(spots, ee)
+			var err error
+			spots, err := retrivePiplineRiskLimiAll(ctx, pipeliner)
+			if err != nil {
+				return spots, err
+			}
+			return spots, err
 		}
 	}
-
 	return spots, nil
 }
-func (s ByBitMarketRepository) UpdateRiskLimitRedisAll(ctx context.Context, keyGroup string, json interface{}) error {
+
+func retrivePiplineRiskLimiAll(ctx context.Context, pipeliner redis.Pipeliner) (models_grpc.GetRiskLimitLinearDto, error) {
+	var items []models_grpc.BybitMarketGetRiskLimit
+	var main models_grpc.GetRiskLimitLinearDto
+	exec, err := pipeliner.Exec(ctx)
+	if err != nil {
+		return main, err
+	}
+	for _, cmder := range exec {
+		split := strings.Split(cmder.String(), " ")
+		err := json.Unmarshal([]byte(split[2]), &items)
+		if err != nil {
+			return main, err
+		}
+	}
+	main.Result.List = append(main.Result.List, items...)
+	return main, nil
+}
+func retrivePiplineRiskLimitArray(ctx context.Context, pipeliner redis.Pipeliner) (models_grpc.GetRiskLimitLinearDto, error) {
+	var items []models_grpc.BybitMarketGetRiskLimit
+	var main models_grpc.GetRiskLimitLinearDto
+
+	exec, err := pipeliner.Exec(ctx)
+	if err != nil {
+		return main, err
+	}
+	for _, cmder := range exec {
+		split := strings.Split(cmder.String(), " ")
+		var ee models_grpc.BybitMarketGetRiskLimit
+		err := json.Unmarshal([]byte(split[2]), &ee)
+		if err != nil {
+			return main, err
+		}
+		items = append(items, ee)
+	}
+	main.Result.List = items
+	return main, nil
+}
+
+func (s MarketRepository) UpdateRiskLimitRedisAll(ctx context.Context, keyGroup string, json interface{}) {
 	key := params.Market_RiskLimit + ":" + params.Market_All + ":" + keyGroup
 	//json := util.StructToJson(items)
 	_, err := s.Redisdb.Client().Set(ctx, key, json, 0).Result()
 	if err != nil {
 		fmt.Println(err)
-		return err
 	}
-	return nil
 }
-func (s ByBitMarketRepository) UpdateRiskLimitRedis(ctx context.Context, keyGroup string, items []models_grpc.BybitMarketGetRiskLimit) error {
+func (s MarketRepository) UpdateRiskLimitRedis(ctx context.Context, keyGroup string, items []models_grpc.BybitMarketGetRiskLimit) error {
 	key := keyGroup
 	pipeliner := s.Redisdb.Client().Pipeline()
 	for _, item := range items {
@@ -74,7 +110,7 @@ func (s ByBitMarketRepository) UpdateRiskLimitRedis(ctx context.Context, keyGrou
 	}
 	return nil
 }
-func (s ByBitMarketRepository) UpdateRiskLimit(ctx context.Context, collectionName string, items []models_grpc.BybitMarketGetRiskLimit) error {
+func (s MarketRepository) UpdateRiskLimit(ctx context.Context, collectionName string, items []models_grpc.BybitMarketGetRiskLimit) error {
 	collection := s.Mongodb.MongoConn().Collection(collectionName)
 	var err error
 	fmt.Println("collectionName: ", len(items), collectionName)
@@ -115,7 +151,8 @@ func (s ByBitMarketRepository) UpdateRiskLimit(ctx context.Context, collectionNa
 	}
 	return err
 }
-func (s ByBitMarketRepository) FindAllRiskLimitPagination(ctx context.Context, collectionName string, category string, symbol string, pageIndex int, pageSize int) ([]models_grpc.BybitMarketGetRiskLimit, error) {
+
+func (s MarketRepository) FindAllRiskLimitPagination_MongoDB(ctx context.Context, collectionName string, category string, symbol string, pageIndex int, pageSize int) ([]models_grpc.BybitMarketGetRiskLimit, error) {
 	collection := s.Mongodb.MongoConn().Collection(collectionName)
 	var spots []models_grpc.BybitMarketGetRiskLimit
 	var cursor *mongo.Cursor

@@ -36,6 +36,7 @@ func main() {
 	marketRepository := repository.New(cfg)
 
 	s := grpc.NewServer()
+
 	grpcServer_Order := bybit_grpc_service.NewByBitHttpServerOrder(cfg)
 	grpcServer_Position := bybit_grpc_service.NewByBitHttpServerPosition(cfg)
 	grpcServer_Market := bybit_grpc_service.NewByBitHttpServerMarket(cfg, marketRepository)
@@ -53,5 +54,3 @@ func main() {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
-
-// Start Cron Jobs for Update Linear,Spot,Inverse Mongo Collection Db

@@ -13,93 +13,6 @@ import (
 	"time"
 )
 
-type InstrumentInfoLinearDto struct {
-	Symbol             string                     `json:"symbol"`
-	ContractType       string                     `json:"contractType"`
-	Status             string                     `json:"status"`
-	BaseCoin           string                     `json:"baseCoin"`
-	QuoteCoin          string                     `json:"quoteCoin"`
-	LaunchTime         string                     `json:"launchTime"`
-	DeliveryTime       string                     `json:"deliveryTime"`
-	DeliveryFeeRate    string                     `json:"deliveryFeeRate"`
-	PriceScale         string                     `json:"priceScale"`
-	LeverageFilter     models_grpc.LeverageFilter `json:"leverageFilter"`
-	PriceFilter        models_grpc.PriceFilter    `json:"priceFilter"`
-	LotSizeFilter      models_grpc.LotSizeFilter  `json:"lotSizeFilter"`
-	UnifiedMarginTrade bool                       `json:"unifiedMarginTrade"`
-	FundingInterval    int                        `json:"fundingInterval"`
-	SettleCoin         string                     `json:"settleCoin"`
-	CopyTrading        string                     `json:"copyTrading"`
-	UpperFundingRate   string                     `json:"upperFundingRate"`
-	LowerFundingRate   string                     `json:"lowerFundingRate"`
-	IsPreListing       bool                       `json:"isPreListing"`
-	PreListingInfo     models_grpc.PreListingInfo `json:"preListingInfo"`
-}
-type ResultListLinearDto struct {
-	Category       string                    `json:"category"`
-	List           []InstrumentInfoLinearDto `json:"list"`
-	NextPageCursor string                    `json:"nextPageCursor"`
-}
-type GetInstrumentInfoLinearDto struct {
-	RetCode    int                 `json:"retCode"`
-	RetMsg     string              `json:"retMsg"`
-	Result     ResultListLinearDto `json:"result"`
-	RetExtInfo struct {
-	} `json:"retExtInfo"`
-	Time int64 `json:"time"`
-}
-
-type InstrumentInfoSpotDto struct {
-	Symbol         string                     `json:"symbol"`
-	BaseCoin       string                     `json:"baseCoin"`
-	QuoteCoin      string                     `json:"quoteCoin"`
-	Innovation     string                     `json:"innovation"`
-	Status         string                     `json:"status"`
-	MarginTrading  string                     `json:"marginTrading"`
-	StTag          string                     `json:"stTag"`
-	LotSizeFilter  models_grpc.LotSizeFilter  `json:"lotSizeFilter"`
-	PriceFilter    models_grpc.PriceFilter    `json:"priceFilter"`
-	RiskParameters models_grpc.RiskParameters `json:"riskParameters"`
-}
-type ResultListSpotDto struct {
-	Category string                  `json:"category"`
-	List     []InstrumentInfoSpotDto `json:"list"`
-}
-type GetInstrumentInfoSpotDto struct {
-	RetCode    int               `json:"retCode"`
-	RetMsg     string            `json:"retMsg"`
-	Result     ResultListSpotDto `json:"result"`
-	RetExtInfo struct {
-	} `json:"retExtInfo"`
-	Time int64 `json:"time"`
-}
-
-type ResultListInverseDto struct {
-	Category string                                             `json:"category"`
-	List     []models_grpc.ByBitMarketGetInstrumentsInfoInverse `json:"list"`
-}
-type GetInstrumentInfoInverseDto struct {
-	RetCode    int                  `json:"retCode"`
-	RetMsg     string               `json:"retMsg"`
-	Result     ResultListInverseDto `json:"result"`
-	RetExtInfo struct {
-	} `json:"retExtInfo"`
-	Time int64 `json:"time"`
-}
-
-type GetKlineResponseDto struct {
-	RetCode int    `json:"retCode"`
-	RetMsg  string `json:"retMsg"`
-	Result  struct {
-		Symbol   string     `json:"symbol"`
-		Category string     `json:"category"`
-		List     [][]string `json:"list"`
-	} `json:"result"`
-	RetExtInfo struct {
-	} `json:"retExtInfo"`
-	Time int64 `json:"time"`
-}
-
 func ToGetInstrumentInfoInverseDto(data *bybit.ServerResponse) GetInstrumentInfoInverseDto {
 	marshal, err := json.Marshal(data)
 	var pl GetInstrumentInfoInverseDto
@@ -159,58 +72,6 @@ func ToBybitMarketGetRiskLimitCollection(data GetRiskLimitLinearDto, time int64,
 	fmt.Println(len(riskLimitdto[0].RiskLimit))
 	return riskLimitdto
 }
-
-func ToByBitMarketGetInstrumentsInfoSpot(data GetInstrumentInfoSpotDto, time int64) []models_grpc.ByBitMarketGetInstrumentsInfoSpot {
-	var ret []models_grpc.ByBitMarketGetInstrumentsInfoSpot
-	for _, item := range data.Result.List {
-		ret = append(ret, models_grpc.ByBitMarketGetInstrumentsInfoSpot{
-			Symbol:         item.Symbol,
-			Status:         item.Status,
-			BaseCoin:       item.BaseCoin,
-			QuoteCoin:      item.QuoteCoin,
-			PriceFilter:    item.PriceFilter,
-			LotSizeFilter:  item.LotSizeFilter,
-			Innovation:     item.Innovation,
-			MarginTrading:  item.MarginTrading,
-			StTag:          item.StTag,
-			RiskParameters: item.RiskParameters,
-			CreatedAt:      util.TimestampToTime(time),
-			UpdatedAt:      util.TimestampToTime(time),
-		})
-	}
-	return ret
-}
-func ToByBitMarketGetInstrumentsInfoLinear(data GetInstrumentInfoLinearDto, time int64) []models_grpc.ByBitMarketGetInstrumentsInfoLinear {
-	var ret []models_grpc.ByBitMarketGetInstrumentsInfoLinear
-	for _, item := range data.Result.List {
-		ret = append(ret, models_grpc.ByBitMarketGetInstrumentsInfoLinear{
-			Symbol:             item.Symbol,
-			ContractType:       item.ContractType,
-			Status:             item.Status,
-			BaseCoin:           item.BaseCoin,
-			QuoteCoin:          item.QuoteCoin,
-			LaunchTime:         item.LaunchTime,
-			DeliveryTime:       item.DeliveryTime,
-			DeliveryFeeRate:    item.DeliveryFeeRate,
-			PriceScale:         item.PriceScale,
-			LeverageFilter:     item.LeverageFilter,
-			PriceFilter:        item.PriceFilter,
-			LotSizeFilter:      item.LotSizeFilter,
-			UnifiedMarginTrade: item.UnifiedMarginTrade,
-			FundingInterval:    item.FundingInterval,
-			SettleCoin:         item.SettleCoin,
-			CopyTrading:        item.CopyTrading,
-			UpperFundingRate:   item.UpperFundingRate,
-			LowerFundingRate:   item.LowerFundingRate,
-			IsPreListing:       item.IsPreListing,
-			PreListingInfo:     item.PreListingInfo,
-			CreatedAt:          util.TimestampToTime(time),
-			UpdatedAt:          util.TimestampToTime(time),
-		})
-	}
-	return ret
-}
-
 func ToGetInstrumentInfoLinearDto(data *bybit.ServerResponse) GetInstrumentInfoLinearDto {
 	marshal, err := json.Marshal(data)
 	var pl GetInstrumentInfoLinearDto
@@ -223,7 +84,6 @@ func ToGetInstrumentInfoLinearDto(data *bybit.ServerResponse) GetInstrumentInfoL
 	}
 	return pl
 }
-
 func ToGetKlineResponse(data GetKlineResponseDto) market.GetKlineResponse {
 	response := market.GetKlineResponse{}
 	response.RetMsg = data.RetMsg
@@ -448,54 +308,37 @@ func ToGetInstrumentsInfoSpotResponse(data []models_grpc.ByBitMarketGetInstrumen
 				MinOrderQty:    item.LotSizeFilter.MinOrderQty,
 				BasePrecision:  item.LotSizeFilter.BasePrecision,
 				QuotePrecision: item.LotSizeFilter.QuotePrecision,
-				MinOrderAmt:    item.LotSizeFilter.MaxOrderQty,
-				MaxOrderAmt:    item.LotSizeFilter.MaxOrderQty,
+				MinOrderAmt:    item.LotSizeFilter.MinOrderAmt,
+				MaxOrderAmt:    item.LotSizeFilter.MaxOrderAmt,
 			},
 		})
 	}
 	mainOutput.Result = &resultOutput
 	return mainOutput
 }
-func ToGetRiskLimitResponse(data []models_grpc.BybitMarketGetRiskLimit) market.GetRiskLimitResponse {
+func ToGetRiskLimitResponse(data models_grpc.GetRiskLimitLinearDto) market.GetRiskLimitResponse {
 	var mainOutput market.GetRiskLimitResponse
+	//var farOutput []market.GetRiskLimitResponse_RiskLimit
 
-	//var RiskLimitSymbols []market.GetRiskLimitResponse_RiskLimitSymbol
-	//var RiskLimits []*market.GetRiskLimitResponse_RiskLimit
 	mainOutput.RetCode = 200
 	mainOutput.RetMsg = "OK"
 	mainOutput.Time = uint64(time.Now().UnixMilli())
-
-	for _, item := range data {
+	for i := 0; i < len(data.Result.List); i++ {
 		mainOutput.Result = append(mainOutput.Result, &market.GetRiskLimitResponse_RiskLimitSymbol{
-			Symbol:   item.Symbol,
-			Category: item.Category,
+			Symbol:   data.Result.List[i].Symbol,
+			Category: data.Result.List[i].Category,
 		})
-		//for _, item2 := range item.RiskLimit {
-		//	RiskLimits = append(RiskLimits, &market.GetRiskLimitResponse_RiskLimit{
-		//		Id:                uint32(item2.ID),
-		//		IsLowestRisk:      uint32(item2.IsLowestRisk),
-		//		RiskLimitValue:    item2.RiskLimitValue,
-		//		MaintenanceMargin: item2.MaintenanceMargin,
-		//		InitialMargin:     item2.InitialMargin,
-		//		MaxLeverage:       item2.MaxLeverage,
-		//		MmDeduction:       item2.MmDeduction,
-		//	})
-		//}
-		//RiskLimits = []*market.GetRiskLimitResponse_RiskLimit{}
-	}
-	for i := 0; i < len(mainOutput.Result); i++ {
-		if mainOutput.Result[i].Symbol == data[i].Symbol {
-			for _, limit := range data[i].RiskLimit {
-				mainOutput.Result[i].List = append(mainOutput.Result[i].List, &market.GetRiskLimitResponse_RiskLimit{
-					Id:                uint32(limit.ID),
-					IsLowestRisk:      uint32(limit.IsLowestRisk),
-					RiskLimitValue:    limit.RiskLimitValue,
-					MaintenanceMargin: limit.MaintenanceMargin,
-					InitialMargin:     limit.InitialMargin,
-					MaxLeverage:       limit.MaxLeverage,
-					MmDeduction:       limit.MmDeduction,
-				})
+		for j := 0; j < len(data.Result.List[i].RiskLimit); j++ {
+			limit := &market.GetRiskLimitResponse_RiskLimit{
+				Id:                uint32(data.Result.List[i].RiskLimit[j].ID),
+				IsLowestRisk:      uint32(data.Result.List[i].RiskLimit[j].IsLowestRisk),
+				RiskLimitValue:    data.Result.List[i].RiskLimit[j].RiskLimitValue,
+				MaintenanceMargin: data.Result.List[i].RiskLimit[j].MaintenanceMargin,
+				InitialMargin:     data.Result.List[i].RiskLimit[j].InitialMargin,
+				MaxLeverage:       data.Result.List[i].RiskLimit[j].MaxLeverage,
+				MmDeduction:       data.Result.List[i].RiskLimit[j].MmDeduction,
 			}
+			mainOutput.Result[i].List = append(mainOutput.Result[i].List, limit)
 		}
 	}
 	return mainOutput
@@ -545,10 +388,10 @@ func ToGetInstrumentsInfoLinearResponse(data []models_grpc.ByBitMarketGetInstrum
 				QtyStep:             item.LotSizeFilter.QtyStep,
 				PostOnlyMaxOrderQty: item.LotSizeFilter.PostOnlyMaxOrderQty,
 				MinNotionalValue:    item.LotSizeFilter.MinNotionalValue,
-				//BasePrecision     :  item.LotSizeFilter.BasePrecision,
-				//QuotePrecision    :  item.LotSizeFilter.QuotePrecision,
-				//MinOrderAmt      :   item.LotSizeFilter.MaxOrderQty,
-				//MaxOrderAmt       :  item.LotSizeFilter.MaxOrderQty,
+				BasePrecision:       item.LotSizeFilter.BasePrecision,
+				QuotePrecision:      item.LotSizeFilter.QuotePrecision,
+				MinOrderAmt:         item.LotSizeFilter.MinOrderAmt,
+				MaxOrderAmt:         item.LotSizeFilter.MaxOrderAmt,
 			},
 			UnifiedMarginTrade: item.UnifiedMarginTrade,
 			FundingInterval:    uint32(item.FundingInterval),
@@ -571,7 +414,6 @@ func ToGetInstrumentsInfoLinearResponse(data []models_grpc.ByBitMarketGetInstrum
 	mainOutput.Result = &resultOutput
 	return mainOutput
 }
-
 func ToBybitMarketGetTickerInverseDto(data *bybit.ServerResponse) models_grpc.BybitMarketGetTickerInverseDto {
 	marshal, err := json.Marshal(data.Result)
 	var pl models_grpc.BybitMarketGetTickerInverseDto
@@ -620,29 +462,6 @@ func ToBybitMarketGetTickerSpotDto(data *bybit.ServerResponse) models_grpc.Bybit
 	}
 	return pl
 }
-
-type GetRiskLimitLinearDto struct {
-	RetCode int    `json:"retCode"`
-	RetMsg  string `json:"retMsg"`
-	Result  struct {
-		Category string `json:"category"`
-		List     []struct {
-			ID                int    `json:"id"`
-			Symbol            string `json:"symbol"`
-			RiskLimitValue    string `json:"riskLimitValue"`
-			MaintenanceMargin string `json:"maintenanceMargin"`
-			InitialMargin     string `json:"initialMargin"`
-			IsLowestRisk      int    `json:"isLowestRisk"`
-			MaxLeverage       string `json:"maxLeverage"`
-			MmDeduction       string `json:"mmDeduction"`
-		} `json:"list"`
-		NextPageCursor string `json:"nextPageCursor"`
-	} `json:"result"`
-	RetExtInfo struct {
-	} `json:"retExtInfo"`
-	Time int64 `json:"time"`
-}
-
 func ToBybitMarketGetRiskLimitDto(data *bybit.ServerResponse) GetRiskLimitLinearDto {
 	marshal, err := json.Marshal(data)
 	var pl GetRiskLimitLinearDto
@@ -654,4 +473,118 @@ func ToBybitMarketGetRiskLimitDto(data *bybit.ServerResponse) GetRiskLimitLinear
 		return pl
 	}
 	return pl
+}
+
+type InstrumentInfoLinearDto struct {
+	Symbol             string                     `json:"symbol"`
+	ContractType       string                     `json:"contractType"`
+	Status             string                     `json:"status"`
+	BaseCoin           string                     `json:"baseCoin"`
+	QuoteCoin          string                     `json:"quoteCoin"`
+	LaunchTime         string                     `json:"launchTime"`
+	DeliveryTime       string                     `json:"deliveryTime"`
+	DeliveryFeeRate    string                     `json:"deliveryFeeRate"`
+	PriceScale         string                     `json:"priceScale"`
+	LeverageFilter     models_grpc.LeverageFilter `json:"leverageFilter"`
+	PriceFilter        models_grpc.PriceFilter    `json:"priceFilter"`
+	LotSizeFilter      models_grpc.LotSizeFilter  `json:"lotSizeFilter"`
+	UnifiedMarginTrade bool                       `json:"unifiedMarginTrade"`
+	FundingInterval    int                        `json:"fundingInterval"`
+	SettleCoin         string                     `json:"settleCoin"`
+	CopyTrading        string                     `json:"copyTrading"`
+	UpperFundingRate   string                     `json:"upperFundingRate"`
+	LowerFundingRate   string                     `json:"lowerFundingRate"`
+	IsPreListing       bool                       `json:"isPreListing"`
+	PreListingInfo     models_grpc.PreListingInfo `json:"preListingInfo"`
+}
+
+type ResultListLinearDto struct {
+	Category       string                    `json:"category"`
+	List           []InstrumentInfoLinearDto `json:"list"`
+	NextPageCursor string                    `json:"nextPageCursor"`
+}
+
+type GetInstrumentInfoLinearDto struct {
+	RetCode    int                 `json:"retCode"`
+	RetMsg     string              `json:"retMsg"`
+	Result     ResultListLinearDto `json:"result"`
+	RetExtInfo struct {
+	} `json:"retExtInfo"`
+	Time int64 `json:"time"`
+}
+type InstrumentInfoSpotDto struct {
+	Symbol         string                     `json:"symbol"`
+	BaseCoin       string                     `json:"baseCoin"`
+	QuoteCoin      string                     `json:"quoteCoin"`
+	Innovation     string                     `json:"innovation"`
+	Status         string                     `json:"status"`
+	MarginTrading  string                     `json:"marginTrading"`
+	StTag          string                     `json:"stTag"`
+	LotSizeFilter  models_grpc.LotSizeFilter  `json:"lotSizeFilter"`
+	PriceFilter    models_grpc.PriceFilter    `json:"priceFilter"`
+	RiskParameters models_grpc.RiskParameters `json:"riskParameters"`
+}
+type ResultListSpotDto struct {
+	Category string                  `json:"category"`
+	List     []InstrumentInfoSpotDto `json:"list"`
+}
+
+type GetInstrumentInfoSpotDto struct {
+	RetCode    int               `json:"retCode"`
+	RetMsg     string            `json:"retMsg"`
+	Result     ResultListSpotDto `json:"result"`
+	RetExtInfo struct {
+	} `json:"retExtInfo"`
+	Time int64 `json:"time"`
+}
+type ResultListInverseDto struct {
+	Category string                                             `json:"category"`
+	List     []models_grpc.ByBitMarketGetInstrumentsInfoInverse `json:"list"`
+}
+
+type GetInstrumentInfoInverseDto struct {
+	RetCode    int                  `json:"retCode"`
+	RetMsg     string               `json:"retMsg"`
+	Result     ResultListInverseDto `json:"result"`
+	RetExtInfo struct {
+	} `json:"retExtInfo"`
+	Time int64 `json:"time"`
+}
+
+type GetKlineResponseDto struct {
+	RetCode int    `json:"retCode"`
+	RetMsg  string `json:"retMsg"`
+	Result  struct {
+		Symbol   string     `json:"symbol"`
+		Category string     `json:"category"`
+		List     [][]string `json:"list"`
+	} `json:"result"`
+	RetExtInfo struct {
+	} `json:"retExtInfo"`
+	Time int64 `json:"time"`
+}
+
+type GetRiskLimitLinearResultDto struct {
+	Category       string                      `json:"category"`
+	List           []GetRiskLimitLinearListDto `json:"list"`
+	NextPageCursor string                      `json:"nextPageCursor"`
+}
+type GetRiskLimitLinearListDto struct {
+	ID                int    `json:"id"`
+	Symbol            string `json:"symbol"`
+	RiskLimitValue    string `json:"riskLimitValue"`
+	MaintenanceMargin string `json:"maintenanceMargin"`
+	InitialMargin     string `json:"initialMargin"`
+	IsLowestRisk      int    `json:"isLowestRisk"`
+	MaxLeverage       string `json:"maxLeverage"`
+	MmDeduction       string `json:"mmDeduction"`
+}
+
+type GetRiskLimitLinearDto struct {
+	RetCode    int                         `json:"retCode"`
+	RetMsg     string                      `json:"retMsg"`
+	Result     GetRiskLimitLinearResultDto `json:"result"`
+	RetExtInfo struct {
+	} `json:"retExtInfo"`
+	Time int64 `json:"time"`
 }

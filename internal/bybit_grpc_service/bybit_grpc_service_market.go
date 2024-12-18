@@ -13,16 +13,16 @@ import (
 	bybit "github.com/wuhewuhe/bybit.go.api"
 )
 
-type ByBitHttpServerMarket struct {
+type HttpServerMarket struct {
 	market.UnimplementedMarketServiceServer
 	Config         config.Config
 	byBitClient    *bybit.Client
 	validator      validator.ByBitMarketValidator
-	bybitMarketSvc repository.ByBitMarketRepository
+	bybitMarketSvc repository.MarketRepository
 }
 
-func NewByBitHttpServerMarket(cfg config.Config, bybitMarketSvc repository.ByBitMarketRepository) ByBitHttpServerMarket {
-	return ByBitHttpServerMarket{
+func NewByBitHttpServerMarket(cfg config.Config, bybitMarketSvc repository.MarketRepository) HttpServerMarket {
+	return HttpServerMarket{
 		Config:         cfg,
 		validator:      validator.NewByBitMarketValidator(),
 		byBitClient:    bybit.NewBybitHttpClient(cfg.ByBitWs.ApiKey, cfg.ByBitWs.ApiSecret, bybit.WithBaseURL(bybit.MAINNET)),
@@ -30,7 +30,9 @@ func NewByBitHttpServerMarket(cfg config.Config, bybitMarketSvc repository.ByBit
 	}
 }
 
-func (s *ByBitHttpServerMarket) GetTickersSpot(ctx context.Context, in *market.GetTickersRequest) (*market.GetTickersSpotResponse, error) {
+// Retrive ticker by spot category data from redis db
+// https://bybit-exchange.github.io/docs/v5/market/tickers
+func (s *HttpServerMarket) GetTickersSpot(ctx context.Context, in *market.GetTickersRequest) (*market.GetTickersSpotResponse, error) {
 	//collection := selectCollection(in.Category)
 	spot, err := s.bybitMarketSvc.FindTickerSpot(ctx)
 	if err != nil {
@@ -39,16 +41,22 @@ func (s *ByBitHttpServerMarket) GetTickersSpot(ctx context.Context, in *market.G
 	response := params_bybit_http.ToGetTickersSpot(spot)
 	return &response, nil
 }
-func (s *ByBitHttpServerMarket) GetTickersLinear(ctx context.Context, in *market.GetTickersRequest) (*market.GetTickersLinearResponse, error) {
+
+// Retrive ticker by linear category data from redis db
+// https://bybit-exchange.github.io/docs/v5/market/tickers
+func (s *HttpServerMarket) GetTickersLinear(ctx context.Context, in *market.GetTickersRequest) (*market.GetTickersLinearResponse, error) {
 	//collection := selectCollection(in.Category)
-	inverse, err := s.bybitMarketSvc.FindTickerLinear(ctx)
+	linears, err := s.bybitMarketSvc.FindTickerLinear(ctx)
 	if err != nil {
 		return &market.GetTickersLinearResponse{}, err
 	}
-	response := params_bybit_http.ToGetTickersLinear(inverse)
+	response := params_bybit_http.ToGetTickersLinear(linears)
 	return &response, nil
 }
-func (s *ByBitHttpServerMarket) GetTickersInverse(ctx context.Context, in *market.GetTickersRequest) (*market.GetTickersInverseResponse, error) {
+
+// Retrive ticker by inverse category data from redis db
+// https://bybit-exchange.github.io/docs/v5/market/tickers
+func (s *HttpServerMarket) GetTickersInverse(ctx context.Context, in *market.GetTickersRequest) (*market.GetTickersInverseResponse, error) {
 	//collection := selectCollection(in.Category)
 	inverse, err := s.bybitMarketSvc.FindTickerInverse(ctx)
 	if err != nil {
@@ -58,18 +66,23 @@ func (s *ByBitHttpServerMarket) GetTickersInverse(ctx context.Context, in *marke
 	return &response, nil
 }
 
-func (s *ByBitHttpServerMarket) GetInstrumentsInfoLinear(ctx context.Context, in *market.GetInstrumentsInfoRequest) (*market.GetInstrumentsInfoLinearResponse, error) {
-	collection := selectCollection(in.Category)
-	linears, err := s.bybitMarketSvc.FindRedisLinear(ctx, collection, in.Symbol)
+// Retrive instrument info by linear category
+// https://bybit-exchange.github.io/docs/v5/market/instrument
+func (s *HttpServerMarket) GetInstrumentsInfoLinear(ctx context.Context, in *market.GetInstrumentsInfoRequest) (*market.GetInstrumentsInfoLinearResponse, error) {
+	//collection := selectCollection(in.Category)
+	linears, err := s.bybitMarketSvc.FindRedisLinear(ctx, in.Category, in.Symbol)
 	if err != nil {
 		return &market.GetInstrumentsInfoLinearResponse{}, err
 	}
 	response := params_bybit_http.ToGetInstrumentsInfoLinearResponse(linears)
 	return &response, nil
 }
-func (s *ByBitHttpServerMarket) GetInstrumentsInfoInverse(ctx context.Context, in *market.GetInstrumentsInfoRequest) (*market.GetInstrumentsInfoInverseResponse, error) {
-	collection := selectCollection(in.Category)
-	spots, err := s.bybitMarketSvc.FindRedisInverse(ctx, collection, in.Symbol)
+
+// Retrive instrument info by inverse category
+// https://bybit-exchange.github.io/docs/v5/market/instrument
+func (s *HttpServerMarket) GetInstrumentsInfoInverse(ctx context.Context, in *market.GetInstrumentsInfoRequest) (*market.GetInstrumentsInfoInverseResponse, error) {
+	//collection := selectCollection(in.Category)
+	spots, err := s.bybitMarketSvc.FindRedisInverse(ctx, in.Category, in.Symbol)
 	if err != nil {
 		return &market.GetInstrumentsInfoInverseResponse{}, err
 	}
@@ -77,9 +90,12 @@ func (s *ByBitHttpServerMarket) GetInstrumentsInfoInverse(ctx context.Context, i
 	response := params_bybit_http.ToGetInstrumentsInfoInverseResponse(spots)
 	return &response, nil
 }
-func (s *ByBitHttpServerMarket) GetInstrumentsInfoSpot(ctx context.Context, in *market.GetInstrumentsInfoRequest) (*market.GetInstrumentsInfoSpotResponse, error) {
-	collection := selectCollection(in.Category)
-	spots, err := s.bybitMarketSvc.FindRedisSpot(ctx, collection, in.Symbol)
+
+// Retrive instrument info by spot category
+// https://bybit-exchange.github.io/docs/v5/market/instrument
+func (s *HttpServerMarket) GetInstrumentsInfoSpot(ctx context.Context, in *market.GetInstrumentsInfoRequest) (*market.GetInstrumentsInfoSpotResponse, error) {
+	//collection := selectCollection(in.Category)
+	var spots, err = s.bybitMarketSvc.FindRedisSpot(ctx, in.Category, in.Symbol)
 	if err != nil {
 		return &market.GetInstrumentsInfoSpotResponse{}, err
 	}
@@ -87,7 +103,10 @@ func (s *ByBitHttpServerMarket) GetInstrumentsInfoSpot(ctx context.Context, in *
 	response := params_bybit_http.ToGetInstrumentsInfoSpotResponse(spots)
 	return &response, nil
 }
-func (s *ByBitHttpServerMarket) GetKline(ctx context.Context, in *market.GetKlineRequest) (*market.GetKlineResponse, error) {
+
+// Retrive Kline data
+// https://bybit-exchange.github.io/docs/v5/market/kline
+func (s *HttpServerMarket) GetKline(ctx context.Context, in *market.GetKlineRequest) (*market.GetKlineResponse, error) {
 	errorList, err := s.validator.ValidateGetKline(in)
 	var strErrorList = ""
 	if err != nil {
@@ -107,7 +126,9 @@ func (s *ByBitHttpServerMarket) GetKline(ctx context.Context, in *market.GetKlin
 	return &getKlineDto, nil
 }
 
-func (s *ByBitHttpServerMarket) GetRiskLimitLinear(ctx context.Context, in *market.GetRiskLimitRequest) (*market.GetRiskLimitResponse, error) {
+// Retrive risk limit data from category linear
+// https://bybit-exchange.github.io/docs/v5/market/risk-limit
+func (s *HttpServerMarket) GetRiskLimitLinear(ctx context.Context, in *market.GetRiskLimitRequest) (*market.GetRiskLimitResponse, error) {
 	Linears, err := s.bybitMarketSvc.FindAllRiskLimit(ctx, params.Market_Linear, in.Symbol)
 	if err != nil {
 		return &market.GetRiskLimitResponse{
@@ -117,7 +138,10 @@ func (s *ByBitHttpServerMarket) GetRiskLimitLinear(ctx context.Context, in *mark
 	response := params_bybit_http.ToGetRiskLimitResponse(Linears)
 	return &response, nil
 }
-func (s *ByBitHttpServerMarket) GetRiskLimitInverse(ctx context.Context, in *market.GetRiskLimitRequest) (*market.GetRiskLimitResponse, error) {
+
+// Retrive risk limit data from category inverse
+// https://bybit-exchange.github.io/docs/v5/market/risk-limit
+func (s *HttpServerMarket) GetRiskLimitInverse(ctx context.Context, in *market.GetRiskLimitRequest) (*market.GetRiskLimitResponse, error) {
 	Inverses, err := s.bybitMarketSvc.FindAllRiskLimit(ctx, params.Market_Inverse, in.Symbol)
 	if err != nil {
 		return &market.GetRiskLimitResponse{

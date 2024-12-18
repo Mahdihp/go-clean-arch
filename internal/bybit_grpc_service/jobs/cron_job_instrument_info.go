@@ -12,6 +12,7 @@ import (
 	bybit "github.com/wuhewuhe/bybit.go.api"
 )
 
+// send request to bybit api server from category params
 func sendRequestToBybit_GetInstrumentInfo(cfg config.Config, category string) *bybit.ServerResponse {
 
 	byBitClient := bybit.NewBybitHttpClient(cfg.ByBitWs.ApiKey, cfg.ByBitWs.ApiSecret, bybit.WithBaseURL(bybit.MAINNET))
@@ -23,12 +24,12 @@ func sendRequestToBybit_GetInstrumentInfo(cfg config.Config, category string) *b
 	}
 	return spotList
 }
-func UpdateInstrumentInfoInverse(cfg config.Config, marketSvc repository.ByBitMarketRepository) {
+
+// update & add instrument info data with inverse category
+func UpdateInstrumentInfoInverse(cfg config.Config, marketSvc repository.MarketRepository) {
 	toBybit := sendRequestToBybit_GetInstrumentInfo(cfg, params.Market_Inverse)
 	if toBybit != nil {
 		instrumentInfoDto := params_http.ToGetInstrumentInfoInverseDto(toBybit)
-		//coll_InstrumentsInfoSpot := params_http.ToByBitMarketGetInstrumentsInfoInverse(instrumentInfoDto, toBybit.Time)
-		//err := marketSvc.UpdateInverse(context.Background(), models_grpc.Collection_ByBit_MGIII, coll_InstrumentsInfoSpot)
 		err := marketSvc.UpdateRedisInverse(context.Background(), params.Market_Inverse, instrumentInfoDto.Result.List)
 		if err != nil {
 			fmt.Println("Update InstrumentInfo Inverse error...", err)
@@ -40,13 +41,12 @@ func UpdateInstrumentInfoInverse(cfg config.Config, marketSvc repository.ByBitMa
 		fmt.Println("Bybit Not Connect.")
 	}
 }
-func UpdateInstrumentInfoSpot(cfg config.Config, marketSvc repository.ByBitMarketRepository) {
+
+// update & add instrument info data with spot category
+func UpdateInstrumentInfoSpot(cfg config.Config, marketSvc repository.MarketRepository) {
 	toBybit := sendRequestToBybit_GetInstrumentInfo(cfg, params.Market_Spot)
 	if toBybit != nil {
 		instrumentInfoDto := params_http.ToGetInstrumentInfoSpotDto(toBybit)
-		//coll_InstrumentsInfoSpot := params_http.ToByBitMarketGetInstrumentsInfoSpot(instrumentInfoDto, toBybit.Time)
-
-		//err := marketSvc.UpdateSpot(context.Background(), models_grpc.Collection_ByBit_MGIIS, coll_InstrumentsInfoSpot)
 		err := marketSvc.UpdateRedisSpot(context.Background(), params.Market_Spot, instrumentInfoDto.Result.List)
 		if err != nil {
 			fmt.Println("Update InstrumentInfo Spot error...", err)
@@ -58,12 +58,12 @@ func UpdateInstrumentInfoSpot(cfg config.Config, marketSvc repository.ByBitMarke
 		fmt.Println("Bybit Not Connect.")
 	}
 }
-func UpdateInstrumentInfoLinear(cfg config.Config, marketSvc repository.ByBitMarketRepository) {
+
+// update & add instrument info data with linear category
+func UpdateInstrumentInfoLinear(cfg config.Config, marketSvc repository.MarketRepository) {
 	toBybit := sendRequestToBybit_GetInstrumentInfo(cfg, params.Market_Linear)
 	if toBybit != nil {
 		instrumentInfoDto := params_http.ToGetInstrumentInfoLinearDto(toBybit)
-		//coll_InstrumentsInfoLinear := params_http.ToByBitMarketGetInstrumentsInfoLinear(instrumentInfoDto, toBybit.Time)
-		//err := marketSvc.UpdateLinear(context.Background(), models_grpc.Collection_ByBit_MGIIL,coll_InstrumentsInfoLinear)
 		err := marketSvc.UpdateRedisLinear(context.Background(), params.Market_Linear, instrumentInfoDto.Result.List)
 		if err != nil {
 			fmt.Println("Update InstrumentInfo Linear error...", err)

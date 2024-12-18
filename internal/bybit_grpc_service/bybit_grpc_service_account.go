@@ -24,6 +24,10 @@ func NewByBitHttpServerAccount(cfg config.Config) ByBitHttpServerAccount {
 	}
 }
 
+// Get Wallet Balance
+// Obtain wallet balance, query asset information of each currency.
+// By default, currency information with assets or liabilities of 0 is not returned.
+// https://bybit-exchange.github.io/docs/v5/account/wallet-balance
 func (s *ByBitHttpServerAccount) GetWalletBalance(ctx context.Context, in *account.GetWalletBalanceRequest) (*account.GetWalletBalanceResponse, error) {
 
 	params := map[string]interface{}{"accountType": in.AccountType, "coin": in.Coin}
