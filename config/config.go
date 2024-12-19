@@ -57,12 +57,11 @@ type MongoDbMarket struct {
 	Password string `mapstructure:"MONGODB_MARKET_PASS"`
 }
 type RedisMarket struct {
-	Host                       string `mapstructure:"REDIS_MARKET_HOST"`
-	HttpPort                   int    `mapstructure:"REDIS_MARKET_PORT"`
-	DBName                     string `mapstructure:"REDIS_MARKET_DB"`
-	Username                   string `mapstructure:"REDIS_MARKET_USER"`
-	Password                   string `mapstructure:"REDIS_MARKET_PASS"`
-	IntervalSecondMarketTicker int    `mapstructure:"INTERVAL_SECOND_MARKET_TICKER"`
+	Host     string `mapstructure:"REDIS_MARKET_HOST"`
+	HttpPort int    `mapstructure:"REDIS_MARKET_PORT"`
+	DBName   string `mapstructure:"REDIS_MARKET_DB"`
+	Username string `mapstructure:"REDIS_MARKET_USER"`
+	Password string `mapstructure:"REDIS_MARKET_PASS"`
 }
 
 type MongoDbHistory struct {
@@ -73,7 +72,9 @@ type MongoDbHistory struct {
 	Password string `mapstructure:"MONGODB_HISTORY_PASS"`
 }
 type CronJob struct {
-	DurationBySecond int `mapstructure:"GOCRON_DURATION_JOB_SECOND"`
+	TickerInterval         int `mapstructure:"CRONJOB_INTERVAL_TICKER"`
+	InstrumentInfoInterval int `mapstructure:"CRONJOB_INTERVAL_INSTRUMENT_INFO"`
+	RiskLimitInterval      int `mapstructure:"CRONJOB_INTERVAL_RISK_LIMIT"`
 }
 
 func LoadConfig() Config {
@@ -119,9 +120,11 @@ func LoadConfig() Config {
 	c.RedisMarket.DBName = os.Getenv("REDIS_MARKET_DB")
 	c.RedisMarket.Username = os.Getenv("REDIS_MARKET_USER")
 	c.RedisMarket.Password = os.Getenv("REDIS_MARKET_PASS")
-	c.RedisMarket.IntervalSecondMarketTicker, _ = strconv.Atoi(os.Getenv("INTERVAL_SECOND_MARKET_TICKER"))
 
-	c.CronJob.DurationBySecond, _ = strconv.Atoi(os.Getenv("GOCRON_DURATION_JOB_SECOND"))
+	c.CronJob.TickerInterval, _ = strconv.Atoi(os.Getenv("CRONJOB_INTERVAL_TICKER"))
+	c.CronJob.InstrumentInfoInterval, _ = strconv.Atoi(os.Getenv("CRONJOB_INTERVAL_INSTRUMENT_INFO"))
+	c.CronJob.RiskLimitInterval, _ = strconv.Atoi(os.Getenv("CRONJOB_INTERVAL_RISK_LIMIT"))
+
 	c.MaxCountMarket, _ = strconv.Atoi(os.Getenv("MAX_COUNT_MARKET"))
 
 	return c

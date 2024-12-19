@@ -14,6 +14,7 @@ const (
 )
 
 type ByBitUser struct {
+	ID          string    `bson:"_id"`
 	ApiKey      string    `bson:"api_key"`
 	ApiSecret   string    `bson:"api_secret"`
 	Username    string    `bson:"username"`

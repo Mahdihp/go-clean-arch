@@ -1,33 +1,34 @@
-FROM golang:1.23.2 AS builder
+FROM golang:1.23-alpine AS builder
 
-WORKDIR /bybit_trde_grpc_server_app
+WORKDIR /build
 
-COPY go.mod go.sum ./
+COPY . .
+
 RUN go mod download
 
-COPY *.go ./
+RUN CGO_ENABLED=1 GOOS=linux go build -o /cmd/bybit/bybit_http_trade_grpc_server
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /go-clean-arch
+#RUN CGO_ENABLED=1 GOOS=linux go install -a -installsuffix cgo -ldflags "-extldflags -static" \
+#      github.com/jackc/tern/v2@v2.1.1
 
-##
-## Run the tests in the container
-##
-
-FROM build-stage AS bybit_trde_grpc_server_app-stage
-RUN go test -v ./...
-
-##
-## Deploy the application binary into a lean image
-##
-
-FROM gcr.io/distroless/base-debian11 AS build-release-stage
-
-WORKDIR /
-
-COPY --from=build-stage /go-clean-arch /go-clean-arch
+#-
+#FROM alpine:latest
+#FROM debian:bookworm-20241202-slim
+#
+#RUN set -x && \
+#    apt-get update && \
+#    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+#      ca-certificates && \
+#      rm -rf /var/lib/apt/lists/*
+#
+#WORKDIR /api/
+#ENV PATH=/api/bin/:$PATH
+#
+#COPY --from=builder /build/rest-server ./bin/rest-server
+##COPY --from=builder /go/bin/tern ./bin/tern
+#COPY --from=builder /build/env.example .
+#COPY --from=builder /build/db/ .
 
 EXPOSE 9000
 
-USER nonroot:nonroot
-
-ENTRYPOINT ["/go-clean-archg"]
+CMD ["/cmd/bybit_http_trade_grpc_server"]

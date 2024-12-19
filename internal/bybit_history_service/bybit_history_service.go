@@ -61,7 +61,7 @@ func (s ByBitHistoricalServic) search(ctx echo.Context) error {
 	}
 
 	if len(req.Symbol) > 0 && len(req.StartTime) <= 0 || len(req.EndTime) <= 0 {
-		history, err := s.historyRepo.FindBySymbol(ctx.Request().Context(), collection, user.ID.String(), req.Symbol, req.PageIndex, req.PageSize)
+		history, err := s.historyRepo.FindBySymbol(ctx.Request().Context(), collection, user.ID, req.Symbol, req.PageIndex, req.PageSize)
 		if err != nil || len(history) <= 0 {
 			return ctx.JSON(http.StatusNotFound, httpmsg.NewMassage(httpmsg.HistoryNotFound))
 		}
@@ -69,7 +69,7 @@ func (s ByBitHistoricalServic) search(ctx echo.Context) error {
 
 	} else if len(req.Symbol) > 0 && len(req.StartTime) > 0 && len(req.EndTime) > 0 {
 		history, err := s.historyRepo.FindByBetweenCreatedTimeAndSymbol(ctx.Request().Context(), collection,
-			user.ID.String(), req.Symbol, req.StartTime, req.EndTime, req.PageIndex, req.PageSize)
+			user.ID, req.Symbol, req.StartTime, req.EndTime, req.PageIndex, req.PageSize)
 		if err != nil || len(history) <= 0 {
 			return ctx.JSON(http.StatusNotFound, httpmsg.NewMassage(httpmsg.HistoryNotFound))
 		}

@@ -8,57 +8,60 @@ import (
 	"strconv"
 )
 
-// setup cron jobs
+// SetupCronJob setup cron jobs
 func SetupCronJob(cfg config.Config, svc repository.MarketRepository) {
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("setupCronJob. Error:\n", r)
 		}
 	}()
-	c := cron.New(cron.WithSeconds())
-
+	//c := cron.New(cron.WithSeconds())
+	c := cron.New(cron.WithParser(cron.NewParser(
+		cron.SecondOptional | cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow | cron.Descriptor,
+	)))
 	//------------------------------Get Ticker---------------------------------------------
-	IntervalSecondMarketTicker := "@every 00h00m" + strconv.Itoa(cfg.RedisMarket.IntervalSecondMarketTicker) + "s"
+	TickerInterval := "@every 00h00m" + strconv.Itoa(cfg.CronJob.TickerInterval) + "s"
 
-	c.AddFunc(IntervalSecondMarketTicker, func() {
+	c.AddFunc(TickerInterval, func() {
 		SaveTickerSpot(cfg, svc)
 	})
-	c.AddFunc(IntervalSecondMarketTicker, func() {
+	c.AddFunc(TickerInterval, func() {
 		SaveTickerLinear(cfg, svc)
 	})
-	c.AddFunc(IntervalSecondMarketTicker, func() {
+	c.AddFunc(TickerInterval, func() {
 		SaveTickerInverse(cfg, svc)
 	})
 	//------------------------------Instrument Info-------------------------------------------------------
 	//"@every 00h00m00s"
-	//DurationBySecond := "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/60) + "m00s"
-	//c.AddFunc(DurationBySecond, func() {
-	UpdateInstrumentInfoLinear(cfg, svc)
-	//})
-	//
-	//DurationBySecond = "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/50) + "m00s"
-	//c.AddFunc(DurationBySecond, func() {
-	UpdateInstrumentInfoSpot(cfg, svc)
-	//})
-	//
-	//DurationBySecond = "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/40) + "m00s"
-	//c.AddFunc(DurationBySecond, func() {
-	UpdateInstrumentInfoInverse(cfg, svc)
-	//})
+	InstrumentInfoInterval := "@every " + strconv.Itoa(cfg.CronJob.InstrumentInfoInterval) + "h00m00s"
+	c.AddFunc(InstrumentInfoInterval, func() {
+		UpdateInstrumentInfoLinear(cfg, svc)
+	})
+
+	InstrumentInfoInterval = "@every " + strconv.Itoa(cfg.CronJob.InstrumentInfoInterval) + "h00m00s"
+	c.AddFunc(InstrumentInfoInterval, func() {
+		UpdateInstrumentInfoSpot(cfg, svc)
+	})
+
+	InstrumentInfoInterval = "@every " + strconv.Itoa(cfg.CronJob.InstrumentInfoInterval) + "h00m00s"
+	c.AddFunc(InstrumentInfoInterval, func() {
+		UpdateInstrumentInfoInverse(cfg, svc)
+	})
+
 	//------------------------------Risk Limit-------------------------------------------------------
-	//DurationBySecond = "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/40) + "m00s"
-	//c.AddFunc(DurationBySecond, func() {
-	UpdateRiskLimitLinear(cfg, svc)
-	//})
-	//
-	//DurationBySecond = "@every 00h" + strconv.Itoa(cfg.CronJob.DurationBySecond/35) + "m00s"
-	//c.AddFunc(DurationBySecond, func() {
-	UpdateRiskLimitInverse(cfg, svc)
-	//})
+	RiskLimitInterval := "@every " + strconv.Itoa(cfg.CronJob.RiskLimitInterval) + "h00m00s"
+	c.AddFunc(RiskLimitInterval, func() {
+		UpdateRiskLimitLinear(cfg, svc)
+	})
+
+	RiskLimitInterval = "@every " + strconv.Itoa(cfg.CronJob.RiskLimitInterval) + "h00m00s"
+	c.AddFunc(RiskLimitInterval, func() {
+		UpdateRiskLimitInverse(cfg, svc)
+	})
 
 	// Start the cron scheduler
 	c.Start()
-	fmt.Println("Cron scheduler initialized")
+	fmt.Println("Cron Scheduler Initialized")
 	// Keep the main program running
 	select {}
 }

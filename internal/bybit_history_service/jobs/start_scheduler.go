@@ -10,9 +10,9 @@ import (
 )
 
 func startScheduler() {
-	err := godotenv.Load("./config/.env")
+	err := godotenv.Load("./config/env")
 	if err != nil {
-		log.Fatalf("Error loading .env file: %v", err)
+		log.Fatalf("Error loading env file: %v", err)
 	}
 	cfg := config.LoadConfig()
 

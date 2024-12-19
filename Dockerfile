@@ -1,26 +1,20 @@
-# Builder
-FROM golang:1.20.7-alpine3.17 as builder
+FROM golang:1.23-bullseye
 
-RUN apk update && apk upgrade && \
-    apk --update add git make bash build-base
-
+# Creates an app directory to hold your app’s source code
 WORKDIR /app
 
+
+# Copies everything from your root directory into /app
 COPY . .
 
-RUN make build
+# Installs Go dependencies
+RUN go mod download
 
-# Distribution
-FROM alpine:latest
+# Builds your app with optional configuration
+RUN go build -o /godocker
 
-RUN apk update && apk upgrade && \
-    apk --update --no-cache add tzdata && \
-    mkdir /cmd
+# Tells Docker which network port your container listens on
+EXPOSE 9000
 
-WORKDIR /app 
-
-EXPOSE 9090
-
-COPY --from=builder /cmd/engine /app/
-
-CMD /app/engine
+# Specifies the executable command that runs when the container starts
+CMD [ "/godocker" ]
