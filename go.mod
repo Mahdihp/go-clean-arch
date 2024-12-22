@@ -17,7 +17,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/wuhewuhe/bybit.go.api v1.0.4
 	go.mongodb.org/mongo-driver v1.17.1
-	go.mongodb.org/mongo-driver/v2 v2.0.0-beta2
+	go.mongodb.org/mongo-driver/v2 v2.0.0
 	go.uber.org/zap v1.27.0
 	google.golang.org/grpc v1.68.0
 	google.golang.org/protobuf v1.35.2
