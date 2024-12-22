@@ -14,7 +14,7 @@ require (
 	github.com/labstack/gommon v0.4.2
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/robfig/cron/v3 v3.0.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/wuhewuhe/bybit.go.api v1.0.4
 	go.mongodb.org/mongo-driver v1.17.1
 	go.mongodb.org/mongo-driver/v2 v2.0.0-beta2
