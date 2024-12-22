@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.2
 
 require (
-	github.com/go-co-op/gocron/v2 v2.12.4
+	github.com/go-co-op/gocron/v2 v2.14.0
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/websocket v1.5.3
@@ -14,7 +14,7 @@ require (
 	github.com/labstack/gommon v0.4.2
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/robfig/cron/v3 v3.0.1
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/wuhewuhe/bybit.go.api v1.0.4
 	go.mongodb.org/mongo-driver v1.17.1
 	go.mongodb.org/mongo-driver/v2 v2.0.0-beta2
