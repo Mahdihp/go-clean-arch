@@ -2,10 +2,10 @@ package params_bybit_grpc
 
 import (
 	"encoding/json"
-	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/order"
-	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/position"
-	"github.com/bxcodec/go-clean-arch/util"
 	bybit "github.com/wuhewuhe/bybit.go.api"
+	"go-clean-arch/adapter/grpc-proto/order"
+	"go-clean-arch/adapter/grpc-proto/position"
+	"go-clean-arch/util"
 	"strconv"
 )
 

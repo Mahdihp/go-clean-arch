@@ -3,11 +3,11 @@ package jobs
 import (
 	"context"
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/config"
-	params_http "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/params"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/repository"
-	"github.com/bxcodec/go-clean-arch/params"
 	bybit "github.com/wuhewuhe/bybit.go.api"
+	"go-clean-arch/config"
+	params_http "go-clean-arch/internal/bybit_grpc_service/params"
+	"go-clean-arch/internal/bybit_grpc_service/repository"
+	"go-clean-arch/params"
 )
 
 // send request to bybit api server from category params

@@ -2,10 +2,10 @@ package delivery
 
 import (
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/config"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"go-clean-arch/config"
+	"go-clean-arch/internal/bybit_history_service"
 	"go.uber.org/zap"
 )
 

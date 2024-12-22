@@ -1,15 +1,15 @@
 package bybit_history_service
 
 import (
-	"github.com/bxcodec/go-clean-arch/config"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/models"
-	params2 "github.com/bxcodec/go-clean-arch/internal/bybit_history_service/params"
-	"github.com/bxcodec/go-clean-arch/internal/validator"
-	"github.com/bxcodec/go-clean-arch/params"
-	"github.com/bxcodec/go-clean-arch/pkg/httpmsg"
-	"github.com/bxcodec/go-clean-arch/util"
 	"github.com/labstack/echo/v4"
 	bybit "github.com/wuhewuhe/bybit.go.api"
+	"go-clean-arch/config"
+	"go-clean-arch/internal/bybit_history_service/models"
+	params2 "go-clean-arch/internal/bybit_history_service/params"
+	"go-clean-arch/internal/validator"
+	"go-clean-arch/params"
+	"go-clean-arch/pkg/httpmsg"
+	"go-clean-arch/util"
 	"net/http"
 )
 

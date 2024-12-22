@@ -1,0 +1,40 @@
+# For demo purposes
+services:
+  trade-grpc-server:
+    build:
+      context: .
+      dockerfile: /build/bybit_trade_grpc_server/Dockerfile
+    ports:
+      - "9000:9000"
+    command: bybit_trade_grpc_server
+      #    environment:
+      #      DATABASE_HOST: "postgres"
+      #      ELASTICSEARCH_URL: "http://elasticsearch:9200"
+      #      JAEGER_ENDPOINT: "http://jaeger:14268/api/traces"
+      # KAFKA_HOST:        "kafka"
+      #      MEMCACHED_HOST: "memcached:11211"
+      # RABBITMQ_URL:      "amqp://guest:guest@rabbitmq:5672/"
+      #      REDIS_HOST: "redis:6379"
+      #      VAULT_ADDRESS: "http://vault:8300"
+      # docker-compose run rest-server tern migrate --migrations "/api/migrations/" --conn-string "postgres://user:password@postgres:5432/dbname?sslmode=disable"
+      #    depends_on:
+      #      postgres:
+      #        condition: service_healthy
+      #      vault:
+      #        condition: service_started
+      #      prometheus:
+      #        condition: service_started
+      #      jaeger:
+      #        condition: service_started
+      #      elasticsearch:
+      #        condition: service_healthy
+      #      redis:
+      #        condition: service_healthy
+      #      memcached:
+      #        condition: service_healthy
+      # zookeeper:
+      #   condition: service_started
+      # kafka:
+      #   condition: service_started
+      # rabbitmq:
+    #   condition: service_started

@@ -2,8 +2,8 @@ package jobs
 
 import (
 	"context"
-	"github.com/bxcodec/go-clean-arch/config"
 	bybit "github.com/wuhewuhe/bybit.go.api"
+	"go-clean-arch/config"
 	"log"
 	"time"
 )

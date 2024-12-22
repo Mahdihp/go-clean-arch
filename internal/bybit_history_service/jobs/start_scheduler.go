@@ -2,9 +2,9 @@ package jobs
 
 import (
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/config"
 	"github.com/go-co-op/gocron/v2"
 	"github.com/joho/godotenv"
+	"go-clean-arch/config"
 	"log"
 	"time"
 )

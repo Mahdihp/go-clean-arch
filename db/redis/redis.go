@@ -3,8 +3,8 @@ package redis
 import (
 	"context"
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/config"
 	"github.com/redis/go-redis/v9"
+	"go-clean-arch/config"
 	"log"
 	"strconv"
 	"time"

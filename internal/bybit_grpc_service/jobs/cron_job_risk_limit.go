@@ -3,13 +3,13 @@ package jobs
 import (
 	"context"
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/config"
-	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
-	params_http "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/params"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/repository"
-	"github.com/bxcodec/go-clean-arch/params"
-	"github.com/bxcodec/go-clean-arch/util"
 	bybit "github.com/wuhewuhe/bybit.go.api"
+	"go-clean-arch/config"
+	models_grpc "go-clean-arch/internal/bybit_grpc_service/models"
+	params_http "go-clean-arch/internal/bybit_grpc_service/params"
+	"go-clean-arch/internal/bybit_grpc_service/repository"
+	"go-clean-arch/params"
+	"go-clean-arch/util"
 	"time"
 )
 

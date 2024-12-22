@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/config"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_ws"
-	"github.com/bxcodec/go-clean-arch/internal/delivery"
 	"github.com/joho/godotenv"
+	"go-clean-arch/config"
+	"go-clean-arch/internal/bybit_ws"
+	"go-clean-arch/internal/delivery"
 	"log"
 	"os"
 	"os/signal"

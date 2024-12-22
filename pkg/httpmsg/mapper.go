@@ -1,8 +1,8 @@
 package httpmsg
 
 import (
-	"github.com/bxcodec/go-clean-arch/pkg/errmsg"
-	"github.com/bxcodec/go-clean-arch/pkg/richerror"
+	"go-clean-arch/pkg/errmsg"
+	"go-clean-arch/pkg/richerror"
 	"net/http"
 )
 

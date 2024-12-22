@@ -3,9 +3,9 @@ package bybit_history_service
 import (
 	"context"
 	"errors"
-	"github.com/bxcodec/go-clean-arch/db/mongodb"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/models"
-	"github.com/bxcodec/go-clean-arch/params"
+	"go-clean-arch/db/mongodb"
+	"go-clean-arch/internal/bybit_history_service/models"
+	"go-clean-arch/params"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )

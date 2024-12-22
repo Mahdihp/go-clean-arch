@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
-	"github.com/bxcodec/go-clean-arch/params"
-	"github.com/bxcodec/go-clean-arch/util"
+	models_grpc "go-clean-arch/internal/bybit_grpc_service/models"
+	"go-clean-arch/params"
+	"go-clean-arch/util"
 	"strings"
 	"time"
 )

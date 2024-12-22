@@ -2,12 +2,12 @@ package bybit_grpc_service
 
 import (
 	"context"
-	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/position"
-	"github.com/bxcodec/go-clean-arch/config"
-	params_bybit_http "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/params"
-	"github.com/bxcodec/go-clean-arch/internal/validator"
-	"github.com/bxcodec/go-clean-arch/util"
 	bybit "github.com/wuhewuhe/bybit.go.api"
+	"go-clean-arch/adapter/grpc-proto/position"
+	"go-clean-arch/config"
+	params_bybit_http "go-clean-arch/internal/bybit_grpc_service/params"
+	"go-clean-arch/internal/validator"
+	"go-clean-arch/util"
 )
 
 type ByBitHttpServerPosition struct {

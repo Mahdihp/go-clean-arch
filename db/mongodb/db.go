@@ -3,9 +3,9 @@ package mongodb
 import (
 	"context"
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/config"
-	models_grpc "github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/models"
 	"github.com/labstack/gommon/log"
+	"go-clean-arch/config"
+	models_grpc "go-clean-arch/internal/bybit_grpc_service/models"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"

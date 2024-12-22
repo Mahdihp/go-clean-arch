@@ -2,9 +2,9 @@ package jobs
 
 import (
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/config"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/repository"
 	"github.com/robfig/cron/v3"
+	"go-clean-arch/config"
+	"go-clean-arch/internal/bybit_grpc_service/repository"
 	"strconv"
 )
 

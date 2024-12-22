@@ -1,10 +1,10 @@
 package validator
 
 import (
-	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/market"
-	"github.com/bxcodec/go-clean-arch/pkg/errmsg"
-	"github.com/bxcodec/go-clean-arch/pkg/richerror"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"go-clean-arch/adapter/grpc-proto/market"
+	"go-clean-arch/pkg/errmsg"
+	"go-clean-arch/pkg/richerror"
 )
 
 type ByBitMarketValidator struct {

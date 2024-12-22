@@ -1,10 +1,10 @@
 package validator
 
 import (
-	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/params"
-	"github.com/bxcodec/go-clean-arch/pkg/errmsg"
-	"github.com/bxcodec/go-clean-arch/pkg/richerror"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"go-clean-arch/internal/bybit_history_service/params"
+	"go-clean-arch/pkg/errmsg"
+	"go-clean-arch/pkg/richerror"
 )
 
 type ByBitHistoryValidator struct {

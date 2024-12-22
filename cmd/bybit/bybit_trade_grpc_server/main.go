@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/account"
-	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/market"
-	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/order"
-	"github.com/bxcodec/go-clean-arch/adapter/grpc-proto/position"
-	"github.com/bxcodec/go-clean-arch/config"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/jobs"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_grpc_service/repository"
 	"github.com/joho/godotenv"
+	"go-clean-arch/adapter/grpc-proto/account"
+	"go-clean-arch/adapter/grpc-proto/market"
+	"go-clean-arch/adapter/grpc-proto/order"
+	"go-clean-arch/adapter/grpc-proto/position"
+	"go-clean-arch/config"
+	"go-clean-arch/internal/bybit_grpc_service"
+	"go-clean-arch/internal/bybit_grpc_service/jobs"
+	"go-clean-arch/internal/bybit_grpc_service/repository"
 	"google.golang.org/grpc"
 	"log"
 	"net"

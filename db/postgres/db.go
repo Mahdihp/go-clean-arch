@@ -3,8 +3,8 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"github.com/bxcodec/go-clean-arch/config"
-	"github.com/bxcodec/go-clean-arch/internal/bybit_history_service/models"
+	"go-clean-arch/config"
+	"go-clean-arch/internal/bybit_history_service/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"

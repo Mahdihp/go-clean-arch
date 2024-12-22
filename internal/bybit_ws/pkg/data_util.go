@@ -1,7 +1,7 @@
 package pkg
 
 import (
-	"github.com/bxcodec/go-clean-arch/internal/bybit_ws/params"
+	"go-clean-arch/internal/bybit_ws/params"
 	"sort"
 )
 
