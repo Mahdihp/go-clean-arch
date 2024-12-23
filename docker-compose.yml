@@ -1,12 +1,13 @@
 # For demo purposes
 services:
   trade-grpc-server:
+    container_name: trade_grpc_server
     build:
       context: .
       dockerfile: /build/bybit_trade_grpc_server/Dockerfile
     ports:
       - "9000:9000"
-    command: bybit_trade_grpc_server
+    command: ./main
       #    environment:
       #      DATABASE_HOST: "postgres"
       #      ELASTICSEARCH_URL: "http://elasticsearch:9200"
@@ -38,3 +39,4 @@ services:
       #   condition: service_started
       # rabbitmq:
     #   condition: service_started
+

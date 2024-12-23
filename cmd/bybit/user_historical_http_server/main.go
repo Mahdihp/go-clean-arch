@@ -5,9 +5,6 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"go-clean-arch/config"
-	"go-clean-arch/db/mongodb"
-	"go-clean-arch/internal/bybit_history_service"
-	"go-clean-arch/internal/delivery"
 	"log"
 	"os"
 	"os/signal"
@@ -15,18 +12,18 @@ import (
 
 func init() {
 
-	err := godotenv.Load("env")
+	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatalf("Error loading env file: %v", err)
+		log.Fatalf("Error loading .env file: %v", err)
 	}
 
 }
 func main() {
 	cfg := config.LoadConfig()
-	bybitHisService := setupServices(cfg)
-	server := delivery.NewHistoricalServer(cfg, bybitHisService)
+	//bybitHisService := setupServices(cfg)
+	//server := delivery.NewHistoricalServer(cfg, bybitHisService)
 	go func() {
-		server.Serve()
+		//server.Serve()
 	}()
 
 	quit := make(chan os.Signal, 1)
@@ -37,15 +34,15 @@ func main() {
 	ctxWithTimeout, cancel := context.WithTimeout(ctx, cfg.WsOrderBookServer.GracefulShutdownTimeout)
 	defer cancel()
 
-	if err := server.Router.Shutdown(ctxWithTimeout); err != nil {
-		fmt.Println("http server shutdown error", err)
-	}
+	//if err := server.Router.Shutdown(ctxWithTimeout); err != nil {
+	//	fmt.Println("http server shutdown error", err)
+	//}
 	fmt.Println("received interrupt signal, shutting down gracefully..")
 	<-ctxWithTimeout.Done()
 }
 
-func setupServices(cfg config.Config) bybit_history_service.ByBitHistoricalServic {
-	//postgresDB := db.NewPostgres(cfg.Postgres)
+/*func setupServices(cfg config.Config) bybit_history_service.ByBitHistoricalServic {
+	postgresDB := db.NewPostgres(cfg.Postgres)
 	mongoDb := mongodb.NewMongoDb(cfg.MongoDbMarket)
 
 	userRepo := bybit_history_service.NewUser(mongoDb)
@@ -55,3 +52,4 @@ func setupServices(cfg config.Config) bybit_history_service.ByBitHistoricalServi
 
 	return service
 }
+*/

@@ -6,31 +6,28 @@ import (
 	"fmt"
 	redis2 "github.com/redis/go-redis/v9"
 	"go-clean-arch/config"
-	"go-clean-arch/db/mongodb"
 	"go-clean-arch/db/redis"
 	models_grpc "go-clean-arch/internal/bybit_grpc_service/models"
 	params_http "go-clean-arch/internal/bybit_grpc_service/params"
 	"go-clean-arch/params"
 	"go-clean-arch/util"
-	"go.mongodb.org/mongo-driver/v2/bson"
-	"go.mongodb.org/mongo-driver/v2/mongo/options"
-
-	"log"
 	"strings"
 )
 
 type MarketRepository struct {
-	Mongodb *mongodb.MongoDb
+	//Mongodb *mongodb.MongoDb
 	Redisdb redis.RedisDb
 	cfg     config.Config
 }
 
 func New(cfg config.Config) MarketRepository {
 	return MarketRepository{
-		Mongodb: mongodb.NewMongoDb(cfg.MongoDbMarket),
+		//Mongodb: mongodb.NewMongoDb(cfg.MongoDbMarket),
 		Redisdb: redis.NewRedis(cfg.RedisMarket),
 	}
 }
+
+/*
 func (receiver MarketRepository) GetCountCollecton(ctx context.Context, collName string) int64 {
 	collection := receiver.Mongodb.MongoConn().Collection(collName)
 	filter := bson.D{{}}
@@ -200,6 +197,7 @@ func (s *MarketRepository) FindBySymbol_MongoDB(ctx context.Context, collectionN
 	return linears, nil
 }
 
+
 func (s *MarketRepository) UpdateSpot_MongoDB(ctx context.Context, collectionName string, items []models_grpc.ByBitMarketGetInstrumentsInfoSpot) error {
 	collection := s.Mongodb.MongoConn().Collection(collectionName)
 	var err error
@@ -233,6 +231,9 @@ func (s *MarketRepository) UpdateSpot_MongoDB(ctx context.Context, collectionNam
 	}
 	return err
 }
+
+*/
+
 func (s *MarketRepository) FindRedisInverse(ctx context.Context, category string, symbol []string) ([]models_grpc.ByBitMarketGetInstrumentsInfoInverse, error) {
 	var items []models_grpc.ByBitMarketGetInstrumentsInfoInverse
 	var key string
