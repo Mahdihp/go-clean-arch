@@ -16,9 +16,14 @@ ENV GOOS=linux
 
 
 RUN ls ./cmd/bybit/bybit_trade_grpc_server
+
+RUN --mount=type=cache,target=/go/pkg/mod/ \
+    --mount=type=bind,source=go.sum,target=go.sum \
+    --mount=type=bind,source=go.mod,target=go.mod \
+    go mod download -x
 ENV GOCACHE=/root/.cache/go-build
 #RUN --mount=type=cache,target="/root/.cache/go-build" go build -o main .
-RUN go build -o main  ./cmd/bybit/bybit_trade_grpc_server
+RUN --mount=type=cache,target="/root/.cache/go-build" go build -o main  ./cmd/bybit/bybit_trade_grpc_server
 
 RUN ls
 RUN pwd
